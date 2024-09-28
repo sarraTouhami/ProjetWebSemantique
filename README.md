@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 <p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
 
 <p align="center">
@@ -64,3 +65,7 @@ If you discover a security vulnerability within Laravel, please send an e-mail t
 ## License
 
 The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+=======
+# RescueFood
+RescueFood is a platform designed to connect organizations and restaurants with the goal of reducing food waste through donations. In a world where millions go hungry while food is discarded, RescueFood aims to bridge the gap between surplus food and those in need.
+>>>>>>> a72e3ec5f0502a64a376a18ea3d4b929f1c03fb0
