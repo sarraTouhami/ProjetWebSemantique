@@ -2,6 +2,7 @@
 
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\PostController;
+use App\Http\Controllers\ReservationController;
 
 /*
 |--------------------------------------------------------------------------
@@ -14,6 +15,7 @@ use App\Http\Controllers\PostController;
 |
 */
 Route::resource('posts', PostController::class);
+Route::resource('reservations', ReservationController::class);
 
 Route::get('/', function () {
     return view('welcome');
@@ -22,3 +24,8 @@ Route::get('/hi', function () {
 
     return view('hi');
 });
+Route::get('/reservations', function () {
+
+    return view('reservations');
+});
+
