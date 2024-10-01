@@ -26,3 +26,7 @@ Route::get('/hi', function () {
 
     return view('hi');
 });
+Route::get('/test', function () {
+
+    return view('test');
+});
