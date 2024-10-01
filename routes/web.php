@@ -22,6 +22,10 @@ Route::resource('inventaires-beneficiaires', InventaireBeneficiaireController::c
 Route::get('/', function () {
     return view('welcome');
 });
+// Route::get('/demandes', function () {
+
+//     return view('demandes/index');
+// });
 Route::get('/hi', function () {
 
     return view('hi');

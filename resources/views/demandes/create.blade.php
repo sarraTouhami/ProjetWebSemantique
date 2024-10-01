@@ -1,11 +1,15 @@
 <!-- resources/views/demandes/create.blade.php -->
 @extends('layouts.app')
-
+@section('title', 'Add demande')
 @section('content')
+<div class="container-fluid p-4 mb-5 wow fadeIn" data-wow-delay="0.1s" style="margin-top: 100px;">
 <div class="container">
-    <h1>Créer une nouvelle demande</h1>
-    
-    <form action="{{ route('demandes.store') }}" method="POST">
+    <div class="row">
+        <div class="col-12">
+            <h2 class="mb-4 text-center">Créer une nouvelle demande</h2>
+        </div>
+    </div>
+    <form action="{{ route('demandes.store') }}" method="POST" enctype="multipart/form-data">
         @csrf
         <div class="form-group">
             <label for="beneficiaire_id">ID du bénéficiaire</label>
@@ -37,5 +41,6 @@
         
         <button type="submit" class="btn btn-primary">Créer</button>
     </form>
+</div>
 </div>
 @endsection

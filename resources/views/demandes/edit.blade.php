@@ -2,9 +2,13 @@
 @extends('layouts.app')
 
 @section('content')
+<div class="container-fluid p-4 mb-5 wow fadeIn" data-wow-delay="0.1s" style="margin-top: 100px;">
 <div class="container">
-    <h1>Modifier la demande</h1>
     
+    <div class="row">
+        <div class="col-12">
+            <h2 class="mb-4 text-center">Modifier la demande</h2>
+        </div>
     <form action="{{ route('demandes.update', $demande->id) }}" method="POST">
         @csrf
         @method('PUT')
@@ -39,5 +43,6 @@
         
         <button type="submit" class="btn btn-primary">Mettre à jour</button>
     </form>
+</div>
 </div>
 @endsection

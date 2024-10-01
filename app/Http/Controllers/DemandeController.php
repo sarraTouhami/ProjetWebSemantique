@@ -67,7 +67,7 @@ class DemandeController extends Controller
      */
     public function edit($id)
     {
-        $post = Demande::find($id);
+        $demande = Demande::find($id);
         return view('demandes.edit', compact('demande'));
     }
 
@@ -87,8 +87,8 @@ class DemandeController extends Controller
             'date_demande' => 'required|date',
             'statut' => 'required',
         ]);
-    
-        $demande->update($validated); // Met à jour la demande
+        $demande = Demande::find($id);
+        $demande->update($request->all()); 
         return redirect()->route('demandes.index')->with('success', 'Demande mise à jour avec succès');
     }
 
@@ -100,7 +100,7 @@ class DemandeController extends Controller
      */
     public function destroy($id)
     {
-        $demande->delete(); // Supprime la demande
+        Demande::find($id)->delete(); 
         return redirect()->route('demandes.index')->with('success', 'Demande supprimée avec succès');
     }
 }
