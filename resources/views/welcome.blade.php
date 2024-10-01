@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 
-@include('template/layaout')
+@extends('layouts.app')
 <body>
   
     <!-- Include Navbar -->
