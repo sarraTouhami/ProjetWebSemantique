@@ -2,6 +2,8 @@
 
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\PostController;
+use App\Http\Controllers\DemandeController;
+use App\Http\Controllers\InventaireBeneficiaireController;
 
 /*
 |--------------------------------------------------------------------------
@@ -14,6 +16,8 @@ use App\Http\Controllers\PostController;
 |
 */
 Route::resource('posts', PostController::class);
+Route::resource('demandes', DemandeController::class);
+Route::resource('inventaires-beneficiaires', InventaireBeneficiaireController::class);
 
 Route::get('/', function () {
     return view('welcome');
