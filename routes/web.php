@@ -24,8 +24,9 @@ Route::get('/hi', function () {
 
     return view('hi');
 });
-Route::get('/reservations', function () {
 
-    return view('reservations');
+Route::get('/test', function () {
+
+    return view('test');
 });
 
