@@ -10,7 +10,6 @@
         <table class="table table-bordered table-striped table-hover">
             <thead class="thead-dark">
                 <tr>
-                    <th>ID Bénéficiaire</th>
                     <th>Type d'Aliment</th>
                     <th>Quantité</th>
                     <th>Date</th>
@@ -21,18 +20,28 @@
             <tbody>
                 @foreach($demandes as $demande)
                     <tr>
-                        <td>{{ $demande->beneficiaire_id }}</td>
                         <td>{{ $demande->type_aliment }}</td>
                         <td>{{ $demande->quantite }}</td>
                         <td>{{ $demande->date_demande }}</td>
                         <td>
-                            @if($demande->statut == 'En attente')
+                            <!-- @if($demande->statut == 'En attente')
                                 <span class="badge badge-warning">En attente</span>
                             @elseif($demande->statut == 'Approuvée')
                                 <span class="badge badge-success">Approuvée</span>
                             @else
                                 <span class="badge badge-secondary">{{ $demande->statut }}</span>
-                            @endif
+                            @endif -->
+                            <div class="d-flex">
+                        @if ($demande->statut === 'en attente')
+                        <span class="text-secondary border-2 py-2 px-4 rounded-pill">
+                            {{ $demande->statut }}
+                        </span>
+                        @else
+                        <span class="text-primary border-2 py-2 px-4 rounded-pill">
+                            {{ $demande->statut }}
+                         </span>
+                         @endif
+                        </div>
                         </td>
                         <td>
                             <!-- Bouton Modifier -->
