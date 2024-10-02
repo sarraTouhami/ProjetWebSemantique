@@ -13,14 +13,9 @@ return new class extends Migration
      */
     public function up()
     {
-        Schema::create('posts', function (Blueprint $table) {
-            $table->id();  
-            $table->string('titre');
-            $table->text('contenu');
-            $table->string('type_post');  
-            $table->unsignedBigInteger('user_id'); 
-            $table->string('image_url')->nullable();  
-            $table->timestamps(); 
+        Schema::table('produits_alimentaires', function (Blueprint $table) {
+            $table->string('type')->nullable();
+            $table->string('image_url')->nullable();
         });
     }
 
@@ -31,6 +26,9 @@ return new class extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('posts');
+        Schema::table('produits_alimentaires', function (Blueprint $table) {
+            $table->dropColumn('type'); 
+            $table->dropColumn('image_url'); 
+        });
     }
 };

@@ -34,17 +34,38 @@ class ProduitAlimentaireController extends Controller
      * @return \Illuminate\Http\Response
      */
     public function store(Request $request)
-    {
-      $request->validate([
-        'nom' => ['required','string','max:255'],
-        'categorie' => ['required','string','max:255'],
-        'quantite' => ['required','integer'],
+{
+    // Validate the incoming request
+    $request->validate([
+        'nom' => ['required', 'string', 'max:255'],
+        'categorie' => ['required', 'string', 'max:255'],
+        'quantite' => ['required', 'integer'],
         'date_peremption' => ['required', 'date'],
-      ]);
-      ProduitAlimentaire::create($request->all());
-      return redirect()->route('produitAlimentaire.index')->with('success', 'Produit added successfully');
+        'type' => ['required', 'string'],
+        'image_url' => 'nullable|image|mimes:jpeg,png,jpg,gif,jfif|max:2048', 
+    ]);
 
+    $imagePath = null;
+
+    if ($request->hasFile('image_url')) {
+        $image = $request->file('image_url');
+        $imageName = time() . '.' . $image->getClientOriginalExtension();
+
+        $imagePath = $image->storeAs('public/images', $imageName);
+
+        $imagePath = str_replace('public/', 'storage/', $imagePath);
     }
+    ProduitAlimentaire::create([
+        'nom' => $request->input('nom'),
+        'categorie' => $request->input('categorie'),
+        'quantite' => $request->input('quantite'),
+        'date_peremption' => $request->input('date_peremption'),
+        'type' => $request->input('type'),
+        'image_url' => $imagePath, 
+    ]);
+    return redirect()->route('produitAlimentaire.index')->with('success', 'Produit added successfully');
+}
+
 
     /**
      * Display the specified resource.
@@ -66,9 +87,13 @@ class ProduitAlimentaireController extends Controller
      */
     public function edit($id)
     {
-        $produitAlimentaire=ProduitAlimentaire::find($id);
-        return view('produitAlimentaire.edit',compact('produitAlimentaire'));
+        $produitAlimentaire = ProduitAlimentaire::find($id);
+        if (!$produitAlimentaire) {
+            return redirect()->route('produitAlimentaire.index')->with('error', 'Produit non trouvé.');
+        }
+        return view('produitAlimentaire.edit', compact('produitAlimentaire'));
     }
+    
 
     /**
      * Update the specified resource in storage.
@@ -79,17 +104,38 @@ class ProduitAlimentaireController extends Controller
      */
     public function update(Request $request, $id)
     {
+      
         $request->validate([
-          'nom' => ['required','string','max:255'],
-          'categorie' => ['required','string','max:255'],
-          'quantite' => ['required','integer'],
-          'date_peremption' => ['required', 'date'],
+            'nom' => ['required', 'string', 'max:255'],
+            'categorie' => ['required', 'string', 'max:255'],
+            'quantite' => ['required', 'integer'],
+            'date_peremption' => ['required', 'date'],
+            'type' => ['required', 'string'],
+            'image_url' => 'nullable|image|mimes:jpeg,png,jpg,gif,jfif|max:2048', 
         ]);
-        $produitAlimentaire=ProduitAlimentaire::find($id);
-       
+    
+        $produitAlimentaire = ProduitAlimentaire::find($id);
+        if (!$produitAlimentaire) {
+            return redirect()->route('produitAlimentaire.index')->with('error', 'Produit non trouvé.');
+        }
+        $imagePath = $produitAlimentaire->image_url; 
+        if ($request->hasFile('image_url')) {
+            $image = $request->file('image_url');
+            $imageName = time() . '.' . $image->getClientOriginalExtension();
+            $imagePath = $image->storeAs('public/images', $imageName);
+            $imagePath = str_replace('public/', 'storage/', $imagePath);
+        }
 
-        $produitAlimentaire->update($request->all());
-        return redirect()->route('produitAlimentaire.index')->with('success', 'Produit updated successfully');
+        $produitAlimentaire->update([
+            'nom' => $request->input('nom'),
+            'categorie' => $request->input('categorie'),
+            'quantite' => $request->input('quantite'),
+            'date_peremption' => $request->input('date_peremption'),
+            'type' => $request->input('type'),
+            'image_url' => $imagePath, 
+        ]);
+    
+        return redirect()->route('produitAlimentaire.index')->with('success', 'Produit mis à jour avec succès');
     }
 
     /**

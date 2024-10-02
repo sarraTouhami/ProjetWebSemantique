@@ -5,10 +5,14 @@
 @section('title', 'All Products')
 
 @section('content')
-    <div  class=" p-4 mb-5 " data-wow-delay="0.1s" style="margin-top: 100px;">
-        <h1>Tous les produit</h1>
+    <div class="p-4 mb-5" data-wow-delay="0.1s" style="margin-top: 100px;">
+        <h1>Tous les produits</h1>
 
-        <a href="{{ route('produitAlimentaire.create') }}" class="btn btn-outline-primary border-2 py-2 px-4 mb-3 rounded-pill">Ajouter un produit</a>
+        <div class="d-flex justify-content-end mb-3">
+            <a href="{{ route('produitAlimentaire.create') }}" class="btn btn-primary border-2 py-2 px-4 rounded-pill">
+                <i class="fas fa-plus me-2"></i> Ajouter un produit
+            </a>
+        </div>
 
         @if (session('success'))
             <div class="alert alert-success">
@@ -18,52 +22,43 @@
 
         @if ($produitAlimentaire->count())
         <div class="row">
-    @foreach ($produitAlimentaire as $produit)
-        <div class="col-lg-6 col-md-4 col-sm-6 mb-4"> 
-            <div class="product-item bg-light overflow-hidden">
-                <div class="position-relative">
+            @foreach ($produitAlimentaire as $produit)
+                <div class="col-lg-4 col-md-6 col-sm-12 mb-4"> 
+                    <div class="card border-light shadow-sm">
+                        <div class="position-relative">
+                            @if (!empty($produit->image_url))
+                                <img src="{{ asset($produit->image_url) }}" alt="{{ $produit->nom }}" class="card-img-top" style="height: 200px; object-fit: cover;">
+                            @else
+                                <img src="https://via.placeholder.com/300" alt="Image non disponible" class="card-img-top" style="height: 200px; object-fit: cover;">
+                            @endif
+                        </div>
 
-                   
+                        <div class="card-body text-center">
+                            <h5 class="card-title">{{ $produit->nom }}</h5>
+                            <p class="card-text">Catégorie: {{ $produit->categorie ?? 'Non spécifiée' }}</p>
+                            <p class="card-text">Type: {{ $produit->type ?? 'Non spécifié' }}</p>
+                            <p class="card-text">Quantité: {{ $produit->quantite }}</p>
+                            <p class="card-text">Date d'expiration: {{ $produit->date_peremption }}</p>
+                        </div>
+                        <div class="card-footer d-flex justify-content-between">
+                            <a class="btn btn-outline-primary " href="{{ route('produitAlimentaire.show', $produit->id) }}">
+                                <i class="fa fa-eye"></i> View Detail
+                            </a>
+                            <a class="btn btn-outline-warning" href="{{ route('produitAlimentaire.edit', $produit->id) }}">
+                                <i class="fa fa-edit"></i> Edit
+                            </a>
+                            <form action="{{ route('produitAlimentaire.destroy', $produit->id) }}" method="POST" style="display:inline-block;">
+                                @csrf
+                                @method('DELETE')
+                                <button type="submit" onclick="return confirm('Tu es sûr?')" title="Delete" class="btn btn-outline-danger">
+                                    <i class="fas fa-trash"></i> Delete
+                                </button>
+                            </form>
+                        </div>
+                    </div>
                 </div>
-                <div class="text-center p-4">
-                    <a class="d-block h5 mb-2" href="{{ route('produitAlimentaire.show', $produit->id) }}">{{ $produit->nom }}</a>
-                    <span class="text-body">Catégorie: {{ $produit->categorie }}</span>
-                    <br>
-                    <span class="text-body">Quantité: {{ $produit->quantite }}</span>
-                    <br>
-                    <span class="text-body">Date d'expiration: {{ $produit->date_peremption }}</span>
-                </div>
-                <div class="d-flex border-top">
-    <small class="w-50 text-center border-end py-2">
-        <a class="text-body" href="{{ route('produitAlimentaire.show', $produit->id) }}">
-            <i class="fa fa-eye text-primary me-2"></i>View detail
-        </a>
-    </small>
-    <small class="w-50 text-center border-end py-2">
-        <a class="text-body" href="{{ route('produitAlimentaire.edit', $produit->id) }}">
-            <i class="fa fa-edit text-warning me-2"></i>Edit
-        </a>
-    </small>
-    <small class="w-50 text-center py-2">
-        <form action="{{ route('produitAlimentaire.destroy', $produit->id) }}" method="POST" style="display:inline-block;">
-            @csrf
-            @method('DELETE')
-            <button type="submit" onclick="return confirm('Tu es sûr?')" title="Delete" style="border-radius: 0.25rem; border: none; padding: 0;">
-                <i class="fas fa-trash text-danger me-2"></i> Delete
-            </button>
-        </form>
-    </small>
-</div>
-
-               
-
-
-
-            </div>
+            @endforeach
         </div>
-    @endforeach
-</div>
-
         @else
             <p>Aucun produit disponible. <a href="{{ route('produitAlimentaire.create') }}">Ajouter un produit maintenant!</a></p>
         @endif

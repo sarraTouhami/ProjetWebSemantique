@@ -19,6 +19,8 @@ return new class extends Migration
             $table->string('categorie');
             $table->integer('quantite');
             $table->date('date_peremption');
+            $table->string('type');
+            $table->string('image_url')->nullable();
             $table->timestamps();
         });
     }
