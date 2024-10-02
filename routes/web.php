@@ -2,6 +2,8 @@
 
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\PostController;
+use App\Http\Controllers\DemandeController;
+use App\Http\Controllers\InventaireBeneficiaireController;
 use App\Http\Controllers\ProduitAlimentaireController;
 use App\Http\Controllers\ReservationController;
 
@@ -16,11 +18,17 @@ use App\Http\Controllers\ReservationController;
 |
 */
 Route::resource('posts', PostController::class);
+Route::resource('demandes', DemandeController::class);
+Route::resource('inventaires-beneficiaires', InventaireBeneficiaireController::class);
 Route::resource('reservations', ReservationController::class);
 
 Route::get('/', function () {
     return view('welcome');
 });
+// Route::get('/demandes', function () {
+
+//     return view('demandes/index');
+// });
 Route::get('/hi', function () {
 
     return view('hi');
