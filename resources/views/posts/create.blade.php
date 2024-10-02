@@ -1,46 +1,48 @@
-{{-- resources/views/posts/create.blade.php --}}
-
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Create New Post</title>
-    <!-- Add your CSS files here -->
-    <link rel="stylesheet" href="{{ asset('css/app.css') }}">
-</head>
-<body>
-
-    <div class="container">
-        <h1>Create New Post</h1>
-
-        @if ($errors->any())
-            <div class="alert alert-danger">
-                <ul>
-                    @foreach ($errors->all() as $error)
-                        <li>{{ $error }}</li>
-                    @endforeach
-                </ul>
-            </div>
-        @endif
-
-        <form action="{{ route('posts.store') }}" method="POST">
-            @csrf
-            <div class="form-group">
-                <label for="title">Title</label>
-                <input type="text" name="title" class="form-control" id="title" placeholder="Enter title" required>
-            </div>
-
-            <div class="form-group">
-                <label for="body">Content</label>
-                <textarea name="body" class="form-control" id="body" rows="4" placeholder="Enter content" required></textarea>
-            </div>
-
-            <button type="submit" class="btn btn-primary mt-2">Create Post</button>
-        </form>
+<!-- resources/views/demandes/create.blade.php -->
+@extends('layouts.app')
+@section('title', 'Ajouter publication')
+@section('content')
+<div class="container-fluid p-4 mb-5 wow fadeIn" data-wow-delay="0.1s" style="margin-top: 100px;">
+<div class="container">
+    <div class="row">
+        <div class="col-12">
+            <h2 class="mb-4 text-center">Créer une nouvelle publication</h2>
+        </div>
     </div>
+    <form action="{{ route('posts.store') }}" method="POST" enctype="multipart/form-data">
+        @csrf
+        <div class="form-group">
+            <label for="titre">Titre: </label>
+            <input type="text" name="titre" class="form-control" required>
+        </div>
+        
+        <div class="form-group">
+            <label for="contenu">Contenu de publication: </label>
+            <textarea name="contenu" class="form-control" rows="5" required></textarea>
+                </div>
+        
+        <div class="form-group">
+            <label for="type_post">Type de la publication: </label>
+            <select name="type_post" class="form-control" >
+                <option value="Evenenement">Evenenement</option>
+                <option value="Question">Question</option>
+                <option value="Blog">Blog</option>
+            </select>        
+        </div>
 
-    <!-- Add your JS files here -->
-    <script src="{{ asset('js/app.js') }}"></script>
-</body>
-</html>
+        <div class="form-group">
+            <label for="user_id">Votre Id: </label>
+            <input type="number" name="user_id" class="form-control" >
+        </div>
+
+        <div class="form-group">
+            <label for="image_url">An image: </label>
+            <input type="file" name="image_url" class="form-control" accept="image/*">
+        </div>
+        
+        
+        <button type="submit" class="btn btn-primary">Créer</button>
+    </form>
+</div>
+</div>
+@endsection

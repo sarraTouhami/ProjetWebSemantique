@@ -5,14 +5,14 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class Post extends Model
+class Notification extends Model
 {
     use HasFactory;
+
     protected $fillable = [
         'titre',
-        'contenu',
-        'type_post',
-        'user_id',
-        'image_url'
+        'message',
+        'type',
+        'est_vu'
         ];
 }

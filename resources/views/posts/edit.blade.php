@@ -1,48 +1,42 @@
-{{-- resources/views/posts/edit.blade.php --}}
+@extends('layouts.app')
+@section('title', 'Modifier publication')
+@section('content')
+<div class="container-fluid p-4 mb-5 wow fadeIn" data-wow-delay="0.1s" style="margin-top: 100px;">
+<div class="container">
+    
+    <div class="row">
+        <div class="col-12">
+            <h2 class="mb-4 text-center">Modifier la publication</h2>
+        </div>
+    <form action="{{ route('posts.update', $post->id) }}" method="POST">
+        @csrf
+        @method('PUT')
+        
+        <div class="form-group">
+            <label for="titre">Titre: </label>
+            <input type="text" name="titre" class="form-control" value="{{ $post->titre }}" required>
+        </div>
+        
+        <div class="form-group">
+            <label for="contenu">Contenu de publication: </label>
+            <textarea name="contenu" class="form-control" rows="5" value="{{ $post->contenu }}" required></textarea>
+                </div>
+        
+        <div class="form-group">
+            <label for="type_post">Type de la publication: </label>
+            <select name="type_post" class="form-control" >
+                <option value="Evenenement" {{ $post->type_post == 'Evenenement' ? 'selected' : '' }}>Evenenement</option>
+                <option value="Question" {{ $post->type_post == 'Question' ? 'selected' : '' }}>Question</option>
+                <option value="Blog" {{ $post->type_post == 'Blog' ? 'selected' : '' }}>Blog</option>
+            </select>            </div>
 
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Edit Post</title>
-    <!-- Add your CSS files here -->
-    <link rel="stylesheet" href="{{ asset('css/app.css') }}">
-</head>
-<body>
-
-    <div class="container">
-        <h1>Edit Post</h1>
-
-        @if ($errors->any())
-            <div class="alert alert-danger">
-                <ul>
-                    @foreach ($errors->all() as $error)
-                        <li>{{ $error }}</li>
-                    @endforeach
-                </ul>
-            </div>
-        @endif
-
-        <form action="{{ route('posts.update', $post->id) }}" method="POST">
-            @csrf
-            @method('PUT')
-
-            <div class="form-group">
-                <label for="title">Title</label>
-                <input type="text" name="title" class="form-control" id="title" value="{{ $post->title }}" required>
-            </div>
-
-            <div class="form-group">
-                <label for="body">Content</label>
-                <textarea name="body" class="form-control" id="body" rows="4" required>{{ $post->body }}</textarea>
-            </div>
-
-            <button type="submit" class="btn btn-primary mt-2">Update Post</button>
-        </form>
-    </div>
-
-    <!-- Add your JS files here -->
-    <script src="{{ asset('js/app.js') }}"></script>
-</body>
-</html>
+        <div class="form-group">
+            <label for="user_id">Votre Id: </label>
+            <input type="number" name="user_id" class="form-control" value="{{ $post->user_id }}">
+        </div>
+        
+        <button type="submit" class="btn btn-primary">Mettre à jour</button>
+    </form>
+</div>
+</div>
+@endsection

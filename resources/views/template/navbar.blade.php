@@ -18,23 +18,22 @@
 
     <nav class="navbar navbar-expand-lg navbar-light py-lg-0 px-lg-5 wow fadeIn" data-wow-delay="0.1s">
         <a href="{{ url('/') }}" class="navbar-brand ms-4 ms-lg-0">
-            <h1 class="fw-bold text-primary m-0">F<span class="text-secondary">oo</span>dy</h1>
+            <h1 class="fw-bold text-primary m-0">Res<span class="text-secondary">cueF</span>ood</h1>
         </a>
         <button type="button" class="navbar-toggler me-4" data-bs-toggle="collapse" data-bs-target="#navbarCollapse">
             <span class="navbar-toggler-icon"></span>
         </button>
         <div class="collapse navbar-collapse" id="navbarCollapse">
             <div class="navbar-nav ms-auto p-4 p-lg-0">
-                <a href="{{ url('/') }}" class="nav-item nav-link active">Home</a>
-                <a href="{{ url('/about') }}" class="nav-item nav-link">About Us</a>
-                <a href="{{ url('/products') }}" class="nav-item nav-link">Products</a>
+                <a href="{{ url('/reservations') }}" class="nav-item nav-link active">Reservations</a>
+                <a href="{{ url('/demandes') }}" class="nav-item nav-link">Demandes</a>
+                <a href="{{ url('/posts') }}" class="nav-item nav-link">Publications</a>
+                <a href="{{ url('/notifications') }}" class="nav-item nav-link">Notifications</a>
                 <div class="nav-item dropdown">
-                    <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown">Pages</a>
+                    <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown">Produits</a>
                     <div class="dropdown-menu m-0">
-                        <a href="{{ url('/blog') }}" class="dropdown-item">Blog Grid</a>
-                        <a href="{{ url('/features') }}" class="dropdown-item">Our Features</a>
-                        <a href="{{ url('/testimonials') }}" class="dropdown-item">Testimonial</a>
-                        <a href="{{ url('/404') }}" class="dropdown-item">404 Page</a>
+                        <a href="{{ url('/produitAlimentaire') }}" class="dropdown-item">Produits Alimentaires</a>
+                        <a href="{{ url('/produitFraiche') }}" class="dropdown-item">Produits Fraiches</a>
                     </div>
                 </div>
                 <a href="{{ url('/contact') }}" class="nav-item nav-link">Contact Us</a>
