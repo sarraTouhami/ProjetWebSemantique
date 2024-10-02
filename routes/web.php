@@ -3,6 +3,7 @@
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\PostController;
 use App\Http\Controllers\ProduitAlimentaireController;
+use App\Http\Controllers\ReservationController;
 
 /*
 |--------------------------------------------------------------------------
@@ -15,6 +16,7 @@ use App\Http\Controllers\ProduitAlimentaireController;
 |
 */
 Route::resource('posts', PostController::class);
+Route::resource('reservations', ReservationController::class);
 
 Route::get('/', function () {
     return view('welcome');
@@ -23,8 +25,14 @@ Route::get('/hi', function () {
 
     return view('hi');
 });
+
 Route::get('/test', function () {
 
     return view('test');
 });
 Route ::resource('produitAlimentaire',ProduitAlimentaireController::class);
+
+
+
+
+
