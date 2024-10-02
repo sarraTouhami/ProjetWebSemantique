@@ -23,9 +23,13 @@
         <td>{{ $item->quantité }}</td>
         <td>{{ $item->statut }}</td>
         <td>
-            <button class="btn btn-warning mr-4">voir</button>
-            <button class="btn btn-info mr-4">Modifier</button>
-            <button class="btn btn-secondary">Supprimer</button>
+            <a href="{{ route('Dons.show', $item->id) }}" class="btn btn-warning mr-4">voir</a>
+            <a href="{{ route('Dons.edit', $item->id) }}" class="btn btn-info mr-4">Modifier</a>
+            <form action="{{ route('Dons.destroy', $item->id) }}" method="POST" style="display:inline-block;">
+                @csrf
+                @method('DELETE')
+                <button type="submit" class="btn btn-danger" onclick="return confirm('vous êtes sur?')">Supprimer</button>
+            </form>
         </td>
     </tr>
     @endforeach

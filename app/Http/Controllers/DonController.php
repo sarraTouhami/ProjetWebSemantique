@@ -57,7 +57,8 @@ class DonController extends Controller
      */
     public function show($id)
     {
-        //
+        $don = Don::find($id);
+        return view('Don.showDon', compact('don'));
     }
 
     /**
@@ -68,7 +69,8 @@ class DonController extends Controller
      */
     public function edit($id)
     {
-        //
+        $don = Don::find($id);
+        return view('Don.Edit', compact('don'));
     }
 
     /**
@@ -80,7 +82,18 @@ class DonController extends Controller
      */
     public function update(Request $request, $id)
     {
-        //
+        $request->validate([
+            'type_aliment' => 'required',
+            'quantité' => 'required',
+            'date_peremption' => 'required',
+            'date_don' => 'required',
+            'statut' => 'required',
+        ]);
+
+        $don = Don::find($id);
+        $don->update($request->all());
+
+        return redirect()->route('Dons.index')->with('success', 'Don updated successfully.');
     }
 
     /**
@@ -91,6 +104,8 @@ class DonController extends Controller
      */
     public function destroy($id)
     {
-        //
+        Don::find($id)->delete();
+
+        return redirect()->route('Dons.index')->with('success', 'Don deleted successfully.');
     }
 }
