@@ -2,6 +2,7 @@
 
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\PostController;
+use App\Http\Controllers\ProduitAlimentaireController;
 
 /*
 |--------------------------------------------------------------------------
@@ -26,3 +27,4 @@ Route::get('/test', function () {
 
     return view('test');
 });
+Route ::resource('produitAlimentaire',ProduitAlimentaireController::class);
