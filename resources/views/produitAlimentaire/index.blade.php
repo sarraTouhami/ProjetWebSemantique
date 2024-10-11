@@ -27,7 +27,8 @@
                     <div class="card border-light shadow-sm">
                         <div class="position-relative">
                             @if (!empty($produit->image_url))
-                                <img src="{{ asset($produit->image_url) }}" alt="{{ $produit->nom }}" class="card-img-top" style="height: 200px; object-fit: cover;">
+                            <img src="{{ asset($produit->image_url) }}" alt="{{ $produit->nom }}" class="card-img-top" style="height: 200px; object-fit: cover;">
+
                             @else
                                 <img src="https://via.placeholder.com/300" alt="Image non disponible" class="card-img-top" style="height: 200px; object-fit: cover;">
                             @endif
