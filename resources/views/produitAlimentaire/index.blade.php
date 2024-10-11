@@ -36,7 +36,7 @@
 
                         <div class="card-body text-center">
                             <h5 class="card-title">{{ $produit->nom }}</h5>
-                            <p class="card-text">Catégorie: {{ $produit->categorie ?? 'Non spécifiée' }}</p>
+                           
                             <p class="card-text">Type: {{ $produit->type ?? 'Non spécifié' }}</p>
                             <p class="card-text">Quantité: {{ $produit->quantite }}</p>
                             <p class="card-text">Date d'expiration: {{ $produit->date_peremption }}</p>

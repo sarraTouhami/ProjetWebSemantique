@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-return new class extends Migration
+class CreateProduitsAlimentairesTable extends Migration
 {
     /**
      * Run the migrations.
@@ -16,7 +16,7 @@ return new class extends Migration
         Schema::create('produits_alimentaires', function (Blueprint $table) {
             $table->id();
             $table->string('nom');
-            $table->string('categorie');
+            $table->string('categorie')->nullable();
             $table->integer('quantite');
             $table->date('date_peremption');
             $table->string('type');
@@ -34,4 +34,4 @@ return new class extends Migration
     {
         Schema::dropIfExists('produits_alimentaires');
     }
-};
+}

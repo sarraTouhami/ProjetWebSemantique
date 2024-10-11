@@ -35,38 +35,57 @@ class ProduitAlimentaireController extends Controller
      */
     public function store(Request $request)
     {
-        // Validate the incoming request
+       
         $request->validate([
             'nom' => ['required', 'string', 'max:255'],
-            'categorie' => ['required', 'string', 'max:255'],
             'quantite' => ['required', 'integer'],
             'date_peremption' => ['required', 'date'],
             'type' => ['required', 'string'],
-            'image_url' => 'nullable|image|mimes:jpeg,png,jpg,gif,jfif|max:2048', 
+            'image_url' => 'nullable|image|mimes:jpeg,png,jpg,gif,jfif|max:2048',
+            // Allow 'categorie' to be nullable if 'type' is not 'frais'
+            'categorie' => [
+                'nullable',
+                function ($attribute, $value, $fail) use ($request) {
+                    // Check if type is frais and categorie is not provided
+                    if ($request->input('type') === 'frais' && empty($value)) {
+                        return $fail('La catégorie est requise lorsque le type est frais.');
+                    }
+                }
+            ],
         ]);
     
+        // Handle image upload
         $imagePath = null;
     
         if ($request->hasFile('image_url')) {
             $image = $request->file('image_url');
             $imageName = time() . '.' . $image->getClientOriginalExtension();
-    
             $imagePath = $image->storeAs('public/img', $imageName);
             $imagePath = str_replace('public/', 'storage/', $imagePath);
         }
     
-        // Create the produit
-        ProduitAlimentaire::create([
+        // Prepare the produit data
+        $produitData = [
             'nom' => $request->input('nom'),
-            'categorie' => $request->input('categorie'),
             'quantite' => $request->input('quantite'),
             'date_peremption' => $request->input('date_peremption'),
             'type' => $request->input('type'),
             'image_url' => $imagePath,
-        ]);
+        ];
+    
+        // Only add categorie if it is not an empty string
+        if ($request->input('categorie') !== '') {
+            $produitData['categorie'] = $request->input('categorie');
+        } else {
+            $produitData['categorie'] = null; // set to null if no value provided
+        }
+    
+        // Create the produit
+        ProduitAlimentaire::create($produitData);
     
         return redirect()->route('produitAlimentaire.index')->with('success', 'Produit ajouté avec succès!');
     }
+    
     
 
 
@@ -107,20 +126,23 @@ class ProduitAlimentaireController extends Controller
      */
     public function update(Request $request, $id)
     {
-      
+        
         $request->validate([
             'nom' => ['required', 'string', 'max:255'],
-            'categorie' => ['required', 'string', 'max:255'],
+            'categorie' => ['nullable', 'string', 'max:255'], 
             'quantite' => ['required', 'integer'],
             'date_peremption' => ['required', 'date'],
             'type' => ['required', 'string'],
-            'image_url' => 'nullable|image|mimes:jpeg,png,jpg,gif,jfif|max:2048', 
+            'image_url' => 'nullable|image|mimes:jpeg,png,jpg,gif,jfif|max:2048',
         ]);
     
+        
         $produitAlimentaire = ProduitAlimentaire::find($id);
         if (!$produitAlimentaire) {
             return redirect()->route('produitAlimentaire.index')->with('error', 'Produit non trouvé.');
         }
+    
+        
         $imagePath = $produitAlimentaire->image_url; 
         if ($request->hasFile('image_url')) {
             $image = $request->file('image_url');
@@ -128,19 +150,20 @@ class ProduitAlimentaireController extends Controller
             $imagePath = $image->storeAs('public/images', $imageName);
             $imagePath = str_replace('public/', 'storage/', $imagePath);
         }
-
+    
+        
         $produitAlimentaire->update([
             'nom' => $request->input('nom'),
-            'categorie' => $request->input('categorie'),
+            'categorie' => $request->input('categorie'), // This can be null
             'quantite' => $request->input('quantite'),
             'date_peremption' => $request->input('date_peremption'),
             'type' => $request->input('type'),
-            'image_url' => $imagePath, 
+            'image_url' => $imagePath,
         ]);
     
         return redirect()->route('produitAlimentaire.index')->with('success', 'Produit mis à jour avec succès');
     }
-
+    
     /**
      * Remove the specified resource from storage.
      *
