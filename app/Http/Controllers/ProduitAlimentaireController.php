@@ -39,7 +39,7 @@ class ProduitAlimentaireController extends Controller
         $request->validate([
             'nom' => ['required', 'string', 'max:255'],
             'quantite' => ['required', 'integer'],
-            'date_peremption' => ['required', 'date'],
+            'date_peremption' => 'required|date|after:today',
             'type' => ['required', 'string'],
             'image_url' => 'nullable|image|mimes:jpeg,png,jpg,gif,jfif|max:2048',
             // Allow 'categorie' to be nullable if 'type' is not 'frais'
@@ -131,7 +131,7 @@ class ProduitAlimentaireController extends Controller
             'nom' => ['required', 'string', 'max:255'],
             'categorie' => ['nullable', 'string', 'max:255'], 
             'quantite' => ['required', 'integer'],
-            'date_peremption' => ['required', 'date'],
+            'date_peremption' => 'required|date|after:today',
             'type' => ['required', 'string'],
             'image_url' => 'nullable|image|mimes:jpeg,png,jpg,gif,jfif|max:2048',
         ]);
