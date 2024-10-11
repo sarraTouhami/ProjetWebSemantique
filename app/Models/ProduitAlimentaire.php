@@ -10,6 +10,13 @@ class ProduitAlimentaire extends Model
 {
     use HasFactory;
     protected $table = 'produits_alimentaires';
-    protected $fillable = ['nom', 'categorie', 'quantite', 'date_peremption','type','image_url']; 
+    protected $fillable = [
+        'nom',
+        'categorie',
+        'quantite',
+        'date_peremption',
+        'type',
+        'image_url',
+    ];
 
 }
