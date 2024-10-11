@@ -36,6 +36,9 @@
                         <a href="{{ url('/produitFraiche') }}" class="dropdown-item">Produits Fraiches</a>
                     </div>
                 </div>
+                <a href="{{ url('/recommendations') }}" class="nav-item nav-link">recommendations</a>
+                <a href="{{ url('/events') }}" class="nav-item nav-link">events</a>
+
                 <a href="{{ url('/contact') }}" class="nav-item nav-link">Contact Us</a>
             </div>
             <div class="d-none d-lg-flex ms-2">
