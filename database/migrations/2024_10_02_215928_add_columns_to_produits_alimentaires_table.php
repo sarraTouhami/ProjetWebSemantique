@@ -14,9 +14,13 @@ return new class extends Migration
     public function up()
     {
         Schema::table('produits_alimentaires', function (Blueprint $table) {
+        if (!Schema::hasColumn('produits_alimentaires', 'type')) {
             $table->string('type')->nullable();
+        }
+        if (!Schema::hasColumn('produits_alimentaires', 'image_url')) {
             $table->string('image_url')->nullable();
-        });
+        }
+    });
     }
 
     /**

@@ -8,7 +8,8 @@ use App\Http\Controllers\ProduitAlimentaireController;
 use App\Http\Controllers\ReservationController;
 use App\Http\Controllers\NotificationController;
 use App\Http\Controllers\DonController;
-
+use App\Http\Controllers\RecommendationController;
+use App\Http\Controllers\EventController;
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -24,7 +25,8 @@ Route::resource('demandes', DemandeController::class);
 Route::resource('inventaires-beneficiaires', InventaireBeneficiaireController::class);
 Route::resource('reservations', ReservationController::class);
 Route::resource('notifications', NotificationController::class);
-
+Route::resource('recommendations', RecommendationController::class);
+Route::resource('events', EventController::class);
 
 Route::resource('Dons', DonController::class);
 
