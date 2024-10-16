@@ -7,6 +7,8 @@ use App\Http\Controllers\InventaireBeneficiaireController;
 use App\Http\Controllers\ProduitAlimentaireController;
 use App\Http\Controllers\ReservationController;
 use App\Http\Controllers\NotificationController;
+use App\Http\Controllers\AdminController;
+
 
 /*
 |--------------------------------------------------------------------------
@@ -46,7 +48,9 @@ Route ::resource('produitAlimentaire',ProduitAlimentaireController::class);
 
 
 
-
+Route::middleware(['auth', 'isAdmin'])->group(function () {
+    Route::get('/admin/dashboard', [AdminController::class, 'index']);
+});
 
 Auth::routes();
 
