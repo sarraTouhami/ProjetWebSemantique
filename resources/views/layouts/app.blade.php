@@ -7,7 +7,7 @@
     <!-- CSRF Token -->
     <meta name="csrf-token" content="{{ csrf_token() }}">
 
-    <title>{{ config('app.name', 'Laravel') }}</title>
+    <title>{{ config('app.name', 'RescueFood') }}</title>
 
     <link href="{{ asset('img/favicon.ico') }}" rel="icon">
 
@@ -52,13 +52,7 @@
                             <a href="{{ url('/demandes') }}" class="nav-item nav-link">Demandes</a>
                             <a href="{{ url('/posts') }}" class="nav-item nav-link">Publications</a>
                             <a href="{{ url('/notifications') }}" class="nav-item nav-link">Notifications</a>
-                            <div class="nav-item dropdown">
-                                <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown">Produits</a>
-                                <div class="dropdown-menu m-0">
-                                    <a href="{{ url('/produitAlimentaire') }}" class="dropdown-item">Produits Alimentaires</a>
-                                    <a href="{{ url('/produitFraiche') }}" class="dropdown-item">Produits Fraiches</a>
-                                </div>
-                            </div>
+                            <a href="{{ url('/produitAlimentaire') }}" class="nav-item nav-link">Produits</a>
                         @else
                             @if (Route::has('login'))
                                 <a href="{{ route('login') }}" class="nav-item nav-link">Login</a>
