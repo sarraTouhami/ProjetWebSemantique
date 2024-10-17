@@ -382,3 +382,11 @@
 .footer .copyright a:hover {
     color: var(--primary);
 }
+
+li.nav-item.dropdown {
+    list-style-type: none; /* Removes the marker */
+}
+
+li.nav-item.dropdown::marker {
+    display: none; /* In case the marker is still rendered, hide it */
+}

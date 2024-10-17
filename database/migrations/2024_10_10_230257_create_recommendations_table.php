@@ -13,12 +13,11 @@ return new class extends Migration
      */
     public function up()
     {
-        Schema::create('produits_alimentaires', function (Blueprint $table) {
+        Schema::create('recommendations', function (Blueprint $table) {
             $table->id();
-            $table->string('nom');
-            $table->string('categorie');
-            $table->integer('quantite');
-            $table->date('date_peremption');
+            $table->text('contenu');
+            $table->enum('type', ['conservation', 'gestion des portions']);
+            $table->enum('applicable_a', ['donateur', 'bénéficiaire']);
             $table->timestamps();
         });
     }
@@ -30,6 +29,6 @@ return new class extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('produits_alimentaires');
+        Schema::dropIfExists('recommendations');
     }
 };

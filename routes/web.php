@@ -9,6 +9,10 @@ use App\Http\Controllers\ReservationController;
 use App\Http\Controllers\NotificationController;
 use App\Http\Controllers\DonController;
 use App\Http\Controllers\FeedbackController;
+use App\Http\Controllers\RecommendationController;
+use App\Http\Controllers\EventController;
+use App\Http\Controllers\AdminController;
+
 
 /*
 |--------------------------------------------------------------------------
@@ -25,7 +29,8 @@ Route::resource('demandes', DemandeController::class);
 Route::resource('inventaires-beneficiaires', InventaireBeneficiaireController::class);
 Route::resource('reservations', ReservationController::class);
 Route::resource('notifications', NotificationController::class);
-Route::resource('feedbacks', FeedbackController::class);
+Route::resource('recommendations', RecommendationController::class);
+Route::resource('events', EventController::class);Route::resource('feedbacks', FeedbackController::class);
 Route::resource('Dons', DonController::class);
 
 Route::get('/', function () {
@@ -44,9 +49,19 @@ Route::get('/test', function () {
 
     return view('test');
 });
-Route ::resource('produitAlimentaire',ProduitAlimentaireController::class);
+Route::resource('produitAlimentaire', ProduitAlimentaireController::class)->middleware('auth');
+Route::middleware('auth')->group(function () {
+    Route::get('/mesProduits', [ProduitAlimentaireController::class, 'mesProduits'])
+         ->name('produitAlimentaire.mesProduits');
+});
 
 
 
 
+Route::middleware(['auth', 'isAdmin'])->group(function () {
+    Route::get('/admin/dashboard', [AdminController::class, 'index']);
+});
 
+Auth::routes();
+
+Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
