@@ -15,6 +15,8 @@ use App\Http\Controllers\AdminController;
 use App\Http\Controllers\InventaireDonateurController;
 use App\Http\Controllers\Admin\UserController;
 use App\Http\Controllers\Admin\DemandeAdminController;
+use App\Http\Controllers\Admin\ReservationAdminController;
+use App\Http\Controllers\Admin\FeedbackAdminController;
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -68,6 +70,12 @@ Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(fun
     
     // Demande resource route
     Route::resource('demandes', DemandeAdminController::class);
+
+    // Reservation resource route
+    Route::resource('reservations', ReservationAdminController::class);
+
+    // Feedback resource route
+    Route::resource('feedbacks', FeedbackAdminController::class);
 });
 
 Auth::routes();

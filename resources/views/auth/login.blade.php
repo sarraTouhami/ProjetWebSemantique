@@ -27,10 +27,10 @@
 
           <!-- Password input -->
           <div class="form-outline mb-3">
-            <label class="form-label" for="password">Password</label>
+            <label class="form-label" for="password">Mot de Passe</label>
             <input type="password" id="password" class="form-control form-control-lg @error('password') is-invalid @enderror"
               name="password" required autocomplete="current-password"
-              placeholder="Enter your password" />
+              placeholder="Entrez votre mot de passe" />
 
             @error('password')
             <span class="invalid-feedback" role="alert">
@@ -44,18 +44,18 @@
             <div class="form-check mb-0">
               <input class="form-check-input me-2" type="checkbox" name="remember" id="remember" {{ old('remember') ? 'checked' : '' }} />
               <label class="form-check-label" for="remember">
-                Remember me
+              Souviens-toi de moi
               </label>
             </div>
-            <a href="{{ route('password.request') }}" class="text-body">Forgot password?</a>
+            <a href="{{ route('password.request') }}" class="text-body">Mot de passe oublié ?</a>
           </div>
 
           <div class="text-center text-lg-start mt-4 pt-2">
             <button type="submit" class="btn btn-primary btn-lg" style="padding-left: 2.5rem; padding-right: 2.5rem;">
-              Login
+              Se connecter
             </button>
-            <p class="small fw-bold mt-2 pt-1 mb-0">Don't have an account? 
-              <a href="{{ route('register') }}" class="link-danger">Register</a>
+            <p class="small fw-bold mt-2 pt-1 mb-0"> Vous n'avez pas de compte ? 
+              <a href="{{ route('register') }}" class="link-danger">Registre</a>
             </p>
           </div>
         </form>
