@@ -49,6 +49,18 @@
                     <i class="align-middle" data-feather="calendar"></i> <span class="align-middle">Reservations</span>
                 </a>
             </li>
+            <li class="sidebar-item ">
+                 <a class="sidebar-link" href="{{ route('admin.recommendations.index') }}">
+                    <i class="align-middle" data-feather="map-pin"></i> <span class="align-middle">Recommandations</span>
+                </a>
+            </li>
+            <li class="sidebar-item ">
+                <a class="sidebar-link" href="{{ route('admin.events.index') }}">
+                    <i class="align-middle" data-feather="settings"></i> <span class="align-middle">Événements</span>
+                </a>
+            </li>
+
+
 
         </ul>
     </div>
