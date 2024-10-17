@@ -30,10 +30,6 @@
                 <option value="Blog" {{ $post->type_post == 'Blog' ? 'selected' : '' }}>Blog</option>
             </select>            </div>
 
-        <div class="form-group">
-            <label for="user_id">Votre Id: </label>
-            <input type="number" name="user_id" class="form-control" value="{{ $post->user_id }}">
-        </div>
         
         <button type="submit" class="btn btn-primary">Mettre à jour</button>
     </form>

@@ -53,8 +53,7 @@
                             <a href="{{ url('/Dons') }}" class="nav-item nav-link">Dons</a>
                             <a href="{{ url('/invertaireDonateurs') }}" class="nav-item nav-link">Inventaire Donateur</a>
                             <a href="{{ url('/posts') }}" class="nav-item nav-link">Publications</a>
-                            <a href="{{ url('/recommendations') }}" class="nav-item nav-link">Recommendations</a>
-                            <a href="{{ url('/events') }}" class="nav-item nav-link">Events</a>
+                         
                             <a href="{{ url('/notifications') }}" class="nav-item nav-link">Notifications</a>
                             <li class="nav-item dropdown">
     <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
@@ -94,7 +93,7 @@
                         </div>
                         <li class="nav-item dropdown">
                             <a id="navbarDropdown" class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false" v-pre>
-                                {{ Auth::user()->name }}
+                                {{ Auth::user()->first_name }}
                             </a>
                             <div class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdown">
                                 <a class="dropdown-item" href="{{ route('logout') }}"

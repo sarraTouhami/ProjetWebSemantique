@@ -3,6 +3,7 @@
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\PostController;
 use App\Http\Controllers\DemandeController;
+use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\InventaireBeneficiaireController;
 use App\Http\Controllers\ProduitAlimentaireController;
 use App\Http\Controllers\ReservationController;
@@ -73,3 +74,8 @@ Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(fun
 Auth::routes();
 
 Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
+
+Route::post('/posts/{post}/like', [PostController::class, 'toggleLike'])->name('posts.like');
+Route::get('/profile', [ProfileController::class, 'show'])->name('profile.show');
+Route::get('/profile/edit', [ProfileController::class, 'edit'])->name('profile.edit');
+Route::put('/profile/update', [ProfileController::class, 'update'])->name('profile.update');
