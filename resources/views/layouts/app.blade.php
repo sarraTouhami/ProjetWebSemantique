@@ -51,7 +51,7 @@
                             <a href="{{ url('/reservations') }}" class="nav-item nav-link active">Reservations</a>
                             <a href="{{ url('/demandes') }}" class="nav-item nav-link">Demandes</a>
                             <a href="{{ url('/Dons') }}" class="nav-item nav-link">Dons</a>
-                            <a href="{{ url('/invertaireDonateurs') }}" class="nav-item nav-link">Invetaire Donateur</a>
+                            <a href="{{ url('/invertaireDonateurs') }}" class="nav-item nav-link">Inventaire Donateur</a>
                             <a href="{{ url('/posts') }}" class="nav-item nav-link">Publications</a>
                             <a href="{{ url('/notifications') }}" class="nav-item nav-link">Notifications</a>
                             <li class="nav-item dropdown">
