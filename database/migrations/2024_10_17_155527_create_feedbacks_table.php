@@ -13,14 +13,12 @@ return new class extends Migration
      */
     public function up()
     {
-        Schema::create('posts', function (Blueprint $table) {
-            $table->id();  
-            $table->string('titre');
-            $table->text('contenu');
-            $table->string('type_post');  
-            $table->unsignedBigInteger('user_id'); 
-            $table->string('image_url')->nullable();  
-            $table->timestamps(); 
+        Schema::create('feedbacks', function (Blueprint $table) {
+            $table->id();
+            $table->unsignedBigInteger('beneficiare_id');
+            $table->enum('type_feedback', ['don', 'evenement', 'reservation']);
+            $table->text('contenu_feedback');
+            $table->timestamps(); // created_at et updated_at automatiques
         });
     }
 
@@ -31,6 +29,6 @@ return new class extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('posts');
+        Schema::dropIfExists('feedbacks');
     }
 };

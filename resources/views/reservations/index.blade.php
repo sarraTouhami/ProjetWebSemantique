@@ -2,15 +2,15 @@
 
 @section('content')
 <div class="container-fluid p-4 mb-5 wow fadeIn" data-wow-delay="0.1s" style="margin-top: 100px">
-    <h1>Liste des demandes</h1>
+    <h1>Liste des reservations</h1>
     <div class="d-flex justify-content-end mb-3">
-    <a href="{{ route('reservations.create') }}" class="btn btn-primary "> <i class="fas fa-plus"></i>Ajouter une nouvelle demande</a>
+    <a href="{{ route('reservations.create') }}" class="btn btn-primary "> <i class="fas fa-plus"></i>Ajouter une nouvelle reservation</a>
     </div>
 <div class="table-responsive">
         <table class="table table-bordered table-striped table-hover">
             <thead class="thead-dark">
             <tr>
-                <th>ID</th>
+                
                 <th>Bénéficiaire ID</th>
                 <th>Don ID</th>
                 <th>Date de Réservation</th>
@@ -21,7 +21,7 @@
         <tbody>
             @foreach ($reservations as $reservation)
                 <tr>
-                    <td>{{ $reservation->id }}</td>
+                   
                     <td>{{ $reservation->beneficiare_id }}</td>
                     <td>{{ $reservation->don_id }}</td>
                     <td>{{ $reservation->date_reservation }}</td>
