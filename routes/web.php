@@ -20,6 +20,8 @@ use App\Http\Controllers\Admin\EventAdminController;
 use App\Http\Controllers\Admin\RecommendationAdminController;
 use App\Http\Controllers\Admin\ProduitAdminController;
 use App\Http\Controllers\Admin\DonAdminController;
+use App\Http\Controllers\Admin\ReservationAdminController;
+use App\Http\Controllers\Admin\FeedbackAdminController;
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -78,6 +80,12 @@ Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(fun
    
     Route::resource('produits', ProduitAdminController::class);
     Route::resource('dons', DonAdminController::class);
+
+    // Reservation resource route
+    Route::resource('reservations', ReservationAdminController::class);
+
+    // Feedback resource route
+    Route::resource('feedbacks', FeedbackAdminController::class);
 });
 
 Auth::routes();

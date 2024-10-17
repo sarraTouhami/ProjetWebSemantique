@@ -31,6 +31,7 @@
             <input type="password" id="password" class="form-control form-control-lg @error('password') is-invalid @enderror"
               name="password" required autocomplete="current-password"
               placeholder="Entrez votre mot de passe" />
+              placeholder="Entrez votre mot de passe" />
 
             @error('password')
             <span class="invalid-feedback" role="alert">
@@ -48,14 +49,18 @@
               </label>
             </div>
             <a href="{{ route('password.request') }}" class="text-body">Mot de passe oublié ?</a>
+            <a href="{{ route('password.request') }}" class="text-body">Mot de passe oublié ?</a>
           </div>
 
           <div class="text-center text-lg-start mt-4 pt-2">
             <button type="submit" class="btn btn-primary btn-lg" style="padding-left: 2.5rem; padding-right: 2.5rem;">
               Connexion
+              Se connecter
             </button>
             <p class="small fw-bold mt-2 pt-1 mb-0">Vous n'avez pas de compte ? 
               <a href="{{ route('register') }}" class="link-danger">Inscrivez-vous</a>
+            <p class="small fw-bold mt-2 pt-1 mb-0"> Vous n'avez pas de compte ? 
+              <a href="{{ route('register') }}" class="link-danger">Registre</a>
             </p>
           </div>
         </form>
