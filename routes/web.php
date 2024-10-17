@@ -8,8 +8,8 @@ use App\Http\Controllers\ProduitAlimentaireController;
 use App\Http\Controllers\ReservationController;
 use App\Http\Controllers\NotificationController;
 use App\Http\Controllers\AdminController;
-
-
+use App\Http\Controllers\Admin\UserController;
+use App\Http\Controllers\Admin\DemandeAdminController;
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -46,10 +46,14 @@ Route::get('/test', function () {
 Route ::resource('produitAlimentaire',ProduitAlimentaireController::class);
 
 
-
-
-Route::middleware(['auth', 'isAdmin'])->group(function () {
-    Route::get('/admin/dashboard', [AdminController::class, 'index']);
+Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(function () {
+    Route::get('/dashboard', [AdminController::class, 'index'])->name('dashboard');
+    
+    // User resource route
+    Route::resource('users', UserController::class);
+    
+    // Demande resource route
+    Route::resource('demandes', DemandeAdminController::class);
 });
 
 Auth::routes();
