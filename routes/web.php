@@ -65,3 +65,5 @@ Route::middleware(['auth', 'isAdmin'])->group(function () {
 Auth::routes();
 
 Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
+Route::get('/profil', [App\Http\Controllers\ProfileController::class, 'edit'])->name('profile.edit');
+Route::post('/profil', [App\Http\Controllers\ProfileController::class, 'update'])->name('profile.update');
