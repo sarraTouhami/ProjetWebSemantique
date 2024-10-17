@@ -6,7 +6,7 @@
         <ul class="sidebar-nav">
             <li class="sidebar-item {{ Route::currentRouteName() == 'admin.dashboard' ? 'active' : '' }}">
                 <a class="sidebar-link" href="{{ route('admin.dashboard') }}">
-                    <i class="align-middle" data-feather="home"></i> <span class="align-middle">Dashboard</span>
+                    <i class="align-middle" data-feather="home"></i> <span class="align-middle">Tableau de bord</span>
                 </a>
             </li>
             <li class="sidebar-item {{ Route::currentRouteName() == 'admin.users.index' ? 'active' : '' }}">
@@ -39,13 +39,13 @@
                     <i class="align-middle" data-feather="edit"></i> <span class="align-middle">Publications</span>
                 </a>
             </li>
-            <li class="sidebar-item ">
-                <a class="sidebar-link" href="{{ route('admin.users.index') }}">
-                    <i class="align-middle" data-feather="message-circle"></i> <span class="align-middle">Feedbacks</span>
+            <li class="sidebar-item {{ Route::currentRouteName() == 'admin.feedbacks.index' ? 'active' : '' }}">
+                <a class="sidebar-link" href="{{ route('admin.feedbacks.index') }}">
+                    <i class="align-middle" data-feather="message-circle"></i> <span class="align-middle">Commentaires</span>
                 </a>
             </li>
-            <li class="sidebar-item ">
-                <a class="sidebar-link" href="{{ route('admin.users.index') }}">
+            <li class="sidebar-item {{ Route::currentRouteName() == 'admin.reservations.index' ? 'active' : '' }}">
+                <a class="sidebar-link" href="{{ route('admin.reservations.index') }}">
                     <i class="align-middle" data-feather="calendar"></i> <span class="align-middle">Reservations</span>
                 </a>
             </li>
