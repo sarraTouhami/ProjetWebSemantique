@@ -17,6 +17,7 @@ use App\Http\Controllers\Admin\UserController;
 use App\Http\Controllers\Admin\DemandeAdminController;
 use App\Http\Controllers\Admin\EventAdminController;
 use App\Http\Controllers\Admin\RecommendationAdminController;
+use App\Http\Controllers\Admin\ProduitAdminController;
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -72,8 +73,12 @@ Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(fun
     Route::resource('demandes', DemandeAdminController::class);
     Route::resource('events', EventAdminController::class);
     Route::resource('recommendations', RecommendationAdminController::class);
+   
+    Route::resource('produits', ProduitAdminController::class);
 });
 
 Auth::routes();
 
 Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
+Route::get('/profil', [App\Http\Controllers\ProfileController::class, 'edit'])->name('profile.edit');
+Route::post('/profil', [App\Http\Controllers\ProfileController::class, 'update'])->name('profile.update');
