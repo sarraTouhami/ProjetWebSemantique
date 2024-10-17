@@ -18,9 +18,18 @@ class User extends Authenticatable
      * @var array<int, string>
      */
     protected $fillable = [
-        'name',
+        'first_name',
+        'last_name',
         'email',
         'password',
+        'role',
+        'phone_number',
+        'birthdate',
+        'sector',
+        'association_name',
+        'city',
+        'bio',
+        'profile_picture',
     ];
 
     /**
@@ -40,5 +49,50 @@ class User extends Authenticatable
      */
     protected $casts = [
         'email_verified_at' => 'datetime',
+        'birthdate' => 'date',
     ];
+    public function isAdmin()
+    {
+        return $this->role === 'admin';
+    }
+
+    /**
+     * Get full name for the user (first and last name combined).
+     *
+     * @return string
+     */
+    public function getFullNameAttribute()
+    {
+        return $this->first_name . ' ' . $this->last_name;
+    }
+
+    /**
+     * Check if the user has the 'donateur' role.
+     *
+     * @return bool
+     */
+    public function isDonateur()
+    {
+        return $this->role === 'donateur';
+    }
+
+    /**
+     * Check if the user has the 'beneficiaire' role.
+     *
+     * @return bool
+     */
+    public function isBeneficiaire()
+    {
+        return $this->role === 'beneficiaire';
+    }
+
+    /**
+     * Check if the user has the 'transporteur' role.
+     *
+     * @return bool
+     */
+    public function isTransporteur()
+    {
+        return $this->role === 'transporteur';
+    }
 }

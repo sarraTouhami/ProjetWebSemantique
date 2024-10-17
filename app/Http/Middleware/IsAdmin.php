@@ -14,12 +14,12 @@ class IsAdmin
      * @param  \Closure(\Illuminate\Http\Request): (\Illuminate\Http\Response|\Illuminate\Http\RedirectResponse)  $next
      * @return \Illuminate\Http\Response|\Illuminate\Http\RedirectResponse
      */
-    public function handle($request, Closure $next)
+    public function handle(Request $request, Closure $next)
 {
-    if (auth()->user() && auth()->user()->is_admin) {
+    if (auth()->check() && auth()->user()->isAdmin()) {
         return $next($request);
     }
-    return redirect('/');
+    return redirect('/home');
 }
 
 }

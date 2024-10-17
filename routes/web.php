@@ -11,8 +11,8 @@ use App\Http\Controllers\DonController;
 use App\Http\Controllers\RecommendationController;
 use App\Http\Controllers\EventController;
 use App\Http\Controllers\AdminController;
-
-
+use App\Http\Controllers\Admin\UserController;
+use App\Http\Controllers\Admin\DemandeAdminController;
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -56,10 +56,14 @@ Route::middleware('auth')->group(function () {
 });
 
 
-
-
-Route::middleware(['auth', 'isAdmin'])->group(function () {
-    Route::get('/admin/dashboard', [AdminController::class, 'index']);
+Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(function () {
+    Route::get('/dashboard', [AdminController::class, 'index'])->name('dashboard');
+    
+    // User resource route
+    Route::resource('users', UserController::class);
+    
+    // Demande resource route
+    Route::resource('demandes', DemandeAdminController::class);
 });
 
 Auth::routes();
