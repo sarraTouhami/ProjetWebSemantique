@@ -3,7 +3,7 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-
+use App\Models\InventaireBeneficiaire;
 class InventaireBeneficiaireController extends Controller
 {
     /**
@@ -13,7 +13,8 @@ class InventaireBeneficiaireController extends Controller
      */
     public function index()
     {
-        //
+        $inventaires = InventaireBeneficiaire::all();
+        return view('inventaire_benfsiaire.index', compact('inventaires'));
     }
 
     /**
@@ -23,7 +24,7 @@ class InventaireBeneficiaireController extends Controller
      */
     public function create()
     {
-        //
+        return view('inventaire_benfsiaire.create');
     }
 
     /**
@@ -34,7 +35,15 @@ class InventaireBeneficiaireController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $request->validate([
+            'nom_article' => 'required|string',
+            'quantite' => 'required|integer',
+            'date_peremption' => 'required|date',
+            'localisation' => 'required|string',
+        ]);
+
+        InventaireBeneficiaire::create($request->all());
+        return redirect()->route('inventaires-beneficiaires.index')->with('success', 'Article ajouté avec succès');
     }
 
     /**
@@ -45,7 +54,7 @@ class InventaireBeneficiaireController extends Controller
      */
     public function show($id)
     {
-        //
+        return view('inventaire_benfsiaire.show', compact('inventaireBeneficiaire'));
     }
 
     /**
@@ -55,8 +64,9 @@ class InventaireBeneficiaireController extends Controller
      * @return \Illuminate\Http\Response
      */
     public function edit($id)
-    {
-        //
+    {   
+        $inventaireBeneficiaire = InventaireBeneficiaire::find($id);
+        return view('inventaire_benfsiaire.edit', compact('inventaireBeneficiaire'));
     }
 
     /**
@@ -68,7 +78,16 @@ class InventaireBeneficiaireController extends Controller
      */
     public function update(Request $request, $id)
     {
-        //
+        $request->validate([
+            'nom_article' => 'required|string',
+            'quantite' => 'required|integer',
+            'date_peremption' => 'required|date',
+            'localisation' => 'required|string',
+        ]);
+
+        $inventaireBeneficiaire=InventaireBeneficiaire::find($id);
+        $inventaireBeneficiaire->update($request->all()); 
+        return redirect()->route('inventaires-beneficiaires.index')->with('success', 'Article mis à jour avec succès');
     }
 
     /**
@@ -79,6 +98,8 @@ class InventaireBeneficiaireController extends Controller
      */
     public function destroy($id)
     {
-        //
+        InventaireBeneficiaire::find($id)->delete(); 
+
+        return redirect()->route('inventaires-beneficiaires.index')->with('success', 'Article supprimé avec succès');
     }
 }
