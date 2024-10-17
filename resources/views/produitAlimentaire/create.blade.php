@@ -2,14 +2,14 @@
 
 @section('content')
 <div class="p-4 mb-5" data-wow-delay="0.1s" style="margin-top: 100px;">
-    <h1 class=" text-center" >Ajouter un produit </h1>
+    <h1 class="text-center">Ajouter un produit</h1>
 
     <form action="{{ route('produitAlimentaire.store') }}" method="POST" enctype="multipart/form-data">
         @csrf
         
         <div class="form-group">
             <label for="nom">Nom : </label>
-            <input type="text" name="nom" id="nom" class="form-control" placeholder="Entrez le nom de l'aliment" value="{{ old('nom') }}">
+            <input type="text" name="nom" id="nom" class="form-control" placeholder="Entrez le nom de Produit" value="{{ old('nom') }}">
             @error('nom')
                 <span class="text-danger">{{ $message }}</span>
             @enderror
@@ -57,7 +57,8 @@
 
         <div class="form-group">
             <label for="image_url">Image : </label>
-            <input type="file" name="image_url" class="form-control" accept="image/*">
+            <input type="file" name="image_url" class="form-control" accept="image/*" onchange="previewImage(event)">
+            <img id="image-preview" src="#" alt="Image Preview" style="display: none; max-width: 200px; margin-top: 10px;">
         </div>
         
         <button type="submit" class="btn btn-outline-primary border-2 py-2 px-4 mt-3 rounded-pill">Ajouter le produit</button>
@@ -80,10 +81,26 @@
                 categorieGroup.style.display = 'block'; 
             } else {
                 categorieGroup.style.display = 'none'; 
-            
-                document.getElementById('categorie').value = '';
+                document.getElementById('categorie').value = ''; // Resetting category
             }
         });
     });
+
+    function previewImage(event) {
+        const preview = document.getElementById('image-preview');
+        const file = event.target.files[0];
+
+        if (file) {
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                preview.src = e.target.result;
+                preview.style.display = 'block'; // Show the image preview
+            }
+            reader.readAsDataURL(file);
+        } else {
+            preview.src = '#';
+            preview.style.display = 'none'; // Hide the image preview if no file is selected
+        }
+    }
 </script>
 @endsection

@@ -2,9 +2,8 @@
 
 @section('content')
 <div class="p-4 mb-5" data-wow-delay="0.1s" style="margin-top: 100px;">
-    <h1 class=" text-center">Modifier le produit</h1>
+    <h1 class="text-center">Modifier le produit</h1>
 
- 
     <form action="{{ route('produitAlimentaire.update', $produitAlimentaire->id) }}" method="POST" enctype="multipart/form-data">
         @csrf
         @method('PUT')
@@ -59,10 +58,10 @@
 
         <div class="form-group">
             <label for="image_url">Image :</label>
-            <input type="file" name="image_url" class="form-control" accept="image/*">
+            <input type="file" name="image_url" id="image_url" class="form-control" accept="image/*">
             @if($produitAlimentaire->image_url)
                 <div class="mt-2">
-                    <img src="{{ asset($produitAlimentaire->image_url) }}" alt="{{ $produitAlimentaire->nom }}" class="img-fluid" >
+                    <img src="{{ asset($produitAlimentaire->image_url) }}" alt="{{ $produitAlimentaire->nom }}" class="img-fluid" id="image-preview">
                 </div>
             @endif
         </div>
@@ -87,7 +86,27 @@
                 categorieGroup.style.display = 'block';
             } else {
                 categorieGroup.style.display = 'none'; 
-                document.getElementById('categorie').value = '';
+                document.getElementById('categorie').value = ''; // Reset category selection
+            }
+        });
+
+        // Preview the selected image
+        const imageInput = document.getElementById('image_url');
+        const imagePreview = document.getElementById('image-preview');
+
+        imageInput.addEventListener('change', function(event) {
+            const file = event.target.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    imagePreview.src = e.target.result; // Set the preview image source
+                    imagePreview.classList.add('mt-2', 'img-fluid'); // Add classes for styling
+                    imagePreview.style.display = 'block'; // Ensure the image is displayed
+                };
+                reader.readAsDataURL(file);
+            } else {
+                imagePreview.src = ''; // Clear the image if no file is selected
+                imagePreview.style.display = 'none'; // Hide the image
             }
         });
     });

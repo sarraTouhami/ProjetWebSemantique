@@ -10,6 +10,9 @@ use App\Http\Controllers\NotificationController;
 use App\Http\Controllers\DonController;
 use App\Http\Controllers\RecommendationController;
 use App\Http\Controllers\EventController;
+use App\Http\Controllers\AdminController;
+
+
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -46,9 +49,19 @@ Route::get('/test', function () {
 
     return view('test');
 });
-Route ::resource('produitAlimentaire',ProduitAlimentaireController::class);
+Route::resource('produitAlimentaire', ProduitAlimentaireController::class)->middleware('auth');
+Route::middleware('auth')->group(function () {
+    Route::get('/mesProduits', [ProduitAlimentaireController::class, 'mesProduits'])
+         ->name('produitAlimentaire.mesProduits');
+});
 
 
 
 
+Route::middleware(['auth', 'isAdmin'])->group(function () {
+    Route::get('/admin/dashboard', [AdminController::class, 'index']);
+});
 
+Auth::routes();
+
+Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');

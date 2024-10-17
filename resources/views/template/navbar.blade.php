@@ -29,13 +29,7 @@
                 <a href="{{ url('/demandes') }}" class="nav-item nav-link">Demandes</a>
                 <a href="{{ url('/posts') }}" class="nav-item nav-link">Publications</a>
                 <a href="{{ url('/notifications') }}" class="nav-item nav-link">Notifications</a>
-                <div class="nav-item dropdown">
-                    <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown">Produits</a>
-                    <div class="dropdown-menu m-0">
-                        <a href="{{ url('/produitAlimentaire') }}" class="dropdown-item">Produits Alimentaires</a>
-                        <a href="{{ url('/produitFraiche') }}" class="dropdown-item">Produits Fraiches</a>
-                    </div>
-                </div>
+                <a href="{{ url('/produitAlimentaire') }}" class="nav-item nav-link">Produits</a>
                 <a href="{{ url('/recommendations') }}" class="nav-item nav-link">Recommendations</a>
                 <a href="{{ url('/events') }}" class="nav-item nav-link">Events</a>
 
