@@ -13,9 +13,12 @@ class ProduitAlimentaireController extends Controller
      */
     public function index()
     {
-        $produitAlimentaire=ProduitAlimentaire::all();
-        return view('produitAlimentaire.index',compact('produitAlimentaire'));
+      
+        $produitAlimentaire = ProduitAlimentaire::where('user_id', auth()->id())->get();
+    
+        return view('produitAlimentaire.index', compact('produitAlimentaire'));
     }
+    
 
     /**
      * Show the form for creating a new resource.
@@ -34,59 +37,37 @@ class ProduitAlimentaireController extends Controller
      * @return \Illuminate\Http\Response
      */
     public function store(Request $request)
-    {
-       
-        $request->validate([
-            'nom' => ['required', 'string', 'max:255'],
-            'quantite' => ['required', 'integer'],
-            'date_peremption' => 'required|date|after:today',
-            'type' => ['required', 'string'],
-            'image_url' => 'nullable|image|mimes:jpeg,png,jpg,gif,jfif|max:2048',
-            // Allow 'categorie' to be nullable if 'type' is not 'frais'
-            'categorie' => [
-                'nullable',
-                function ($attribute, $value, $fail) use ($request) {
-                    // Check if type is frais and categorie is not provided
-                    if ($request->input('type') === 'frais' && empty($value)) {
-                        return $fail('La catégorie est requise lorsque le type est frais.');
-                    }
-                }
-            ],
-        ]);
+{
+    $request->validate([
+        'nom' => 'required|string|max:255',
+        'categorie' => 'required|string|max:255',
+        'quantite' => 'required|integer',
+        'date_peremption' => 'required|date',
+        'type' => 'required|string|max:255',
+        'image_url' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
+    ]);
+
+    // Create new product
+    $produit = new ProduitAlimentaire();
+    $produit->user_id = auth()->id(); // Set the user_id to the currently authenticated user's ID
+    $produit->nom = $request->nom;
+    $produit->categorie = $request->categorie;
+    $produit->quantite = $request->quantite;
+    $produit->date_peremption = $request->date_peremption;
+    $produit->type = $request->type;
     
-        // Handle image upload
-        $imagePath = null;
-    
-        if ($request->hasFile('image_url')) {
-            $image = $request->file('image_url');
-            $imageName = time() . '.' . $image->getClientOriginalExtension();
-            $imagePath = $image->storeAs('public/img', $imageName);
-            $imagePath = str_replace('public/', 'storage/', $imagePath);
-        }
-    
-        // Prepare the produit data
-        $produitData = [
-            'nom' => $request->input('nom'),
-            'quantite' => $request->input('quantite'),
-            'date_peremption' => $request->input('date_peremption'),
-            'type' => $request->input('type'),
-            'image_url' => $imagePath,
-        ];
-    
-        // Only add categorie if it is not an empty string
-        if ($request->input('categorie') !== '') {
-            $produitData['categorie'] = $request->input('categorie');
-        } else {
-            $produitData['categorie'] = null; // set to null if no value provided
-        }
-    
-        // Create the produit
-        ProduitAlimentaire::create($produitData);
-    
-        return redirect()->route('produitAlimentaire.index')->with('success', 'Produit ajouté avec succès!');
+    // Handle the image upload if it exists
+    if ($request->hasFile('image_url')) {
+        $image = $request->file('image_url');
+        $imageName = time() . '.' . $image->getClientOriginalExtension(); // Generate a unique filename
+        $imagePath = $image->storeAs('public/img', $imageName); // Store the image in 'public/img' directory
+        $produit->image_url = str_replace('public/', 'storage/', $imagePath); // Update the image_url to use the 'storage/' path
     }
-    
-    
+
+    $produit->save();
+
+    return redirect()->route('produitAlimentaire.index')->with('success', 'Produit ajouté avec succès.');
+}
 
 
     /**
@@ -125,44 +106,43 @@ class ProduitAlimentaireController extends Controller
      * @return \Illuminate\Http\Response
      */
     public function update(Request $request, $id)
-    {
-        
-        $request->validate([
-            'nom' => ['required', 'string', 'max:255'],
-            'categorie' => ['nullable', 'string', 'max:255'], 
-            'quantite' => ['required', 'integer'],
-            'date_peremption' => 'required|date|after:today',
-            'type' => ['required', 'string'],
-            'image_url' => 'nullable|image|mimes:jpeg,png,jpg,gif,jfif|max:2048',
-        ]);
-    
-        
-        $produitAlimentaire = ProduitAlimentaire::find($id);
-        if (!$produitAlimentaire) {
-            return redirect()->route('produitAlimentaire.index')->with('error', 'Produit non trouvé.');
-        }
-    
-        
-        $imagePath = $produitAlimentaire->image_url; 
-        if ($request->hasFile('image_url')) {
-            $image = $request->file('image_url');
-            $imageName = time() . '.' . $image->getClientOriginalExtension();
-            $imagePath = $image->storeAs('public/images', $imageName);
-            $imagePath = str_replace('public/', 'storage/', $imagePath);
-        }
-    
-        
-        $produitAlimentaire->update([
-            'nom' => $request->input('nom'),
-            'categorie' => $request->input('categorie'), // This can be null
-            'quantite' => $request->input('quantite'),
-            'date_peremption' => $request->input('date_peremption'),
-            'type' => $request->input('type'),
-            'image_url' => $imagePath,
-        ]);
-    
-        return redirect()->route('produitAlimentaire.index')->with('success', 'Produit mis à jour avec succès');
+{
+    $request->validate([
+        'nom' => ['required', 'string', 'max:255'],
+        'categorie' => ['nullable', 'string', 'max:255'], 
+        'quantite' => ['required', 'integer'],
+        'date_peremption' => 'required|date|after:today',
+        'type' => ['required', 'string'],
+        'image_url' => 'nullable|image|mimes:jpeg,png,jpg,gif,jfif|max:2048',
+    ]);
+
+    $produitAlimentaire = ProduitAlimentaire::find($id);
+    if (!$produitAlimentaire) {
+        return redirect()->route('produitAlimentaire.index')->with('error', 'Produit non trouvé.');
     }
+
+    // Handle image upload
+    $imagePath = $produitAlimentaire->image_url; 
+    if ($request->hasFile('image_url')) {
+        $image = $request->file('image_url');
+        $imageName = time() . '.' . $image->getClientOriginalExtension();
+        $imagePath = $image->storeAs('public/images', $imageName);
+        $imagePath = str_replace('public/', 'storage/', $imagePath);
+    }
+
+    $produitAlimentaire->update([
+        'nom' => $request->input('nom'),
+        'categorie' => $request->input('categorie'), // This can be null
+        'quantite' => $request->input('quantite'),
+        'date_peremption' => $request->input('date_peremption'),
+        'type' => $request->input('type'),
+        'image_url' => $imagePath,
+        // 'user_id' => auth()->id(), // Uncomment if you want to allow changing user_id during update
+    ]);
+
+    return redirect()->route('produitAlimentaire.index')->with('success', 'Produit mis à jour avec succès');
+}
+
     
     /**
      * Remove the specified resource from storage.

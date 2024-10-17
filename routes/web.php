@@ -49,7 +49,8 @@ Route::get('/test', function () {
 
     return view('test');
 });
-Route ::resource('produitAlimentaire',ProduitAlimentaireController::class);
+Route::resource('produitAlimentaire', ProduitAlimentaireController::class)->middleware('auth');
+
 
 
 

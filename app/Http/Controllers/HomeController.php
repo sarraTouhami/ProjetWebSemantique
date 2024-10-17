@@ -23,9 +23,14 @@ class HomeController extends Controller
      */
     public function index()
     {
-        
-        $posts = Post::whereDate('created_at', now())->get(); 
-
+        // Get today's date
+        $currentDate = now()->toDateString();
+    
+        // Fetch only posts created today
+        $posts = Post::whereDate('created_at', $currentDate)->get();
+    
         return view('home', compact('posts'));
     }
+    
+
 }

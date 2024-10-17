@@ -13,10 +13,10 @@
 
           <!-- Email input -->
           <div class="form-outline mb-4">
-            <label class="form-label" for="email">Username</label>
-            <input type="text" id="email" class="form-control form-control-lg @error('email') is-invalid @enderror"
+            <label class="form-label" for="email">Email </label>
+            <input type="email" id="email" class="form-control form-control-lg @error('email') is-invalid @enderror"
               name="email" value="{{ old('email') }}" required autocomplete="email" autofocus
-              placeholder="Enter your username" />
+              placeholder="Enter your adresse mail" />
 
             @error('email')
             <span class="invalid-feedback" role="alert">

@@ -11,6 +11,7 @@ class ProduitAlimentaire extends Model
     use HasFactory;
     protected $table = 'produits_alimentaires';
     protected $fillable = [
+        'user_id',
         'nom',
         'categorie',
         'quantite',
