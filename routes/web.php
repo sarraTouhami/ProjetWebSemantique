@@ -30,8 +30,10 @@ Route::resource('inventaires-beneficiaires', InventaireBeneficiaireController::c
 Route::resource('reservations', ReservationController::class);
 Route::resource('notifications', NotificationController::class);
 Route::resource('recommendations', RecommendationController::class);
-Route::resource('events', EventController::class);Route::resource('feedbacks', FeedbackController::class);
+Route::resource('events', EventController::class);
+Route::resource('feedbacks', FeedbackController::class);
 Route::resource('Dons', DonController::class);
+
 
 Route::get('/', function () {
     return view('welcome');

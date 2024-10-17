@@ -1,6 +1,6 @@
 @extends('layouts.app')
 
-@section('title', 'Add Feedback')
+@section('title', 'Ajouter un Feedback')
 
 @section('content')
 <div class="container-fluid p-4 mb-5 wow fadeIn" data-wow-delay="0.1s" style="margin-top: 100px;">
@@ -13,11 +13,11 @@
     <!-- Formulaire d'ajout de feedback -->
     <form action="{{ route('feedbacks.store') }}" method="POST">
         @csrf <!-- Protection CSRF de Laravel -->
-
-        <!-- Bénéficiaire ID -->
+        
+        <!-- ID Utilisateur -->
         <div class="form-group mb-3">
-            <label for="beneficiare_id">Bénéficiaire ID</label>
-            <input type="text" name="beneficiare_id" id="beneficiare_id" class="form-control" placeholder="Entrez l'ID du bénéficiaire" required>
+            <label for="user_id">ID Utilisateur</label>
+            <input type="text" name="user_id" id="user_id" class="form-control" placeholder="Entrez l'ID de l'utilisateur" required>
         </div>
 
         <!-- Type de Feedback -->
@@ -33,7 +33,7 @@
         <!-- Contenu du Feedback -->
         <div class="form-group mb-3">
             <label for="contenu_feedback">Contenu du Feedback</label>
-            <textarea name="contenu_feedback" id="contenu_feedback" class="form-control" placeholder="Entrez votre feedback" rows="5" required></textarea>
+            <textarea name="contenu_feedback" id="contenu_feedback" class="form-control" rows="5" placeholder="Entrez le contenu de votre feedback" required></textarea>
         </div>
 
         <!-- Bouton de soumission -->

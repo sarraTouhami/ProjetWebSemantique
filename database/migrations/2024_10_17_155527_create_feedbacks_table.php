@@ -15,7 +15,7 @@ return new class extends Migration
     {
         Schema::create('feedbacks', function (Blueprint $table) {
             $table->id();
-            $table->unsignedBigInteger('beneficiare_id');
+            $table->unsignedBigInteger('user_id');
             $table->enum('type_feedback', ['don', 'evenement', 'reservation']);
             $table->text('contenu_feedback');
             $table->timestamps(); // created_at et updated_at automatiques

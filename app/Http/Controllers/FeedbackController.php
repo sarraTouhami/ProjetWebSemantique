@@ -38,7 +38,7 @@ class FeedbackController extends Controller
     public function store(Request $request)
     {
         $request->validate([
-            'beneficiare_id' => 'required|integer',
+            'user_id' => 'required|integer',
             'type_feedback' => 'required|in:don,evenement,reservation', // Enumération de type_feedback
             'contenu_feedback' => 'required|string',
         ]);
@@ -83,13 +83,12 @@ class FeedbackController extends Controller
     public function update(Request $request, $id)
     {
         $request->validate([
-            'beneficiare_id' => 'required|integer',
             'type_feedback' => 'required|in:don,evenement,reservation', 
             'contenu_feedback' => 'required|string',
         ]);
 
         $feedback = Feedback::findOrFail($id);
-        $feedback->update($request->all()); 
+        $feedback->update($request->only(['type_feedback', 'contenu_feedback']));  
 
         return redirect()->route('feedbacks.index')
             ->with('success', 'Feedback updated successfully.');
