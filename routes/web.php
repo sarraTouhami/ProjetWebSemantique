@@ -15,6 +15,7 @@ use App\Http\Controllers\AdminController;
 use App\Http\Controllers\InventaireDonateurController;
 use App\Http\Controllers\Admin\UserController;
 use App\Http\Controllers\Admin\DemandeAdminController;
+use App\Http\Controllers\Admin\ProduitAdminController;
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -68,6 +69,8 @@ Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(fun
     
     // Demande resource route
     Route::resource('demandes', DemandeAdminController::class);
+   
+    Route::resource('produits', ProduitAdminController::class);
 });
 
 Auth::routes();

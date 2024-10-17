@@ -30,7 +30,7 @@
                 </a>
             </li>
             <li class="sidebar-item ">
-                <a class="sidebar-link" href="{{ route('admin.users.index') }}">
+                <a class="sidebar-link" href="{{ route('admin.produits.index') }}">
                     <i class="align-middle" data-feather="shopping-cart"></i> <span class="align-middle">Produits</span>
                 </a>
             </li>
