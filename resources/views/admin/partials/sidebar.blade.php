@@ -20,7 +20,7 @@
                 </a>
             </li>
             <li class="sidebar-item ">
-                <a class="sidebar-link" href="{{ route('admin.users.index') }}">
+                <a class="sidebar-link" href="{{ route('admin.dons.index') }}">
                     <i class="align-middle" data-feather="gift"></i> <span class="align-middle">Dons</span>
                 </a>
             </li>

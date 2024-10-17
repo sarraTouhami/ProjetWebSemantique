@@ -18,6 +18,7 @@ use App\Http\Controllers\Admin\DemandeAdminController;
 use App\Http\Controllers\Admin\EventAdminController;
 use App\Http\Controllers\Admin\RecommendationAdminController;
 use App\Http\Controllers\Admin\ProduitAdminController;
+use App\Http\Controllers\Admin\DonAdminController;
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -75,6 +76,7 @@ Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(fun
     Route::resource('recommendations', RecommendationAdminController::class);
    
     Route::resource('produits', ProduitAdminController::class);
+    Route::resource('dons', DonAdminController::class);
 });
 
 Auth::routes();
