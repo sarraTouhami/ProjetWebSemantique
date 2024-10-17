@@ -52,7 +52,20 @@
                             <a href="{{ url('/demandes') }}" class="nav-item nav-link">Demandes</a>
                             <a href="{{ url('/posts') }}" class="nav-item nav-link">Publications</a>
                             <a href="{{ url('/notifications') }}" class="nav-item nav-link">Notifications</a>
-                            <a href="{{ url('/produitAlimentaire') }}" class="nav-item nav-link">Produits</a>
+                            <li class="nav-item dropdown">
+    <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+        Produits
+    </a>
+    <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
+        <li>
+            <a class="dropdown-item" href="{{ url('/produitAlimentaire') }}">Tous les Produits</a>
+        </li>
+        <li>
+            <a class="dropdown-item" href="{{ route('produitAlimentaire.mesProduits') }}">Mes Produits</a>
+        </li>
+    </ul>
+</li>
+
                         @else
                             @if (Route::has('login'))
                                 <a href="{{ route('login') }}" class="nav-item nav-link">Login</a>

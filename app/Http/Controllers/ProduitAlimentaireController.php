@@ -11,12 +11,20 @@ class ProduitAlimentaireController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
+
+     public function mesProduits()
+{
+    // Récupère uniquement les produits du user connecté
+    $produitAlimentaire = ProduitAlimentaire::where('user_id', auth()->id())->get();
+
+    return view('produitAlimentaire.mesProduits', compact('produitAlimentaire'));
+}
+
     public function index()
     {
       
-        $produitAlimentaire = ProduitAlimentaire::where('user_id', auth()->id())->get();
-    
-        return view('produitAlimentaire.index', compact('produitAlimentaire'));
+        $produitAlimentaire=ProduitAlimentaire::all();
+        return view('produitAlimentaire.index',compact('produitAlimentaire'));
     }
     
 
@@ -66,7 +74,7 @@ class ProduitAlimentaireController extends Controller
 
     $produit->save();
 
-    return redirect()->route('produitAlimentaire.index')->with('success', 'Produit ajouté avec succès.');
+    return redirect()->route('produitAlimentaire.mesProduits')->with('success', 'Produit ajouté avec succès.');
 }
 
 
@@ -118,7 +126,7 @@ class ProduitAlimentaireController extends Controller
 
     $produitAlimentaire = ProduitAlimentaire::find($id);
     if (!$produitAlimentaire) {
-        return redirect()->route('produitAlimentaire.index')->with('error', 'Produit non trouvé.');
+        return redirect()->route('produitAlimentaire.mesProduits')->with('error', 'Produit non trouvé.');
     }
 
     // Handle image upload
@@ -140,7 +148,7 @@ class ProduitAlimentaireController extends Controller
         // 'user_id' => auth()->id(), // Uncomment if you want to allow changing user_id during update
     ]);
 
-    return redirect()->route('produitAlimentaire.index')->with('success', 'Produit mis à jour avec succès');
+    return redirect()->route('produitAlimentaire.mesProduits')->with('success', 'Produit mis à jour avec succès');
 }
 
     
@@ -153,6 +161,6 @@ class ProduitAlimentaireController extends Controller
     public function destroy($id)
     {
         ProduitAlimentaire::find($id)->delete();
-        return redirect()->route('produitAlimentaire.index')->with('success', 'Produit deleted successfully');
+        return redirect()->route('produitAlimentaire.mesProduits')->with('success', 'Produit deleted successfully');
     }
 }
