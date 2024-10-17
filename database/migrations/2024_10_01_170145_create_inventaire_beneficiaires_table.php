@@ -15,6 +15,10 @@ return new class extends Migration
     {
         Schema::create('inventaire_beneficiaires', function (Blueprint $table) {
             $table->id();
+            $table->string('nom_article');     
+            $table->integer('quantite');       
+            $table->date('date_peremption');   
+            $table->string('localisation');    
             $table->timestamps();
         });
     }
