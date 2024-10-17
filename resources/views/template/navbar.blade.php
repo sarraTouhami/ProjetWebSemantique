@@ -32,7 +32,6 @@
                 <a href="{{ url('/produitAlimentaire') }}" class="nav-item nav-link">Produits</a>
                 <a href="{{ url('/recommendations') }}" class="nav-item nav-link">Recommendations</a>
                 <a href="{{ url('/events') }}" class="nav-item nav-link">Events</a>
-
                 <a href="{{ url('/contact') }}" class="nav-item nav-link">Contact Us</a>
             </div>
             <div class="d-none d-lg-flex ms-2">

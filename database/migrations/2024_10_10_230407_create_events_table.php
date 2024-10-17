@@ -14,13 +14,15 @@ return new class extends Migration
     public function up()
     {
         Schema::create('events', function (Blueprint $table) {
-            $table->id();
-            $table->string('name');
-            $table->text('description');
-            $table->date('date');
-            $table->string('location');
-            $table->timestamps();
-        });
+    $table->id();
+    $table->string('name');
+    $table->text('description');
+    $table->date('date');
+    $table->string('location');
+    $table->foreignId('partner_id')->constrained('users'); // Foreign key for partner
+    $table->timestamps();
+});
+
     }
 
     /**

@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\Event;
+use App\Models\User;
 
 class EventController extends Controller
 {
@@ -15,7 +16,8 @@ class EventController extends Controller
 
     public function create()
     {
-        return view('events.create');
+        $partners = User::all(); // Fetch all users as potential partners
+        return view('events.create', compact('partners'));
     }
 
     public function store(Request $request)
@@ -25,6 +27,7 @@ class EventController extends Controller
             'description' => 'required',
             'date' => 'required|date',
             'location' => 'required',
+            'partner_id' => 'required|exists:users,id',
         ]);
 
         Event::create($validated);
@@ -38,7 +41,8 @@ class EventController extends Controller
 
     public function edit(Event $event)
     {
-        return view('events.edit', compact('event'));
+        $partners = User::all(); // Fetch all users as potential partners
+        return view('events.edit', compact('event', 'partners'));
     }
 
     public function update(Request $request, Event $event)

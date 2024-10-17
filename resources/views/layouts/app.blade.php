@@ -51,7 +51,10 @@
                             <a href="{{ url('/reservations') }}" class="nav-item nav-link active">Reservations</a>
                             <a href="{{ url('/demandes') }}" class="nav-item nav-link">Demandes</a>
                             <a href="{{ url('/posts') }}" class="nav-item nav-link">Publications</a>
-                            <a href="{{ url('/notifications') }}" class="nav-item nav-link">Notifications</a>
+                            <a href="{{ url('/notifications') }}" class="nav-item nav-link">Notifications</a><a href="{{ url('/produitAlimentaire') }}" class="nav-item nav-link">Produits</a>
+                <a href="{{ url('/recommendations') }}" class="nav-item nav-link">Recommendations</a>
+                <a href="{{ url('/events') }}" class="nav-item nav-link">Events</a>
+                <a href="{{ url('/contact') }}" class="nav-item nav-link">Contact Us</a>
                             <li class="nav-item dropdown">
     <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
         Produits

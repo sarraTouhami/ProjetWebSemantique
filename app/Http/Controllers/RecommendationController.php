@@ -24,6 +24,7 @@ class RecommendationController extends Controller
             'contenu' => 'required',
             'type' => 'required|in:conservation,gestion des portions',
             'applicable_a' => 'required|in:donateur,bénéficiaire',
+            'user_id' => 'required|exists:users,id',
         ]);
 
         Recommendation::create($validated);

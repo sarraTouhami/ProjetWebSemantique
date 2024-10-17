@@ -3,6 +3,17 @@
 @section('content')
 <div class="container-fluid p-4 mb-5 wow fadeIn" data-wow-delay="0.1s" style="margin-top: 100px">
     <h1>Modifier la recommandation</h1>
+    
+    @if ($errors->any())
+        <div class="alert alert-danger">
+            <ul>
+                @foreach ($errors->all() as $error)
+                    <li>{{ $error }}</li>
+                @endforeach
+            </ul>
+        </div>
+    @endif
+
     <form action="{{ route('recommendations.update', $recommendation->id) }}" method="POST">
         @csrf
         @method('PUT')

@@ -8,10 +8,20 @@ use Illuminate\Database\Eloquent\Model;
 class Event extends Model
 {
     use HasFactory;
-     protected $fillable = [
+
+    protected $fillable = [
         'name',
         'description',
         'date',
         'location',
+        'partner_id', // Foreign key for the partner
     ];
+
+    /**
+     * Get the partner (donor/beneficiary) associated with the event.
+     */
+    public function partner()
+    {
+        return $this->belongsTo(User::class, 'partner_id');
+    }
 }
