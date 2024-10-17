@@ -31,11 +31,6 @@
         </div>
 
         <div class="form-group">
-            <label for="user_id">Votre Id: </label>
-            <input type="number" name="user_id" class="form-control" >
-        </div>
-
-        <div class="form-group">
             <label for="image_url">An image: </label>
             <input type="file" name="image_url" class="form-control" accept="image/*">
         </div>

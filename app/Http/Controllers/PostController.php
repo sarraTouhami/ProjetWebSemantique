@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Post;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth; // Import for authenticated user
 
 class PostController extends Controller
 {
@@ -14,8 +15,8 @@ class PostController extends Controller
      */
     public function index()
     {
-        $posts = Post::all();
-        return view('posts.index', compact('posts'));
+        $posts = Post::with('user')->orderBy('created_at', 'desc')->get();
+    return view('posts.index', compact('posts'));
     }
 
     /**
@@ -40,37 +41,33 @@ class PostController extends Controller
             'titre' => 'required',
             'contenu' => 'required',
             'type_post' => 'required',
-            'user_id' => 'required',
-            'image_url' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048', // Validate image
+            'image_url' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048', 
         ]);
-    
-        // Initialize variable to store the image URL
+
         $imagePath = null;
-    
-        // Handle image upload
+
         if ($request->hasFile('image_url')) {
             $image = $request->file('image_url');
             $imageName = time() . '.' . $image->getClientOriginalExtension();
-    
-            // Move the image to /storage/app/public/images
+
+          
             $imagePath = $image->storeAs('public/images', $imageName);
-    
-            // Convert the storage path to a public URL
+
+          
             $imagePath = str_replace('public/', 'storage/', $imagePath);
         }
-    
-        // Save post with the image URL if provided
-        Post::create([
+
+        
+        Auth::user()->posts()->create([
             'titre' => $request->input('titre'),
             'contenu' => $request->input('contenu'),
             'type_post' => $request->input('type_post'),
-            'user_id' => $request->input('user_id'),
-            'image_url' => $imagePath,  // Store the proper image path
+            'image_url' => $imagePath,  
         ]);
-    
-        return redirect()->route('posts.index')->with('success', 'Publication créée avec succès.');
+
+        return redirect()->route('home')->with('success', 'Publication créée avec succès.');
+
     }
-    
 
     /**
      * Display the specified resource.
@@ -80,7 +77,8 @@ class PostController extends Controller
      */
     public function show($id)
     {
-        $post = Post::find($id);
+        // Fetch post with its associated user
+        $post = Post::with('user')->find($id);
         return view('posts.show', compact('post'));
     }
 
@@ -109,14 +107,28 @@ class PostController extends Controller
             'titre' => 'required',
             'contenu' => 'required',
             'type_post' => 'required',
-            'user_id' => 'required',
+            'image_url' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048', // Validate image
         ]);
 
         $post = Post::find($id);
-        $post->update($request->all());
 
-        return redirect()->route('posts.index')->with('success', 'Post updated successfully.');
+        // Handle image update if a new image is uploaded
+        if ($request->hasFile('image_url')) {
+            $image = $request->file('image_url');
+            $imageName = time() . '.' . $image->getClientOriginalExtension();
+            $imagePath = $image->storeAs('public/images', $imageName);
+            $imagePath = str_replace('public/', 'storage/', $imagePath);
+            $post->image_url = $imagePath;
+        }
 
+        $post->update([
+            'titre' => $request->input('titre'),
+            'contenu' => $request->input('contenu'),
+            'type_post' => $request->input('type_post'),
+            // No need to update user_id, as the user remains the same
+        ]);
+
+        return redirect()->route('home')->with('success', 'Publication mise à jour avec succès.');
     }
 
     /**
@@ -129,7 +141,24 @@ class PostController extends Controller
     {
         Post::find($id)->delete();
 
-        return redirect()->route('posts.index')->with('success', 'Post deleted successfully.');
-
+        return redirect()->route('home')->with('success', 'Publication supprimée avec succès.');
     }
+
+    public function toggleLike($id)
+{
+    $post = Post::findOrFail($id);
+
+    $like = $post->likes()->where('user_id', auth()->id())->first();
+
+    if ($like) {
+        $like->delete(); 
+    } else {
+        $post->likes()->create([
+            'user_id' => auth()->id(),
+        ]);
+    }
+
+    return back();
+}
+
 }

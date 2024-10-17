@@ -14,5 +14,19 @@ class Post extends Model
         'type_post',
         'user_id',
         'image_url'
-        ];
+    ];
+
+
+    public function user()
+    {
+        return $this->belongsTo(User::class);
+    }
+    public function likes()
+{
+    return $this->hasMany(Like::class);
+}
+public function isLikedByUser()
+{
+    return $this->likes()->where('user_id', auth()->id())->exists();
+}
 }
