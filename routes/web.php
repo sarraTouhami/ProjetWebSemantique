@@ -11,6 +11,7 @@ use App\Http\Controllers\DonController;
 use App\Http\Controllers\RecommendationController;
 use App\Http\Controllers\EventController;
 use App\Http\Controllers\AdminController;
+use App\Http\Controllers\InventaireDonateurController;
 
 
 /*
@@ -32,6 +33,7 @@ Route::resource('recommendations', RecommendationController::class);
 Route::resource('events', EventController::class);
 
 Route::resource('Dons', DonController::class);
+Route::resource('invertaireDonateurs', InventaireDonateurController::class);
 
 Route::get('/', function () {
     return view('welcome');
