@@ -48,7 +48,7 @@ class ProduitAlimentaireController extends Controller
 {
     $request->validate([
         'nom' => 'required|string|max:255',
-        'categorie' => 'required|string|max:255',
+        'categorie' => 'nullable|string|max:255',
         'quantite' => 'required|integer',
         'date_peremption' => 'required|date',
         'type' => 'required|string|max:255',

@@ -36,7 +36,7 @@
             <label for="partner_id">Partenaire</label>
             <select name="partner_id" class="form-control" required>
                 @foreach($partners as $partner)
-                    <option value="{{ $partner->id }}">{{ $partner->name }}</option>
+                    <option value="{{ $partner->id }}">{{ $partner->first_name }}</option>
                 @endforeach
             </select>
         </div>
