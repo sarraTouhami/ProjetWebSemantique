@@ -19,8 +19,8 @@
         
         <div class="form-group">
             <label for="contenu">Contenu de publication: </label>
-            <textarea name="contenu" class="form-control" rows="5" value="{{ $post->contenu }}" required></textarea>
-                </div>
+            <textarea name="contenu" class="form-control" rows="5" required>{{ $post->contenu }}</textarea>
+        </div>
         
         <div class="form-group">
             <label for="type_post">Type de la publication: </label>

@@ -13,7 +13,7 @@
                             <div class="card-header bg-white border-0 d-flex justify-content-between align-items-center">
                                 <!-- User Info (Profile Picture, Name, Timestamp) -->
                                 <div class="d-flex align-items-center">
-                                    <img src="{{ asset($post->user->profile_picture ?? 'path/to/default-profile.jpg') }}" alt="User Profile" class="rounded-circle" width="50" height="50" style="object-fit: cover; margin-right: 10px;">
+                                    <img src="{{ asset('storage/' . $post->user->profile_picture) }}" alt="User Profile" class="rounded-circle" width="50" height="50" style="object-fit: cover; margin-right: 10px;">
                                     <div>
                                         <h6 class="mb-0 font-weight-bold">{{ $post->user->getFullNameAttribute() }}</h6>
                                         <small class="text-muted">{{ $post->created_at->format('d M Y, H:i') }}</small>
@@ -97,7 +97,7 @@
             <div class="sticky-top" style="top: 80px;">
                 <div class="card mb-4 shadow-sm">
                     <div class="card-body text-center">
-                        <img src="{{ asset(Auth::user()->profile_picture ?? 'path/to/default-profile.jpg') }}" alt="User Profile" class="rounded-circle mb-3" width="100" height="100" style="object-fit: cover;">
+                        <img src="{{ asset('storage/' . Auth::user()->profile_picture ?? 'path/to/default-profile.jpg') }}" alt="User Profile" class="rounded-circle mb-3" width="100" height="100" style="object-fit: cover;">
                         <h5 class="card-title">{{ Auth::user()->getFullNameAttribute() }}</h5>
                         <p class="text-muted">{{ Auth::user()->email }}</p>
                         <p><strong>Ville:</strong> {{ Auth::user()->city }}</p>

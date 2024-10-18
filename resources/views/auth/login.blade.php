@@ -31,7 +31,6 @@
             <input type="password" id="password" class="form-control form-control-lg @error('password') is-invalid @enderror"
               name="password" required autocomplete="current-password"
               placeholder="Entrez votre mot de passe" />
-              placeholder="Entrez votre mot de passe" />
 
             @error('password')
             <span class="invalid-feedback" role="alert">
