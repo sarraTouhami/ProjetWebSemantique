@@ -6,6 +6,7 @@ use App\Http\Controllers\DemandeController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\InventaireBeneficiaireController;
 use App\Http\Controllers\ProduitAlimentaireController;
+use App\Http\Controllers\CertificationController;
 use App\Http\Controllers\ReservationController;
 use App\Http\Controllers\NotificationController;
 use App\Http\Controllers\DonController;
@@ -22,6 +23,8 @@ use App\Http\Controllers\Admin\ProduitAdminController;
 use App\Http\Controllers\Admin\DonAdminController;
 use App\Http\Controllers\Admin\ReservationAdminController;
 use App\Http\Controllers\Admin\FeedbackAdminController;
+/**** */
+use App\Http\Controllers\SPARQL\CertificationspqlController;
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -66,6 +69,7 @@ Route::middleware('auth')->group(function () {
          ->name('produitAlimentaire.mesProduits');
 });
 
+Route::resource('certifications', CertificationController::class);
 
 Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(function () {
     Route::get('/dashboard', [AdminController::class, 'index'])->name('dashboard');
@@ -96,3 +100,6 @@ Route::post('/posts/{post}/like', [PostController::class, 'toggleLike'])->name('
 Route::get('/profile', [ProfileController::class, 'show'])->name('profile.show');
 Route::get('/profile/edit', [ProfileController::class, 'edit'])->name('profile.edit');
 Route::put('/profile/update', [ProfileController::class, 'update'])->name('profile.update');
+
+/*** */
+Route::resource('certificats', CertificationspqlController::class);
