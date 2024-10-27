@@ -299,3 +299,4 @@ SELECT ?instance ?statut_don ?quantité ?date_permption ?date_don ?type_aliment 
      return view($view, ['results' => $paginatedResults]);
     
 }
+}
