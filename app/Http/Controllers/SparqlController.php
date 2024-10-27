@@ -140,8 +140,58 @@ SELECT ?instance ?certifStatus ?dateValidate ?nomCertif ?descriptionCertif ?date
         return view('sparql.certifications.stats', ['results' => $formattedResults]);
     }
     
-    
-    
+//calander 
+// new method to display products in a calendar
+public function displayProductsInCalendar(Request $request)
+{
+    // Requête SPARQL pour récupérer les produits avec leur date de péremption
+    $query = "
+    PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+    PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+    PREFIX your_ontology: <http://www.semanticweb.org/user/ontologies/2024/8/untitled-ontology-8#>
 
+    SELECT ?produit ?nomAliment ?quantiteAliment ?categorieAliment ?datePeremption 
+    WHERE {
+        ?produit rdf:type ?type .
+        FILTER(?type IN (your_ontology:Produit_Alimentaire, your_ontology:Produit_Frais)) .
+
+        OPTIONAL { ?produit your_ontology:nom_aliment ?nomAliment . }
+        OPTIONAL { ?produit your_ontology:quantité_aliment ?quantiteAliment . }
+        OPTIONAL { ?produit your_ontology:catégorie_aliment ?categorieAliment . }
+        OPTIONAL { ?produit your_ontology:date_permption ?datePeremption . }
+    }
+    ORDER BY ?produit
+    ";
+
+    // Log the SPARQL query for debugging
+    Log::info('Executing SPARQL Query for products:', ['query' => $query]);
+
+    // Execute the SPARQL query
+    $results = $this->sparqlService->query($query);
+    $products = $results['results']['bindings'] ?? [];
+
+    // Log the results for debugging
+    Log::info('SPARQL Query Results:', ['results' => $products]);
+
+    // Format the results for display
+    $formattedProducts = [];
+    foreach ($products as $product) {
+        $expiryDate = isset($product['datePeremption']) ? new \DateTime($product['datePeremption']['value']) : null;
+        if ($expiryDate) {
+            $formattedProducts[] = [
+                'produit' => $product['produit']['value'],
+                'nomAliment' => $product['nomAliment']['value'] ?? 'Inconnu',
+                'quantiteAliment' => $product['quantiteAliment']['value'] ?? 'N/A',
+                'categorieAliment' => $product['categorieAliment']['value'] ?? 'Non défini',
+                'expiryDate' => $expiryDate,
+            ];
+        }
+    }
+
+    return view('sparql.produits.calender', ['products' => $formattedProducts]);
 }
 
+
+
+
+}

@@ -10,6 +10,7 @@
     <title>{{ config('app.name', 'RescueFood') }}</title>
 
     <link href="{{ asset('img/favicon.ico') }}" rel="icon">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
 
     <!-- Google Web Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
