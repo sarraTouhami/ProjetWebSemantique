@@ -25,6 +25,8 @@ use App\Http\Controllers\Admin\ReservationAdminController;
 use App\Http\Controllers\Admin\FeedbackAdminController;
 /**** */
 use App\Http\Controllers\SPARQL\CertificationspqlController;
+use App\Http\Controllers\SparqlController;
+
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -73,15 +75,15 @@ Route::resource('certifications', CertificationController::class);
 
 Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(function () {
     Route::get('/dashboard', [AdminController::class, 'index'])->name('dashboard');
-    
+
     // User resource route
     Route::resource('users', UserController::class);
-    
+
     // Demande resource route
     Route::resource('demandes', DemandeAdminController::class);
     Route::resource('events', EventAdminController::class);
     Route::resource('recommendations', RecommendationAdminController::class);
-   
+
     Route::resource('produits', ProduitAdminController::class);
     Route::resource('dons', DonAdminController::class);
 
@@ -103,3 +105,5 @@ Route::put('/profile/update', [ProfileController::class, 'update'])->name('profi
 
 /*** */
 Route::resource('certificats', CertificationspqlController::class);
+
+Route::get('/sparql/test', [SparqlController::class, 'index']);
