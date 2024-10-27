@@ -55,7 +55,7 @@ class DemandeController extends Controller
      */
     public function show($id)
     {
-        $post = Demande::find($id);
+        $demande = Demande::find($id);
         return view('demandes.show', compact('demande'));
     }
 
