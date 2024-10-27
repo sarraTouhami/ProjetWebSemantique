@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Services\sparqlServiceUpdate;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Validator;
 
 class sparqlUpdateController extends Controller
 {
@@ -57,33 +58,50 @@ class sparqlUpdateController extends Controller
 
     // sparqlUpdateController.php
 
-public function delete(Request $request)
-{
-    // Valider les données de la requête
-    $validatedData = $request->validate([
-        'type_aliment' => 'required|string|max:255',
-    ]);
-
-    // Construire la requête SPARQL pour supprimer le don
-    $query = "
-    PREFIX your_ontology: <http://www.semanticweb.org/user/ontologies/2024/8/untitled-ontology-8#>
-
-    DELETE {
-        ?don a your_ontology:Don ;
-             your_ontology:type_aliment \"{$validatedData['type_aliment']}\" .
+    public function delete(Request $request)
+    {
+        // Valider les données de la requête
+        $validator = Validator::make($request->all(), [
+            'attribute' => 'required|string|max:255',
+            'value' => 'required|string|max:255',
+        ]);
+    
+        if ($validator->fails()) {
+            return redirect()->back()
+                             ->withErrors($validator)
+                             ->withInput();
+        }
+    
+        // Extraire l'attribut et la valeur
+        $attribute = $request->input('attribute');
+        $value = $request->input('value');
+    
+        try {
+            // Construire la requête SPARQL pour supprimer le don
+            $query = "
+            PREFIX your_ontology: <http://www.semanticweb.org/user/ontologies/2024/8/untitled-ontology-8#>
+    
+            DELETE {
+                ?don a your_ontology:Don ;
+                     your_ontology:{$attribute} \"$value\" .
+            }
+            WHERE {
+                ?don a your_ontology:Don ;
+                     your_ontology:{$attribute} \"$value\" .
+            }
+            ";
+    
+            // Exécuter la requête SPARQL
+            $this->sparqlServiceUpdate->update($query); // Appeler la méthode pour exécuter la mise à jour
+    
+            // Rediriger avec un message de succès
+            return redirect()->route('don.search')->with('success', 'Le don a été supprimé avec succès.');
+    
+        } catch (\Exception $e) {
+            // En cas d'erreur, rediriger avec un message d'erreur
+            return redirect()->back()->with('error', 'Erreur lors de la suppression du don : ' . $e->getMessage());
+        }
     }
-    WHERE {
-        ?don a your_ontology:Don ;
-             your_ontology:type_aliment \"{$validatedData['type_aliment']}\" .
-    }
-    ";
-
-    // Exécuter la requête SPARQL
-    $this->sparqlServiceUpdate->update($query); // Appeler la méthode pour exécuter la mise à jour
-
-    // Rediriger avec un message de succès
-    return redirect()->route('don.search')->with('success', 'Le don a été supprimé avec succès.');
-}
 
 
     

@@ -42,15 +42,31 @@
                         </div>
                     @endforeach
                 </div>
+
                 <!-- Formulaire de suppression -->
-<form action="{{ route('don.delete') }}" method="POST" class="mt-4">
-    @csrf
-    <div class="input-group">
-        <input type="text" name="type_aliment" class="form-control" 
-               placeholder="Entrez le type d'aliment à supprimer" required>
-        <button type="submit" class="btn btn-danger px-4">Supprimer</button>
-    </div>
-</form>
+                <form action="{{ route('don.delete') }}" method="POST" class="mt-4">
+                    @csrf
+
+                    <div class="mb-3">
+                        <label class="form-label">Choisissez l'attribut à supprimer:</label><br>
+                        <input type="radio" id="type_aliment" name="attribute" value="type_aliment" required onchange="updatePlaceholder('type_aliment')">
+                        <label for="type_aliment">Type d'Aliment</label><br>
+                        <input type="radio" id="quantité" name="attribute" value="quantité" onchange="updatePlaceholder('quantité')">
+                        <label for="quantité">Quantité</label><br>
+                        <input type="radio" id="date_don" name="attribute" value="date_don" onchange="updatePlaceholder('date_don')">
+                        <label for="date_don">Date de Don</label><br>
+                        <input type="radio" id="date_permption" name="attribute" value="date_permption" onchange="updatePlaceholder('date_permption')">
+                        <label for="date_permption">Date de Péremption</label><br>
+                        <input type="radio" id="statut_don" name="attribute" value="statut_don" onchange="updatePlaceholder('statut_don')">
+                        <label for="statut_don">Statut du Don</label>
+                    </div>
+
+                    <div class="input-group">
+                        <input type="text" name="value" id="valueInput" class="form-control" 
+                               placeholder="Entrez la valeur à supprimer" required>
+                        <button type="submit" class="btn btn-danger px-4">Supprimer</button>
+                    </div>
+                </form>
 
                 <!-- Liens de pagination -->
                 <div class="d-flex justify-content-center mt-4">
@@ -65,4 +81,30 @@
         </div>
     </div>
 </div>
+
+<script>
+    // Fonction pour mettre à jour le placeholder de l'input en fonction de l'attribut sélectionné
+    function updatePlaceholder(attribute) {
+        const input = document.getElementById('valueInput');
+        switch (attribute) {
+            case 'type_aliment':
+                input.placeholder = 'Entrez le type d\'aliment à supprimer';
+                break;
+            case 'quantité':
+                input.placeholder = 'Entrez la quantité à supprimer';
+                break;
+            case 'date_don':
+                input.placeholder = 'Entrez la date du don à supprimer';
+                break;
+            case 'date_permption':
+                input.placeholder = 'Entrez la date de péremption à supprimer';
+                break;
+            case 'statut_don':
+                input.placeholder = 'Entrez le statut du don à supprimer';
+                break;
+            default:
+                input.placeholder = 'Entrez la valeur à supprimer';
+        }
+    }
+</script>
 @endsection
