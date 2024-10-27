@@ -226,18 +226,25 @@ public function demandeComport(Request $request)
 
 public function inventaireBeneficiaire(Request $request)
 {
-    // Requête SPARQL pour obtenir l'inventaire des bénéficiaires
+    // Requête SPARQL pour obtenir l'inventaire des bénéficiaires, incluant les produits associés
     $query = "
     PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
     PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
     PREFIX your_ontology: <http://www.semanticweb.org/user/ontologies/2024/8/untitled-ontology-8#>
 
-    SELECT ?beneficiaire ?quantite_inventaire ?date_permption ?non_article ?location WHERE {
+    SELECT ?beneficiaire ?quantite_inventaire ?date_permption ?non_article ?location ?produit ?nom_aliment ?quantite_produit WHERE {
         ?beneficiaire rdf:type your_ontology:Inventaire_Bénéficiaire .
+
         OPTIONAL { ?beneficiaire your_ontology:quantite_inventaire ?quantite_inventaire }
         OPTIONAL { ?beneficiaire your_ontology:date_permption ?date_permption }
         OPTIONAL { ?beneficiaire your_ontology:non_article ?non_article }
         OPTIONAL { ?beneficiaire your_ontology:location ?location }
+
+        OPTIONAL { 
+            ?beneficiaire your_ontology:contientProduit ?produit .
+            ?produit your_ontology:nom_aliment ?nom_aliment .
+            ?produit your_ontology:quantité_aliment ?quantite_produit .
+        }
     }
     ";
 
@@ -253,39 +260,7 @@ public function inventaireBeneficiaire(Request $request)
 
     return view('sparql.inventairebe.index', ['inventaires' => $inventaires]);
 }
-public function store(Request $request)
-{
-    $nomArticle = $request->input('nom_article');
-    $quantiteInventaire = $request->input('quantite_inventaire');
-    $datePeremption = $request->input('date_peremption');
-    $location = $request->input('location');
 
-    // SPARQL query to insert a new article
-    $query = "
-    PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
-    PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
-    PREFIX your_ontology: <http://www.semanticweb.org/user/ontologies/2024/8/untitled-ontology-8#>
-
-    INSERT DATA {
-        _:newBeneficiaire a your_ontology:Beneficiaire ;
-            your_ontology:nom_article '$nomArticle' ;
-            your_ontology:quantite_inventaire '$quantiteInventaire' ;
-            your_ontology:date_peremption '$datePeremption' ;
-            your_ontology:location '$location' .
-    }
-    ";
-
-    Log::info('SPARQL Insert Query for Beneficiary Inventory:', ['query' => $query]);
-
-    // Execute the SPARQL query
-    try {
-        $this->sparqlService->query($query);
-        return redirect()->route('inventaire.index')->with('success', 'Article ajouté avec succès!');
-    } catch (\Exception $e) {
-        Log::error('Error executing SPARQL Insert Query:', ['error' => $e->getMessage()]);
-        return redirect()->back()->with('error', 'Une erreur est survenue lors de l\'ajout de l\'article.');
-    }
-}
 private function paginateResults(Request $request, array $results, string $view)
 {
     $currentPage = LengthAwarePaginator::resolveCurrentPage();

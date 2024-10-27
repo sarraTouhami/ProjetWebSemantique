@@ -7,7 +7,7 @@
             <h1 class="text-center mb-5">Inventaire des Bénéficiaires</h1>
 
             <!-- Bouton pour ajouter un nouvel article -->
-            <a href="{{ route('inventaire.store') }}" class="btn btn-primary mb-4">Ajouter un Article</a>
+            <a href="{{ route('inventairebe.create') }}" class="btn btn-primary mb-4">Ajouter un Article</a>
 
             <!-- Affichage des résultats -->
             <div class="row">
@@ -19,13 +19,24 @@
                                 <p class="card-text"><strong>Quantité:</strong> {{ $inventaire['quantite_inventaire']['value'] ?? 'N/A' }}</p>
                                 <p class="card-text"><strong>Date de Péremption:</strong> {{ $inventaire['date_permption']['value'] ?? 'N/A' }}</p>
                                 <p class="card-text"><strong>Location:</strong> {{ $inventaire['location']['value'] ?? 'N/A' }}</p>
+
+                                <!-- Section Affectation des Produits -->
+                                <h5 class="mt-4">Affectation des Produits</h5>
+                                <ul>
+                                    @if(isset($inventaire['produit']))
+                                        <li>
+                                            <strong>Nom du Produit:</strong> {{ $inventaire['nom_aliment']['value'] ?? 'Nom du produit inconnu' }} - 
+                                            <strong>Quantité:</strong> {{ $inventaire['quantite_produit']['value'] ?? 'N/A' }}
+                                        </li>
+                                    @else
+                                        <li>Aucun produit affecté</li>
+                                    @endif
+                                </ul>
                             </div>
                         </div>
                     </div>
                 @endforeach
             </div>
-
-            
         </div>
     </div>
 </div>
