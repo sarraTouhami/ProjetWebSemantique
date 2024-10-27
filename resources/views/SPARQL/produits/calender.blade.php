@@ -1,107 +1,48 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/fullcalendar@5.10.3/main.min.css" />
-    <title>Calendrier des Produits</title>
-</head>
-<body>
-    <div id="calendar"></div>
+@extends('layouts.app')
 
-    <script src="https://cdn.jsdelivr.net/npm/@fullcalendar/core@5.10.3/main.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/@fullcalendar/daygrid@5.10.3/main.min.js"></script>
-    <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            var events = [
-                @foreach ($products as $product)
-                    {
-                        title: '{{ $product['nomAliment'] }} ({{ $product['quantiteAliment'] }})',
-                        start: '{{ $product['expiryDate']->format('Y-m-d') }}',
-                        description: 'Catégorie: {{ $product['categorieAliment'] }}',
-                    },
-                @endforeach
-            ];
+@section('content')
+<div class="container mt-5">
+    <h2 class="text-center mb-5">📅 Calendrier des Produits</h2>
 
-            var calendarEl = document.getElementById('calendar');
-            var calendar = new FullCalendar.Calendar(calendarEl, {
-                plugins: ['dayGrid'],
-                headerToolbar: {
-                    left: 'prev,next today',
-                    center: 'title',
-                    right: 'dayGridMonth,timeGridWeek,timeGridDay'
-                },
-                initialView: 'dayGridMonth',
-                events: events,
-                eventDidMount: function(info) {
-                    if (info.event.extendedProps.description) {
-                        info.el.innerHTML += '<br/>' + info.event.extendedProps.description;
-                    }
-                }
-            });
-            calendar.render();
-        });
-    </script>
-</body>
-</html>
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/fullcalendar@5.10.3/main.min.css" />
-    <title>Calendrier des Produits</title>
-    <style>
-        /* Style pour le calendrier */
-        #calendar {
-            max-width: 900px;
-            margin: 40px auto;
-        }
-    </style>
-</head>
-<body>
-    <div id="calendar"></div>
-
-    <script src="https://cdn.jsdelivr.net/npm/@fullcalendar/core@5.10.3/main.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/@fullcalendar/daygrid@5.10.3/main.min.js"></script>
-    <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            // Vérifiez si des produits sont disponibles
-            var events = [
-                @if (!empty($products))
-                    @foreach ($products as $product)
-                        {
-                            title: '{{ $product['nomAliment'] }} ({{ $product['quantiteAliment'] }})',
-                            start: '{{ $product['expiryDate']->format('Y-m-d') }}',
-                            description: 'Catégorie: {{ $product['categorieAliment'] }}',
-                        },
-                    @endforeach
-                @else
-                    {
-                        title: 'Aucun produit disponible',
-                        start: new Date().toISOString().split('T')[0], // Date aujourd'hui
-                    }
-                @endif
-            ];
-
-            var calendarEl = document.getElementById('calendar');
-            var calendar = new FullCalendar.Calendar(calendarEl, {
-                plugins: ['dayGrid'],
-                headerToolbar: {
-                    left: 'prev,next today',
-                    center: 'title',
-                    right: 'dayGridMonth,timeGridWeek,timeGridDay'
-                },
-                initialView: 'dayGridMonth',
-                events: events,
-                eventDidMount: function(info) {
-                    if (info.event.extendedProps.description) {
-                        info.el.innerHTML += '<br/>' + info.event.extendedProps.description;
-                    }
-                }
-            });
-            calendar.render();
-        });
-    </script>
-</body>
-</html>
+    @if (count($groupedProducts) > 0)
+        <div class="row">
+            @foreach ($groupedProducts as $date => $products)
+                <div class="col-md-6 col-lg-4 mb-4">
+                    <div class="card shadow">
+                        <div class="card-header bg-success text-white d-flex justify-content-between align-items-center">
+                            <h5 class="mb-0">
+                                <i class="far fa-calendar-alt"></i> {{ \Carbon\Carbon::parse($date)->format('d M Y') }}
+                            </h5>
+                            <span class="">
+                                {{ count($products) }} produit(s)
+                            </span>
+                        </div>
+                        <div class="card-body">
+                            @foreach ($products as $product)
+                                <div class="product-item mb-3">
+                                    <h6 class="font-weight-bold text-primary">
+                                        <i class="fas fa-utensils"></i> {{ $product['nom'] }}
+                                    </h6>
+                                    <p class="mb-1">
+                                        <strong>Quantité :</strong> 
+                                        <span class="badge badge-info">{{ $product['quantite'] }}</span>
+                                    </p>
+                                    <p class="mb-1">
+                                        <strong>Catégorie :</strong> 
+                                        <span class="badge badge-warning">{{ $product['categorie'] }}</span>
+                                    </p>
+                                    <hr class="my-2">
+                                </div>
+                            @endforeach
+                        </div>
+                    </div>
+                </div>
+            @endforeach
+        </div>
+    @else
+        <div class="alert alert-info text-center">
+            <i class="fas fa-info-circle"></i> Aucun produit trouvé pour les dates sélectionnées.
+        </div>
+    @endif
+</div>
+@endsection
