@@ -50,7 +50,7 @@
                         @auth
                             <a href="{{ url('/reservations') }}" class="nav-item nav-link active">Reservations</a>
                             <a href="{{ url('/demandes') }}" class="nav-item nav-link">Demandes</a>
-                            <a href="{{ url('/Dons') }}" class="nav-item nav-link">Dons</a>
+                            <a href="{{ url('/donations/search') }}" class="nav-item nav-link">Dons</a>
                             <a href="{{ url('/invertaireDonateurs') }}" class="nav-item nav-link">Inventaire Donateur</a>
                             <a href="{{ url('/notifications') }}" class="nav-item nav-link">Notifications</a>
                 <a href="{{ url('/recommendations') }}" class="nav-item nav-link">Recommendations</a>
