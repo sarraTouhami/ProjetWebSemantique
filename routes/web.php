@@ -113,6 +113,8 @@ Route::get('/certification/search', [SparqlController::class, 'certificationComp
 Route::get('/demande/search', [SparqlController::class, 'demandeComport'])->name('demande.search');
 Route::get('/utilisateurs/search', [SparqlController::class, 'allUtilisateurs'])->name('utilisateur.search');
 Route::get('/donateurs/search', [SparqlController::class, 'allDonateurs'])->name('donateur.index');
+Route::get('/evenemets/search', [SparqlController::class, 'searchEvents'])->name('evenemets.index');
+Route::get('/Recommendation/search', [SparqlController::class, 'indexRecommendation'])->name('recommendation.index');
 
 
 
@@ -126,4 +128,8 @@ Route::post('/posts/store', [sparqlUpdateController::class, 'storePost'])->name(
 
 Route::get('/inventaireDonateur/search', [SparqlController::class, 'inventaireDonateur'])->name('inventaireDonateur.search');
 Route::post('/inventaireDonateur/delete', [sparqlUpdateController::class, 'deleteInventory'])->name('inventaireDonateur.delete');
+Route::get('/evenemets/create', [sparqlUpdateController::class, 'createEvent'])->name('evenemets.create');
+Route::post('/evenemets/store', [sparqlUpdateController::class, 'storeEvent'])->name('evenemets.store');
+Route::get('/Recommendation/create', [sparqlUpdateController::class, 'createRecommendation'])->name('recommendation.create');
+Route::post('/Recommendation/store', [sparqlUpdateController::class, 'storeRecommendation'])->name('recommendation.store');
 
