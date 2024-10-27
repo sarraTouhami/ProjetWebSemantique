@@ -398,15 +398,10 @@ public function indexRecommendation(Request $request)
         ?recommendation a your_ontology:Recommandation.
         ?recommendation your_ontology:contenu ?contenu.
         ?recommendation your_ontology:type_Recommendation ?type_Recommendation.
+        FILTER (CONTAINS(LCASE(?contenu), LCASE('$searchTerm')) || 
+                CONTAINS(LCASE(?type_Recommendation), LCASE('$searchTerm')))
     }";
 
-    // If there's a search term, modify the query to filter results
-    if ($searchTerm) {
-        $query .= "
-        FILTER(CONTAINS(LCASE(?contenu), LCASE('$searchTerm')) || 
-               CONTAINS(LCASE(?type_Recommendation), LCASE('$searchTerm')))
-        ";
-    }
 
     // Execute the query to get results
     $results = $this->sparqlService->query($query);
