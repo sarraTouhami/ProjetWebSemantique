@@ -232,22 +232,19 @@ SELECT ?instance ?statut_don ?quantité ?date_permption ?date_don ?type_aliment 
         $searchTerm = strtolower($request->input('search_term', ''));
         $roleFilter = $request->input('role', []);
 
-        // Define available roles
         $roles = ['Donateur', 'Transporteur', 'Bénéficiaire'];
 
-        // Prepare the SPARQL query
         $query = "
-    PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
-    PREFIX your_ontology: <http://www.semanticweb.org/user/ontologies/2024/8/untitled-ontology-8#>
+        PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+        PREFIX your_ontology: <http://www.semanticweb.org/user/ontologies/2024/8/untitled-ontology-8#>
 
-    SELECT DISTINCT ?individual ?name ?email ?vehicle ?location (COUNT(?don) AS ?donCount) WHERE {
+        SELECT DISTINCT ?individual ?name ?email ?vehicle ?location (COUNT(?don) AS ?donCount) WHERE {
         ?individual a ?type .
         OPTIONAL { ?individual your_ontology:nom ?name . }
         OPTIONAL { ?individual your_ontology:email ?email . }
         OPTIONAL { ?individual your_ontology:détails_véhicule ?vehicle . }
         OPTIONAL { ?individual your_ontology:location ?location . }
 
-        # Fetching donations associated with Donateurs and Bénéficiaires
         OPTIONAL {
             {
                 ?don your_ontology:aDonateur ?individual .  # For Donateurs
@@ -257,7 +254,6 @@ SELECT ?instance ?statut_don ?quantité ?date_permption ?date_don ?type_aliment 
         }
     ";
 
-        // Apply search filter if a search term is provided
         if ($searchTerm) {
             $query .= " FILTER (
         CONTAINS(LCASE(str(?name)), '$searchTerm') ||
@@ -265,7 +261,6 @@ SELECT ?instance ?statut_don ?quantité ?date_permption ?date_don ?type_aliment 
         )";
         }
 
-        // Apply role filter if selected
         if (!empty($roleFilter)) {
             $roleValues = array_map(function ($role) {
                 return "your_ontology:$role";
@@ -277,11 +272,9 @@ SELECT ?instance ?statut_don ?quantité ?date_permption ?date_don ?type_aliment 
     } GROUP BY ?individual ?name ?email ?vehicle ?location
     ";
 
-        // Execute the SPARQL query
         $results = $this->sparqlService->query($query);
         $utilisateurs = $results['results']['bindings'] ?? [];
 
-        // Optional: Remove duplicates based on the individual's URI
         $utilisateurs = collect($utilisateurs)->unique(function ($user) {
             return $user['individual']['value'];
         })->values()->all();
@@ -294,8 +287,37 @@ SELECT ?instance ?statut_don ?quantité ?date_permption ?date_don ?type_aliment 
         ]);
     }
 
+    public function allPosts(Request $request)
+    {
+        // SPARQL query to fetch all posts
+        $query = "
+    PREFIX your_ontology: <http://www.semanticweb.org/user/ontologies/2024/8/untitled-ontology-8#>
 
- private function paginateResults(Request $request, array $results, string $view)
+    SELECT ?post ?title ?contenu ?type_de_post ?creator ?creatorName WHERE {
+        ?post a your_ontology:Post .
+        OPTIONAL { ?post your_ontology:title ?title . }
+        OPTIONAL { ?post your_ontology:contenu ?contenu . }
+        OPTIONAL { ?post your_ontology:type_de_post ?type_de_post . }
+        OPTIONAL { ?post your_ontology:estCrééPar ?creator . }
+        OPTIONAL { ?creator your_ontology:nom ?creatorName . }
+    }";
+
+        // Log the SPARQL query for debugging
+        Log::info('Executing SPARQL Query for Posts:', ['query' => $query]);
+
+        // Execute the SPARQL query
+        $results = $this->sparqlService->query($query);
+        $posts = $results['results']['bindings'] ?? []; // Extract results
+
+        // Log the results or any errors for debugging
+        Log::info('SPARQL Query Results for Posts:', ['results' => $posts]);
+
+        // Return the results to a view without pagination
+        return view('sparql.post.search', ['results' => $posts]);
+    }
+
+
+    private function paginateResults(Request $request, array $results, string $view)
  {
      $currentPage = LengthAwarePaginator::resolveCurrentPage();
      $perPage = 5; // Number of items per page
