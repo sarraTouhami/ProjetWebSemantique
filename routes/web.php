@@ -112,7 +112,8 @@ Route::get('/sparql/test', [SparqlController::class, 'index']);
 Route::get('/certification/search', [SparqlController::class, 'certificationComport'])->name('certification.search');
 Route::get('/donations/search', [SparqlController::class, 'donComport'])->name('don.search');
 Route::get('/donations/create', [sparqlUpdateController::class, 'create'])->name('don.create');
-Route::post('/donations/store', [sparqlUpdateController::class, 'store'])->name('don.store');Route::get('/demande/search', [SparqlController::class, 'demandeComport'])->name('demande.search');
+Route::post('/donations/store', [sparqlUpdateController::class, 'store'])->name('don.store');
+Route::get('/demande/search', [SparqlController::class, 'demandeComport'])->name('demande.search');
 Route::get('/inventairebe/list', [SparqlController::class, 'inventaireBeneficiaire'])->name('inventairebe.index');
 Route::get('/inventairebe/create', [SparqlUpdateController::class, 'createinventaireb'])->name('inventairebe.create'); // Ajoutez cette route
 Route::post('/inventairebe/store', [SparqlUpdateController::class, 'storeinventaireb'])->name('inventairebe.store');

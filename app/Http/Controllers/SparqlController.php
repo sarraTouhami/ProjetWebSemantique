@@ -151,6 +151,7 @@ public function demandeComport(Request $request)
     
     $statuts = ['en attente', 'Complétée'];
 
+    // Requête principale pour obtenir les demandes
     $query = "
     PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
     PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
@@ -163,7 +164,7 @@ public function demandeComport(Request $request)
         OPTIONAL { ?demande your_ontology:type_aliment ?type_aliment }
     ";
 
-    // Applique le filtre de recherche par mot-clé si un terme est fourni
+    // Appliquer les filtres
     if ($searchTerm && empty($statutFilter)) {
         $query .= "
         FILTER (
@@ -173,18 +174,14 @@ public function demandeComport(Request $request)
             CONTAINS(LCASE(?type_aliment), '$searchTerm')
         )
         ";
-    }
-    // Applique le filtre de statut uniquement si des statuts sont sélectionnés
-    elseif (!empty($statutFilter) && !$searchTerm) {
+    } elseif (!empty($statutFilter) && !$searchTerm) {
         $values = array_map(function($statut) {
             return "\"$statut\"";
         }, $statutFilter);
         $statutValues = implode(" ", $values);
         
         $query .= " VALUES ?statut { $statutValues }";
-    }
-    // Applique les deux filtres uniquement si les deux critères sont fournis
-    elseif ($searchTerm && !empty($statutFilter)) {
+    } elseif ($searchTerm && !empty($statutFilter)) {
         $values = array_map(function($statut) {
             return "\"$statut\"";
         }, $statutFilter);
@@ -208,6 +205,9 @@ public function demandeComport(Request $request)
     $demandes = $results['results']['bindings'] ?? [];
     Log::info('SPARQL Query Results for Demande with Filter:', ['results' => $demandes]);
 
+    // Calculer les statistiques des demandes
+    $statistics = $this->calculateStatistics($demandes);
+
     $currentPage = LengthAwarePaginator::resolveCurrentPage();
     $perPage = 5;
     $paginatedResults = new LengthAwarePaginator(
@@ -220,8 +220,30 @@ public function demandeComport(Request $request)
 
     return view('sparql.demandes.search', [
         'results' => $paginatedResults,
-        'statuts' => $statuts
+        'statuts' => $statuts,
+        'statistics' => $statistics, // Passer les statistiques à la vue
     ]);
+}
+
+// Fonction pour calculer les statistiques des demandes
+private function calculateStatistics($demandes)
+{
+    $statisticCount = [
+        'total' => count($demandes),
+        'en_attente' => 0,
+        'complete' => 0,
+    ];
+
+    foreach ($demandes as $demande) {
+        $statut = $demande['statut']['value'] ?? '';
+        if ($statut === 'en attente') {
+            $statisticCount['en_attente']++;
+        } elseif ($statut === 'Complétée') {
+            $statisticCount['complete']++;
+        }
+    }
+
+    return $statisticCount;
 }
 
 public function inventaireBeneficiaire(Request $request)
