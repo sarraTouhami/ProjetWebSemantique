@@ -3,11 +3,14 @@
 @section('content')
 <div class="container py-5">
     <h1 class="text-center mb-4">Statistiques des Certifications</h1>
-    <canvas id="certificationChart" width="400" height="400"></canvas>
+    <!-- Canvas de taille moyenne -->
+    <div class="d-flex justify-content-center">
+    <canvas id="certificationChart" width="300" height="300" style="max-width: 400px; max-height: 400px;"></canvas>
+</div>
     <a href="{{ route('certification.search') }}" class="btn btn-primary mt-4">Retour à la recherche</a>
 </div>
 
-<!-- Inclure Chart.js depuis un CDN -->
+
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
 <script>
@@ -53,6 +56,7 @@
             },
             options: {
                 responsive: true,
+                maintainAspectRatio: true, 
                 plugins: {
                     legend: {
                         position: 'top',
