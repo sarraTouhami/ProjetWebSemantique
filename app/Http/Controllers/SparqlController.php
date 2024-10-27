@@ -41,7 +41,7 @@ class SparqlController extends Controller
         // Return the results to a view or as JSON
         return response()->json($results);
     }
-    //new code 
+    //new code
     public function certificationComport(Request $request)
     {
         $searchTerm = strtolower($request->input('search_term')); // Lowercase search term
@@ -55,7 +55,7 @@ PREFIX your_ontology: <http://www.semanticweb.org/user/ontologies/2024/8/untitle
 
 SELECT ?instance ?certifStatus ?dateValidate ?nomCertif ?descriptionCertif ?dateCreation WHERE {
   ?instance rdf:type your_ontology:Certification .  # Assurez-vous que cette classe est correcte
-  
+
   OPTIONAL { ?instance your_ontology:Certif_status ?certifStatus }
   OPTIONAL { ?instance your_ontology:date_validite_certif ?dateValidate }  # Assurez-vous que le nom de la propriété est correct
   OPTIONAL { ?instance your_ontology:nom_certif ?nomCertif }
@@ -99,21 +99,21 @@ SELECT ?instance ?certifStatus ?dateValidate ?nomCertif ?descriptionCertif ?date
     {
         $searchTerm = strtolower($request->input('search_term', ''));
         $statutFilter = $request->input('statut', []);
-        
+
         $statuts = ['en attente', 'Complétée'];
-    
+
         $query = "
         PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
         PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
         PREFIX your_ontology: <http://www.semanticweb.org/user/ontologies/2024/8/untitled-ontology-8#>
-    
+
         SELECT ?demande ?data_de_demande ?statut ?type_aliment WHERE {
             ?demande a your_ontology:Demande .
             OPTIONAL { ?demande your_ontology:data_de_demande ?data_de_demande }
             OPTIONAL { ?demande your_ontology:statut ?statut }
             OPTIONAL { ?demande your_ontology:type_aliment ?type_aliment }
         ";
-    
+
         // Applique le filtre de recherche par mot-clé si un terme est fourni
         if ($searchTerm && empty($statutFilter)) {
             $query .= "
@@ -131,7 +131,7 @@ SELECT ?instance ?certifStatus ?dateValidate ?nomCertif ?descriptionCertif ?date
                 return "\"$statut\"";
             }, $statutFilter);
             $statutValues = implode(" ", $values);
-            
+
             $query .= " VALUES ?statut { $statutValues }";
         }
         // Applique les deux filtres uniquement si les deux critères sont fournis
@@ -140,7 +140,7 @@ SELECT ?instance ?certifStatus ?dateValidate ?nomCertif ?descriptionCertif ?date
                 return "\"$statut\"";
             }, $statutFilter);
             $statutValues = implode(" ", $values);
-    
+
             $query .= "
             FILTER (
                 (CONTAINS(LCASE(str(?demande)), '$searchTerm') ||
@@ -150,15 +150,15 @@ SELECT ?instance ?certifStatus ?dateValidate ?nomCertif ?descriptionCertif ?date
             ) VALUES ?statut { $statutValues }
             ";
         }
-    
+
         $query .= "}";
-    
+
         Log::info('SPARQL Query for Demande with Filter:', ['query' => $query]);
-    
+
         $results = $this->sparqlService->query($query);
         $demandes = $results['results']['bindings'] ?? [];
         Log::info('SPARQL Query Results for Demande with Filter:', ['results' => $demandes]);
-    
+
         $currentPage = LengthAwarePaginator::resolveCurrentPage();
         $perPage = 5;
         $paginatedResults = new LengthAwarePaginator(
@@ -168,13 +168,68 @@ SELECT ?instance ?certifStatus ?dateValidate ?nomCertif ?descriptionCertif ?date
             $currentPage,
             ['path' => $request->url(), 'query' => $request->query()]
         );
-    
+
         return view('sparql.demandes.search', [
             'results' => $paginatedResults,
             'statuts' => $statuts
         ]);
     }
-   
+
+    public function allUtilisateurs(Request $request)
+    {
+        $searchTerm = strtolower($request->input('search_term', ''));
+        $roleFilter = $request->input('role', []);
+
+        // Define available roles
+        $roles = ['Donateur', 'Transporteur', 'Bénéficiaire'];
+
+        // Prepare the SPARQL query
+        $query = "
+    PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+    PREFIX your_ontology: <http://www.semanticweb.org/user/ontologies/2024/8/untitled-ontology-8#>
+
+    SELECT DISTINCT ?individual ?name ?email ?vehicle ?location WHERE {
+        ?individual a ?type .
+        OPTIONAL { ?individual your_ontology:nom ?name . }
+        OPTIONAL { ?individual your_ontology:email ?email . }
+        OPTIONAL { ?individual your_ontology:détails_véhicule ?vehicle . }
+        OPTIONAL { ?individual your_ontology:location ?location . }
+    ";
+
+        // Apply search filter if a search term is provided
+        if ($searchTerm) {
+            $query .= " FILTER (
+            CONTAINS(LCASE(str(?name)), '$searchTerm') ||
+            CONTAINS(LCASE(str(?email)), '$searchTerm')
+        )";
+        }
+
+        // Apply role filter if selected
+        if (!empty($roleFilter)) {
+            $roleValues = array_map(function ($role) {
+                return "your_ontology:$role";
+            }, $roleFilter);
+            $query .= " FILTER (?type IN (" . implode(", ", $roleValues) . "))";
+        }
+
+        $query .= "}";
+
+        // Execute the SPARQL query
+        $results = $this->sparqlService->query($query);
+        $utilisateurs = $results['results']['bindings'] ?? [];
+
+        // Optional: Remove duplicates based on the individual's URI
+        $utilisateurs = collect($utilisateurs)->unique(function ($user) {
+            return $user['individual']['value'];
+        })->values()->all();
+
+        return view('sparql.utilisateur.search', [
+            'utilisateurs' => $utilisateurs,
+            'selectedRoles' => $roleFilter,
+            'roles' => $roles,
+            'searchTerm' => $searchTerm,
+        ]);
+    }
 
 
     private function paginateResults(Request $request, array $results, string $view)
