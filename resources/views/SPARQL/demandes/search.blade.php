@@ -32,27 +32,21 @@
                 </div>
             </form>
 
-            <!-- Results Table -->
-            <table class="table table-striped">
-                <thead>
-                    <tr>
-                        <th>Demande</th>
-                        <th>Date de Demande</th>
-                        <th>Statut</th>
-                        <th>Type Aliment</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    @foreach($results as $result)
-                        <tr>
-                            <td>{{ $result['demande']['value'] }}</td>
-                            <td>{{ $result['data_de_demande']['value'] ?? 'N/A' }}</td>
-                            <td>{{ $result['statut']['value'] ?? 'N/A' }}</td>
-                            <td>{{ $result['type_aliment']['value'] ?? 'N/A' }}</td>
-                        </tr>
-                    @endforeach
-                </tbody>
-            </table>
+            <!-- Results Display with Cards -->
+            <div class="row">
+                @foreach($results as $result)
+                    <div class="col-md-4 mb-4">
+                        <div class="card">
+                            <div class="card-body">
+                                
+                                <p class="card-text"><strong>Date de Demande:</strong> {{ $result['data_de_demande']['value'] ?? 'N/A' }}</p>
+                                <p class="card-text"><strong>Statut:</strong> {{ $result['statut']['value'] ?? 'N/A' }}</p>
+                                <p class="card-text"><strong>Type Aliment:</strong> {{ $result['type_aliment']['value'] ?? 'N/A' }}</p>
+                            </div>
+                        </div>
+                    </div>
+                @endforeach
+            </div>
 
             <!-- Pagination Links -->
             {{ $results->links() }}

@@ -96,67 +96,84 @@ SELECT ?instance ?certifStatus ?dateValidate ?nomCertif ?descriptionCertif ?date
     }
     ///////////////////////////////////////////////////////////
     public function demandeComport(Request $request)
-{
-    $searchTerm = strtolower($request->input('search_term', ''));
-    $statutFilter = $request->input('statut', []);
-
-    $statuts = ['en attente', 'Complétée'];
-
-    $query = "
-    PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
-    PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
-    PREFIX your_ontology: <http://www.semanticweb.org/user/ontologies/2024/8/untitled-ontology-8#>
-
-    SELECT ?demande ?data_de_demande ?statut ?type_aliment WHERE {
-        ?demande a your_ontology:Demande .
-        OPTIONAL { ?demande your_ontology:data_de_demande ?data_de_demande }
-        OPTIONAL { ?demande your_ontology:statut ?statut }
-        OPTIONAL { ?demande your_ontology:type_aliment ?type_aliment }
-    ";
-
-    if ($searchTerm) {
-        $query .= "
-        FILTER (
-            CONTAINS(LCASE(str(?demande)), '$searchTerm') ||
-            CONTAINS(LCASE(?statut), '$searchTerm') ||
-            CONTAINS(LCASE(str(?data_de_demande)), '$searchTerm') ||
-            CONTAINS(LCASE(?type_aliment), '$searchTerm')
-        )
-        ";
-    }
-
-    if (!empty($statutFilter)) {
-        $values = array_map(function($statut) {
-            return "\"$statut\"";
-        }, $statutFilter);
-        $statutValues = implode(" ", $values);
+    {
+        $searchTerm = strtolower($request->input('search_term', ''));
+        $statutFilter = $request->input('statut', []);
         
-        $query .= " VALUES ?statut { $statutValues }";
+        $statuts = ['en attente', 'Complétée'];
+    
+        $query = "
+        PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+        PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+        PREFIX your_ontology: <http://www.semanticweb.org/user/ontologies/2024/8/untitled-ontology-8#>
+    
+        SELECT ?demande ?data_de_demande ?statut ?type_aliment WHERE {
+            ?demande a your_ontology:Demande .
+            OPTIONAL { ?demande your_ontology:data_de_demande ?data_de_demande }
+            OPTIONAL { ?demande your_ontology:statut ?statut }
+            OPTIONAL { ?demande your_ontology:type_aliment ?type_aliment }
+        ";
+    
+        // Applique le filtre de recherche par mot-clé si un terme est fourni
+        if ($searchTerm && empty($statutFilter)) {
+            $query .= "
+            FILTER (
+                CONTAINS(LCASE(str(?demande)), '$searchTerm') ||
+                CONTAINS(LCASE(?statut), '$searchTerm') ||
+                CONTAINS(LCASE(str(?data_de_demande)), '$searchTerm') ||
+                CONTAINS(LCASE(?type_aliment), '$searchTerm')
+            )
+            ";
+        }
+        // Applique le filtre de statut uniquement si des statuts sont sélectionnés
+        elseif (!empty($statutFilter) && !$searchTerm) {
+            $values = array_map(function($statut) {
+                return "\"$statut\"";
+            }, $statutFilter);
+            $statutValues = implode(" ", $values);
+            
+            $query .= " VALUES ?statut { $statutValues }";
+        }
+        // Applique les deux filtres uniquement si les deux critères sont fournis
+        elseif ($searchTerm && !empty($statutFilter)) {
+            $values = array_map(function($statut) {
+                return "\"$statut\"";
+            }, $statutFilter);
+            $statutValues = implode(" ", $values);
+    
+            $query .= "
+            FILTER (
+                (CONTAINS(LCASE(str(?demande)), '$searchTerm') ||
+                CONTAINS(LCASE(?statut), '$searchTerm') ||
+                CONTAINS(LCASE(str(?data_de_demande)), '$searchTerm') ||
+                CONTAINS(LCASE(?type_aliment), '$searchTerm'))
+            ) VALUES ?statut { $statutValues }
+            ";
+        }
+    
+        $query .= "}";
+    
+        Log::info('SPARQL Query for Demande with Filter:', ['query' => $query]);
+    
+        $results = $this->sparqlService->query($query);
+        $demandes = $results['results']['bindings'] ?? [];
+        Log::info('SPARQL Query Results for Demande with Filter:', ['results' => $demandes]);
+    
+        $currentPage = LengthAwarePaginator::resolveCurrentPage();
+        $perPage = 5;
+        $paginatedResults = new LengthAwarePaginator(
+            array_slice($demandes, ($currentPage - 1) * $perPage, $perPage),
+            count($demandes),
+            $perPage,
+            $currentPage,
+            ['path' => $request->url(), 'query' => $request->query()]
+        );
+    
+        return view('sparql.demandes.search', [
+            'results' => $paginatedResults,
+            'statuts' => $statuts
+        ]);
     }
-
-    $query .= "}";
-
-    Log::info('SPARQL Query for Demande with Filter:', ['query' => $query]);
-
-    $results = $this->sparqlService->query($query);
-    $demandes = $results['results']['bindings'] ?? [];
-    Log::info('SPARQL Query Results for Demande with Filter:', ['results' => $demandes]);
-
-    $currentPage = LengthAwarePaginator::resolveCurrentPage();
-    $perPage = 5;
-    $paginatedResults = new LengthAwarePaginator(
-        array_slice($demandes, ($currentPage - 1) * $perPage, $perPage),
-        count($demandes),
-        $perPage,
-        $currentPage,
-        ['path' => $request->url(), 'query' => $request->query()]
-    );
-
-    return view('sparql.demandes.search', [
-        'results' => $paginatedResults,
-        'statuts' => $statuts
-    ]);
-}
    
 
 
