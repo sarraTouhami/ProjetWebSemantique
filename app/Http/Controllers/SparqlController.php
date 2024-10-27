@@ -188,19 +188,28 @@ SELECT ?instance ?certifStatus ?dateValidate ?nomCertif ?descriptionCertif ?date
     PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
     PREFIX your_ontology: <http://www.semanticweb.org/user/ontologies/2024/8/untitled-ontology-8#>
 
-    SELECT DISTINCT ?individual ?name ?email ?vehicle ?location WHERE {
+    SELECT DISTINCT ?individual ?name ?email ?vehicle ?location (COUNT(?don) AS ?donCount) WHERE {
         ?individual a ?type .
         OPTIONAL { ?individual your_ontology:nom ?name . }
         OPTIONAL { ?individual your_ontology:email ?email . }
         OPTIONAL { ?individual your_ontology:détails_véhicule ?vehicle . }
         OPTIONAL { ?individual your_ontology:location ?location . }
+
+        # Fetching donations associated with Donateurs and Bénéficiaires
+        OPTIONAL {
+            {
+                ?don your_ontology:aDonateur ?individual .  # For Donateurs
+            } UNION {
+                ?don your_ontology:aBeneficiaire ?individual .  # For Bénéficiaires
+            }
+        }
     ";
 
         // Apply search filter if a search term is provided
         if ($searchTerm) {
             $query .= " FILTER (
-            CONTAINS(LCASE(str(?name)), '$searchTerm') ||
-            CONTAINS(LCASE(str(?email)), '$searchTerm')
+        CONTAINS(LCASE(str(?name)), '$searchTerm') ||
+        CONTAINS(LCASE(str(?email)), '$searchTerm')
         )";
         }
 
@@ -212,7 +221,9 @@ SELECT ?instance ?certifStatus ?dateValidate ?nomCertif ?descriptionCertif ?date
             $query .= " FILTER (?type IN (" . implode(", ", $roleValues) . "))";
         }
 
-        $query .= "}";
+        $query .= "
+    } GROUP BY ?individual ?name ?email ?vehicle ?location
+    ";
 
         // Execute the SPARQL query
         $results = $this->sparqlService->query($query);
@@ -230,6 +241,7 @@ SELECT ?instance ?certifStatus ?dateValidate ?nomCertif ?descriptionCertif ?date
             'searchTerm' => $searchTerm,
         ]);
     }
+
 
 
     private function paginateResults(Request $request, array $results, string $view)
