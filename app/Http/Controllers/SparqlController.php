@@ -48,25 +48,30 @@ class SparqlController extends Controller
 
         // SPARQL query with filters
         $query = "
-        PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
-        PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
-        PREFIX your_ontology: <http://www.semanticweb.org/user/ontologies/2024/8/untitled-ontology-8#>
+        PREFIX owl: <http://www.w3.org/2002/07/owl#>
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+PREFIX your_ontology: <http://www.semanticweb.org/user/ontologies/2024/8/untitled-ontology-8#>
 
-        SELECT ?certification ?label ?description ?date_creation ?date_validite WHERE {
-            ?certification a your_ontology:Certification .
-            OPTIONAL { ?certification rdfs:label ?label }
-            OPTIONAL { ?certification your_ontology:description_certif ?description }
-            OPTIONAL { ?certification your_ontology:date_creation_certif ?date_creation }
-            OPTIONAL { ?certification your_ontology:date_validite_certif ?date_validite }
+SELECT ?instance ?certifStatus ?dateValidate ?nomCertif ?descriptionCertif ?dateCreation WHERE {
+  ?instance rdf:type your_ontology:Certification .  # Assurez-vous que cette classe est correcte
+  
+  OPTIONAL { ?instance your_ontology:Certif_status ?certifStatus }
+  OPTIONAL { ?instance your_ontology:date_validite_certif ?dateValidate }  # Assurez-vous que le nom de la propriété est correct
+  OPTIONAL { ?instance your_ontology:nom_certif ?nomCertif }
+  OPTIONAL { ?instance your_ontology:description_certif ?descriptionCertif }
+  OPTIONAL { ?instance your_ontology:date_creation_certif ?dateCreation }
 
-            FILTER (
-                CONTAINS(LCASE(str(?certification)), '$searchTerm') ||
-                CONTAINS(LCASE(?label), '$searchTerm') ||
-                CONTAINS(LCASE(?description), '$searchTerm') ||
-                CONTAINS(LCASE(str(?date_creation)), '$searchTerm') ||
-                CONTAINS(LCASE(str(?date_validite)), '$searchTerm')
-            )
-        }";
+  FILTER (
+    CONTAINS(LCASE(str(?instance)), '$searchTerm') ||
+    CONTAINS(LCASE(?certifStatus), '$searchTerm') ||
+    CONTAINS(LCASE(?nomCertif), '$searchTerm') ||
+    CONTAINS(LCASE(?descriptionCertif), '$searchTerm') ||
+    CONTAINS(LCASE(str(?dateCreation)), '$searchTerm') ||
+    CONTAINS(LCASE(str(?dateValidate)), '$searchTerm')
+  )
+}
+";
 
         Log::info('SPARQL Query:', ['query' => $query]);
 

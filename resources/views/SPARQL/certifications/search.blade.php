@@ -6,7 +6,7 @@
         <div class="col-md-10">
             <h1 class="text-center mb-5">Recherche de Certifications</h1>
 
-            <!-- Search form -->
+            <!-- Formulaire de recherche -->
             <form action="{{ route('certification.search') }}" method="GET" class="mb-4">
                 <div class="input-group">
                     <input type="text" name="search_term" class="form-control" 
@@ -19,38 +19,40 @@
             @if($results->count() > 0)
                 <h2 class="text-center mb-4">Résultats de la recherche</h2>
 
-                <!-- Results table -->
+                <!-- Table des résultats -->
                 <div class="table-responsive">
                     <table class="table table-bordered table-hover align-middle">
                         <thead class="table-dark text-center">
                             <tr>
                                 <th>Certification URI</th>
-                                <th>Label</th>
+                                <th>Statut de la Certification</th>
+                                <th>Date de Validation</th>
+                                <th>Nom de la Certification</th>
                                 <th>Description</th>
-                                <th>Date de création</th>
-                                <th>Date de validité</th>
+                                <th>Date de Création</th>
                             </tr>
                         </thead>
                         <tbody>
                             @foreach($results as $certification)
                                 <tr>
                                     <td class="text-center">
-                                        <a href="{{ $certification['certification']['value'] ?? '#' }}" 
+                                        <a href="{{ $certification['instance']['value'] ?? '#' }}" 
                                            target="_blank" class="text-decoration-none">
-                                            {{ $certification['certification']['value'] ?? 'Lien non disponible' }}
+                                            {{ $certification['instance']['value'] ?? 'Lien non disponible' }}
                                         </a>
                                     </td>
-                                    <td class="text-center">{{ $certification['label']['value'] ?? 'N/A' }}</td>
-                                    <td>{{ $certification['description']['value'] ?? 'N/A' }}</td>
-                                    <td class="text-center">{{ $certification['date_creation']['value'] ?? 'N/A' }}</td>
-                                    <td class="text-center">{{ $certification['date_validite']['value'] ?? 'N/A' }}</td>
+                                    <td class="text-center">{{ $certification['certifStatus']['value'] ?? 'N/A' }}</td>
+                                    <td class="text-center">{{ $certification['dateValidate']['value'] ?? 'N/A' }}</td>
+                                    <td class="text-center">{{ $certification['nomCertif']['value'] ?? 'N/A' }}</td>
+                                    <td>{{ $certification['descriptionCertif']['value'] ?? 'N/A' }}</td>
+                                    <td class="text-center">{{ $certification['dateCreation']['value'] ?? 'N/A' }}</td>
                                 </tr>
                             @endforeach
                         </tbody>
                     </table>
                 </div>
 
-                <!-- Pagination links -->
+                <!-- Liens de pagination -->
                 <div class="d-flex justify-content-center mt-4">
                     {{ $results->links('pagination::bootstrap-5') }}
                 </div>

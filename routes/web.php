@@ -24,7 +24,7 @@ use App\Http\Controllers\Admin\DonAdminController;
 use App\Http\Controllers\Admin\ReservationAdminController;
 use App\Http\Controllers\Admin\FeedbackAdminController;
 /**** */
-use App\Http\Controllers\SPARQL\CertificationspqlController;
+
 use App\Http\Controllers\SparqlController;
 
 /*
@@ -104,7 +104,7 @@ Route::get('/profile/edit', [ProfileController::class, 'edit'])->name('profile.e
 Route::put('/profile/update', [ProfileController::class, 'update'])->name('profile.update');
 
 /*** */
-Route::resource('certificats', CertificationspqlController::class);
+
 
 Route::get('/sparql/test', [SparqlController::class, 'index']);
 Route::get('/certification/search', [SparqlController::class, 'certificationComport'])->name('certification.search');
