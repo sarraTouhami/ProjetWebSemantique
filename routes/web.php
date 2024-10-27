@@ -124,3 +124,6 @@ Route::get('/posts/create', [sparqlUpdateController::class, 'createPost'])->name
 Route::get('/posts', [SparqlController::class, 'allPosts'])->name('posts.all');
 Route::post('/posts/store', [sparqlUpdateController::class, 'storePost'])->name('post.store');
 
+Route::get('/inventaireDonateur/search', [SparqlController::class, 'inventaireDonateur'])->name('inventaireDonateur.search');
+Route::post('/inventaireDonateur/delete', [sparqlUpdateController::class, 'deleteInventory'])->name('inventaireDonateur.delete');
+

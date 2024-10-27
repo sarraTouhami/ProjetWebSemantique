@@ -95,6 +95,10 @@ SELECT ?instance ?certifStatus ?dateValidate ?nomCertif ?descriptionCertif ?date
         return view('sparql/certifications/search', ['results' => $paginatedResults]);
     }
 
+
+    /////////////////////////////////////////SARRA /////////////////////////////////
+
+
     public function donComport(Request $request)
 {
     $searchTerm = strtolower($request->input('search_term'));
@@ -143,6 +147,56 @@ SELECT ?instance ?statut_don ?quantité ?date_permption ?date_don ?type_aliment 
     );
 
     return view('sparql/don/search', ['results' => $paginatedResults]);
+}
+
+
+public function inventaireDonateur(Request $request)
+{
+    $searchTerm = strtolower($request->input('search_term'));
+
+    $query = "
+    PREFIX owl: <http://www.w3.org/2002/07/owl#>
+    PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+    PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+    PREFIX your_ontology: <http://www.semanticweb.org/user/ontologies/2024/8/untitled-ontology-8#>
+
+    SELECT ?instance ?quantite_inventaire ?localisation ?non_article ?date_permption WHERE {
+        ?instance rdf:type your_ontology:Inventaire_Donateur .
+
+        OPTIONAL { ?instance your_ontology:quantite_inventaire ?quantite_inventaire }
+        OPTIONAL { ?instance your_ontology:localisation ?localisation }
+        OPTIONAL { ?instance your_ontology:non_article ?non_article }
+        OPTIONAL { ?instance your_ontology:date_permption ?date_permption }
+
+        FILTER (
+            CONTAINS(LCASE(str(?instance)), '$searchTerm') ||
+            CONTAINS(LCASE(?quantite_inventaire), '$searchTerm') ||
+            CONTAINS(LCASE(?localisation), '$searchTerm') ||
+            CONTAINS(LCASE(?non_article), '$searchTerm') ||
+            CONTAINS(LCASE(str(?date_permption)), '$searchTerm')
+        )
+    }
+    ";
+
+    Log::info('SPARQL Query for Inventaire Donateur:', ['query' => $query]);
+
+    $results = $this->sparqlService->query($query);
+    $inventaires = $results['results']['bindings'] ?? [];
+
+    Log::info('SPARQL Query Results for Inventaire Donateur:', ['results' => $inventaires]);
+
+    // Paginate results
+    $currentPage = LengthAwarePaginator::resolveCurrentPage();
+    $perPage = 5;
+    $paginatedResults = new LengthAwarePaginator(
+        array_slice($inventaires, ($currentPage - 1) * $perPage, $perPage),
+        count($inventaires),
+        $perPage,
+        $currentPage,
+        ['path' => $request->url(), 'query' => $request->query()]
+    );
+
+    return view('sparql/inventaireDonateur/search', ['results' => $paginatedResults]);
 }
 
 

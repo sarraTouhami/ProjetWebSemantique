@@ -167,5 +167,50 @@ class sparqlUpdateController extends Controller
     }
 
 
+    public function deleteInventory(Request $request)
+    {
+        // Valider les données de la requête
+        $validator = Validator::make($request->all(), [
+            'attribute' => 'required|string|max:255',
+            'value' => 'required|string|max:255',
+        ]);
+    
+        if ($validator->fails()) {
+            return redirect()->back()
+                             ->withErrors($validator)
+                             ->withInput();
+        }
+    
+        // Extraire l'attribut et la valeur
+        $attribute = $request->input('attribute');
+        $value = $request->input('value');
+    
+        try {
+            // Construire la requête SPARQL pour supprimer de l'inventaire donateur
+            $query = "
+            PREFIX your_ontology: <http://www.semanticweb.org/user/ontologies/2024/8/untitled-ontology-8#>
+    
+            DELETE {
+                ?don a your_ontology:Inventaire_Donateur ;
+                     your_ontology:{$attribute} \"$value\" .
+            }
+            WHERE {
+                ?don a your_ontology:Inventaire_Donateur ;
+                     your_ontology:{$attribute} \"$value\" .
+            }
+            ";
+    
+            // Exécuter la requête SPARQL
+            $this->sparqlServiceUpdate->update($query); // Appeler la méthode pour exécuter la mise à jour
+    
+            // Rediriger avec un message de succès
+            return redirect()->route('inventaireDonateur.search')->with('success', 'L\'inventaire donateur a été supprimé avec succès.');
+    
+        } catch (\Exception $e) {
+            // En cas d'erreur, rediriger avec un message d'erreur
+            return redirect()->back()->with('error', 'Erreur lors de la suppression de l\'inventaire donateur : ' . $e->getMessage());
+        }
+    }
+
 
 }
