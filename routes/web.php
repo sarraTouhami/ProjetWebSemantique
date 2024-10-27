@@ -109,6 +109,7 @@ Route::put('/profile/update', [ProfileController::class, 'update'])->name('profi
 Route::get('/sparql/test', [SparqlController::class, 'index']);
 Route::get('/certification/search', [SparqlController::class, 'certificationComport'])->name('certification.search');
 Route::get('/produit/calender', [SparqlController::class, 'displayProductsInCalendar'])->name('produit.calender');
+Route::get('/certification/stats', [SparqlController::class, 'stats'])->name('certification.stats');
 
 
 
