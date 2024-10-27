@@ -37,21 +37,20 @@
                                         <strong>Date de Péremption:</strong> {{ $donation['date_permption']['value'] ?? 'N/A' }}<br>
                                         <strong>Date du Don:</strong> {{ $donation['date_don']['value'] ?? 'N/A' }}<br>
                                     </p>
-                                    
-                                    <!-- Buttons for Edit and Delete -->
-                                    <div class="d-flex justify-content-between">
-                                        <a  class="btn btn-warning btn-sm">Modifier</a>
-                                        <form method="POST" onsubmit="return confirm('Êtes-vous sûr de vouloir supprimer ce don ?');">
-                                            @csrf
-                                            @method('DELETE')
-                                            <button type="submit" class="btn btn-danger btn-sm">Supprimer</button>
-                                        </form>
-                                    </div>
                                 </div>
                             </div>
                         </div>
                     @endforeach
                 </div>
+                <!-- Formulaire de suppression -->
+<form action="{{ route('don.delete') }}" method="POST" class="mt-4">
+    @csrf
+    <div class="input-group">
+        <input type="text" name="type_aliment" class="form-control" 
+               placeholder="Entrez le type d'aliment à supprimer" required>
+        <button type="submit" class="btn btn-danger px-4">Supprimer</button>
+    </div>
+</form>
 
                 <!-- Liens de pagination -->
                 <div class="d-flex justify-content-center mt-4">

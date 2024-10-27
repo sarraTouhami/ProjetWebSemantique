@@ -55,5 +55,36 @@ class sparqlUpdateController extends Controller
         return redirect()->route('don.search')->with('success', 'Le don a été créé avec succès.');
     }
 
+    // sparqlUpdateController.php
+
+public function delete(Request $request)
+{
+    // Valider les données de la requête
+    $validatedData = $request->validate([
+        'type_aliment' => 'required|string|max:255',
+    ]);
+
+    // Construire la requête SPARQL pour supprimer le don
+    $query = "
+    PREFIX your_ontology: <http://www.semanticweb.org/user/ontologies/2024/8/untitled-ontology-8#>
+
+    DELETE {
+        ?don a your_ontology:Don ;
+             your_ontology:type_aliment \"{$validatedData['type_aliment']}\" .
+    }
+    WHERE {
+        ?don a your_ontology:Don ;
+             your_ontology:type_aliment \"{$validatedData['type_aliment']}\" .
+    }
+    ";
+
+    // Exécuter la requête SPARQL
+    $this->sparqlServiceUpdate->update($query); // Appeler la méthode pour exécuter la mise à jour
+
+    // Rediriger avec un message de succès
+    return redirect()->route('don.search')->with('success', 'Le don a été supprimé avec succès.');
+}
+
+
     
 }

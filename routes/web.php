@@ -119,3 +119,5 @@ Route::get('/donateurs/search', [SparqlController::class, 'allDonateurs'])->name
 Route::get('/donations/search', [SparqlController::class, 'donComport'])->name('don.search');
 Route::get('/donations/create', [sparqlUpdateController::class, 'create'])->name('don.create');
 Route::post('/donations/store', [sparqlUpdateController::class, 'store'])->name('don.store');
+Route::post('/donations/delete', [sparqlUpdateController::class, 'delete'])->name('don.delete');
+
