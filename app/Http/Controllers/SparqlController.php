@@ -145,5 +145,62 @@ SELECT ?instance ?statut_don ?quantité ?date_permption ?date_don ?type_aliment 
     return view('sparql/don/search', ['results' => $paginatedResults]);
 }
 
+//Reservation 
+public function searchReservation(Request $request)
+{
+    $searchTerm = strtolower($request->input('search_term')); 
+
+    // Nouvelle requête SPARQL
+    $query = "
+    PREFIX owl: <http://www.w3.org/2002/07/owl#>
+    PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+    PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+    PREFIX your_ontology: <http://www.semanticweb.org/user/ontologies/2024/8/untitled-ontology-8#>
+    PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>
+
+    SELECT ?reservation ?statusReserv ?dateReservation ?dateDeLivraison WHERE {
+       ?reservation rdf:type your_ontology:Reservation .
+
+       OPTIONAL { ?reservation your_ontology:status_reserv ?statusReserv }
+       OPTIONAL { ?reservation your_ontology:date_reservation ?dateReservation }
+       OPTIONAL { ?reservation your_ontology:Date_de_livraison ?dateDeLivraison }
+    }
+    ORDER BY DESC(?dateReservation)
+    ";
+
+    Log::info('SPARQL Query:', ['query' => $query]);
+
+    // Exécution de la requête SPARQL
+    $results = $this->sparqlService->query($query);
+    $reservations = $results['results']['bindings'] ?? [];
+
+    Log::info('SPARQL Query Results:', ['results' => $reservations]);
+
+    // Appliquer le filtrage basé sur le terme de recherche
+    if ($searchTerm) {
+        $reservations = array_filter($reservations, function ($reservation) use ($searchTerm) {
+            return (
+                isset($reservation['statusReserv']['value']) && stripos($reservation['statusReserv']['value'], $searchTerm) !== false ||
+                isset($reservation['dateReservation']['value']) && stripos($reservation['dateReservation']['value'], $searchTerm) !== false ||
+                isset($reservation['dateDeLivraison']['value']) && stripos($reservation['dateDeLivraison']['value'], $searchTerm) !== false
+            );
+        });
+    }
+
+    // Pagination des résultats
+    $currentPage = LengthAwarePaginator::resolveCurrentPage();
+    $perPage = 5; // Nombre d'éléments par page
+    $paginatedResults = new LengthAwarePaginator(
+        array_slice($reservations, ($currentPage - 1) * $perPage, $perPage),
+        count($reservations),
+        $perPage,
+        $currentPage,
+        ['path' => $request->url(), 'query' => $request->query()]
+    );
+
+    return view('sparql/reservation/search', ['results' => $paginatedResults]);
+}
+
+
 }
 
