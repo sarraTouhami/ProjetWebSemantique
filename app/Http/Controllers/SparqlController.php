@@ -6,6 +6,7 @@ use App\Services\SparqlService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log; // Import the Log facade
 use Illuminate\Pagination\LengthAwarePaginator;
+use Illuminate\Support\Collection;
 class SparqlController extends Controller
 {
     protected $sparqlService;
@@ -94,6 +95,53 @@ SELECT ?instance ?certifStatus ?dateValidate ?nomCertif ?descriptionCertif ?date
 
         return view('sparql/certifications/search', ['results' => $paginatedResults]);
     }
-}
 
+    //state
+    public function stats()
+    {
+        // La requête SPARQL
+        $query = "
+        PREFIX owl: <http://www.w3.org/2002/07/owl#>
+        PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+        PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+        PREFIX your_ontology: <http://www.semanticweb.org/user/ontologies/2024/8/untitled-ontology-8#>
+        
+        SELECT ?certifStatus (COUNT(?instance) AS ?count) WHERE {
+          ?instance rdf:type your_ontology:Certification .
+          OPTIONAL { ?instance your_ontology:Certif_status ?certifStatus }
+        }
+        GROUP BY ?certifStatus
+        ";
+    
+        // Exécuter la requête SPARQL
+        $results = $this->sparqlService->query($query);
+        
+        // Vérifiez si des résultats ont été renvoyés
+        if (isset($results['results']['bindings'])) {
+            $certifications = $results['results']['bindings'];
+        } else {
+            // Si aucun résultat n'est trouvé, retournez un tableau vide
+            $certifications = [];
+        }
+    
+        // Log les résultats pour le débogage
+        Log::info('SPARQL Query Results:', ['results' => $certifications]);
+    
+        // Transformer les résultats pour le rendre plus facile à manipuler
+        $formattedResults = [];
+        foreach ($certifications as $certification) {
+            $formattedResults[] = [
+                'certifStatus' => $certification['certifStatus']['value'] ?? 'Non défini',
+                'count' => (int) $certification['count']['value'], // Convertir en entier
+            ];
+        }
+    
+        // Passer les résultats formatés à la vue
+        return view('sparql.certifications.stats', ['results' => $formattedResults]);
+    }
+    
+    
+    
+
+}
 
