@@ -26,6 +26,8 @@ use App\Http\Controllers\Admin\FeedbackAdminController;
 /**** */
 
 use App\Http\Controllers\SparqlController;
+use App\Http\Controllers\sparqlUpdateController;
+
 
 /*
 |--------------------------------------------------------------------------
@@ -114,4 +116,26 @@ Route::get('/certification/stats', [SparqlController::class, 'stats'])->name('ce
 
 
 
+Route::get('/demande/search', [SparqlController::class, 'demandeComport'])->name('demande.search');
+Route::get('/utilisateurs/search', [SparqlController::class, 'allUtilisateurs'])->name('utilisateur.search');
+Route::get('/donateurs/search', [SparqlController::class, 'allDonateurs'])->name('donateur.index');
+Route::get('/evenemets/search', [SparqlController::class, 'searchEvents'])->name('evenemets.index');
+Route::get('/Recommendation/search', [SparqlController::class, 'indexRecommendation'])->name('recommendation.index');
+
+
+
+Route::get('/donations/search', [SparqlController::class, 'donComport'])->name('don.search');
+Route::get('/donations/create', [sparqlUpdateController::class, 'create'])->name('don.create');
+Route::post('/donations/store', [sparqlUpdateController::class, 'store'])->name('don.store');
+Route::post('/donations/delete', [sparqlUpdateController::class, 'delete'])->name('don.delete');
+Route::get('/posts/create', [sparqlUpdateController::class, 'createPost'])->name('post.create');
+Route::get('/posts', [SparqlController::class, 'allPosts'])->name('posts.all');
+Route::post('/posts/store', [sparqlUpdateController::class, 'storePost'])->name('post.store');
+
+Route::get('/inventaireDonateur/search', [SparqlController::class, 'inventaireDonateur'])->name('inventaireDonateur.search');
+Route::post('/inventaireDonateur/delete', [sparqlUpdateController::class, 'deleteInventory'])->name('inventaireDonateur.delete');
+Route::get('/evenemets/create', [sparqlUpdateController::class, 'createEvent'])->name('evenemets.create');
+Route::post('/evenemets/store', [sparqlUpdateController::class, 'storeEvent'])->name('evenemets.store');
+Route::get('/Recommendation/create', [sparqlUpdateController::class, 'createRecommendation'])->name('recommendation.create');
+Route::post('/Recommendation/store', [sparqlUpdateController::class, 'storeRecommendation'])->name('recommendation.store');
 
