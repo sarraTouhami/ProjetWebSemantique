@@ -138,4 +138,31 @@ class sparqlUpdateController extends Controller
     // Redirect with a success message
     return redirect()->route('evenemets.index')->with('success', 'Événement créé avec succès.');
 }
+public function createRecommendation()
+{
+    return view('sparql.recommendation.create');
+}
+public function storeRecommendation(Request $request)
+{
+    // Validate the request data
+    $request->validate([
+        'contenu' => 'required|string|max:255',
+        'type_Recommendation' => 'required|string|max:255',
+    ]);
+
+    // Create SPARQL query to add the recommendation
+    $query = "
+    PREFIX your_ontology: <http://www.semanticweb.org/user/ontologies/2024/8/untitled-ontology-8#>
+    INSERT DATA {
+        your_ontology:recommandation_" . uniqid() . " a your_ontology:Recommandation;
+            your_ontology:contenu '" . htmlspecialchars($request->contenu, ENT_QUOTES) . "';
+            your_ontology:type_Recommendation '" . htmlspecialchars($request->type_Recommendation, ENT_QUOTES) . "'.
+    }";
+
+    // Execute the SPARQL update query
+    $this->sparqlServiceUpdate->update($query);
+
+    // Redirect back to the index with a success message
+    return redirect()->route('recommendation.index')->with('success', 'Recommandation ajoutée avec succès.');
+}
 }

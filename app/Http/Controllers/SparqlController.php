@@ -303,7 +303,35 @@ public function searchEvents(Request $request)
 
     return $this->paginateResults($request, $events, 'sparql.evenemets.index');
 }
+//////////
+public function indexRecommendation(Request $request)
+{
+    // Get the search term from the request
+    $searchTerm = $request->input('search');
 
+    // Define the base SPARQL query
+    $query = "
+    PREFIX your_ontology: <http://www.semanticweb.org/user/ontologies/2024/8/untitled-ontology-8#>
+    SELECT ?contenu ?type_Recommendation
+    WHERE {
+        ?recommendation a your_ontology:Recommandation.
+        ?recommendation your_ontology:contenu ?contenu.
+        ?recommendation your_ontology:type_Recommendation ?type_Recommendation.
+    }";
+
+    // If there's a search term, modify the query to filter results
+    if ($searchTerm) {
+        $query .= "
+        FILTER(CONTAINS(LCASE(?contenu), LCASE('$searchTerm')) || 
+               CONTAINS(LCASE(?type_Recommendation), LCASE('$searchTerm')))
+        ";
+    }
+
+    // Execute the query to get results
+    $results = $this->sparqlService->query($query);
+    $recommendations = $results['results']['bindings'] ?? [];
+    return $this->paginateResults($request, $recommendations, 'sparql.recommendation.index');
+}
     /////////
  private function paginateResults(Request $request, array $results, string $view)
  {
