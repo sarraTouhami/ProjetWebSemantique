@@ -5,15 +5,15 @@ use App\Services\SparqlService;
 use App\Services\sparqlServiceUpdate;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
-use App\Services\SparqlService; use Illuminate\Support\Facades\Validator;
+use Illuminate\Support\Facades\Validator;
 
 class sparqlUpdateController extends Controller
 {
     protected $sparqlService;
     protected $sparqlServiceUpdate;
-    protected $sparqlService;
 
-    public function __construct(SparqlService $sparqlService, SparqlServiceUpdate $sparqlServiceUpdate,SparqlService $sparqlService)
+
+    public function __construct(SparqlService $sparqlService, SparqlServiceUpdate $sparqlServiceUpdate)
     {
         $this->sparqlService = $sparqlService;
         $this->sparqlServiceUpdate = $sparqlServiceUpdate;

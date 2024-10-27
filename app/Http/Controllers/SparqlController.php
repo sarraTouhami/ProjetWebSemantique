@@ -340,20 +340,7 @@ public function inventaireBeneficiaire(Request $request)
     return view('sparql.inventairebe.index', ['inventaires' => $inventaires]);
 }
 
-private function paginateResults(Request $request, array $results, string $view)
-{
-    $currentPage = LengthAwarePaginator::resolveCurrentPage();
-    $perPage = 5; // Number of items per page
-    $paginatedResults = new LengthAwarePaginator(
-        array_slice($results, ($currentPage - 1) * $perPage, $perPage),
-        count($results),
-        $perPage,
-        $currentPage,
-        ['path' => $request->url(), 'query' => $request->query()]
-    );
 
-    return view($view, ['results' => $paginatedResults]);
-}
 
     public function allUtilisateurs(Request $request)
     {
