@@ -104,7 +104,70 @@ class sparqlUpdateController extends Controller
             return redirect()->back()->with('error', 'Erreur lors de la suppression du don : ' . $e->getMessage());
         }
     }
+    public function createEvent()
+    {
+        return view('sparql.evenemets.create'); // Make sure to create this view
+    }
+     // Store a new event
+    public function storeEvent(Request $request)
+{
+    // Validate incoming request data
+    $validatedData = $request->validate([
+        'name' => 'required|string|max:255',
+        'location' => 'required|string|max:255',
+        'date' => 'required|date',
+        'partner_id' => 'required|string|max:255', // Adjust the validation as per your requirements
+        'description' => 'nullable|string',
+    ]);
+
+    // Prepare the SPARQL query
+    $query = "
+    PREFIX your_ontology: <http://www.semanticweb.org/user/ontologies/2024/8/untitled-ontology-8#>
+
+    INSERT DATA {
+        _:event a your_ontology:Event;
+            your_ontology:Event_Name \"{$validatedData['name']}\";
+            your_ontology:Event_Location \"{$validatedData['location']}\";
+            your_ontology:Event_Date \"{$validatedData['date']}\";
+            your_ontology:Partner_ID \"{$validatedData['partner_id']}\";
+            your_ontology:Event_Description \"{$validatedData['description']}\".
+    }";
+
+    // Execute the SPARQL query using the correct service
+    $this->sparqlServiceUpdate->update($query);
+
+    // Redirect with a success message
+    return redirect()->route('evenemets.index')->with('success', 'Événement créé avec succès.');
+}
+public function createRecommendation()
+{
+    return view('sparql.recommendation.create');
+}
+public function storeRecommendation(Request $request)
+{
+    // Validate the request data
+    $request->validate([
+        'contenu' => 'required|string|max:255',
+        'type_Recommendation' => 'required|string|max:255',
+    ]);
+
+    // Create SPARQL query to add the recommendation
+    $query = "
+    PREFIX your_ontology: <http://www.semanticweb.org/user/ontologies/2024/8/untitled-ontology-8#>
+    INSERT DATA {
+        your_ontology:recommandation_" . uniqid() . " a your_ontology:Recommandation;
+            your_ontology:contenu '" . htmlspecialchars($request->contenu, ENT_QUOTES) . "';
+            your_ontology:type_Recommendation '" . htmlspecialchars($request->type_Recommendation, ENT_QUOTES) . "'.
+    }";
+
+    // Execute the SPARQL update query
+    $this->sparqlServiceUpdate->update($query);
+
+    // Redirect back to the index with a success message
+    return redirect()->route('recommendation.index')->with('success', 'Recommandation ajoutée avec succès.');
+}
+}
 
 
     
-}
+
