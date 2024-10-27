@@ -54,7 +54,7 @@
                             <a href="{{ url('/invertaireDonateurs') }}" class="nav-item nav-link">Inventaire Donateur</a>
                             <a href="{{ url('/notifications') }}" class="nav-item nav-link">Notifications</a>
                 <a href="{{ url('/recommendations') }}" class="nav-item nav-link">Recommendations</a>
-                <a href="{{ url('/events') }}" class="nav-item nav-link">Events</a>
+                <a href="{{ url('/evenemets/search') }}" class="nav-item nav-link">Events</a>
                             <li class="nav-item dropdown">
     <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
         Produits

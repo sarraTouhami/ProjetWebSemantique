@@ -113,6 +113,7 @@ Route::get('/certification/search', [SparqlController::class, 'certificationComp
 Route::get('/demande/search', [SparqlController::class, 'demandeComport'])->name('demande.search');
 Route::get('/utilisateurs/search', [SparqlController::class, 'allUtilisateurs'])->name('utilisateur.search');
 Route::get('/donateurs/search', [SparqlController::class, 'allDonateurs'])->name('donateur.index');
+Route::get('/evenemets/search', [SparqlController::class, 'searchEvents'])->name('evenemets.index');
 
 
 
@@ -120,4 +121,7 @@ Route::get('/donations/search', [SparqlController::class, 'donComport'])->name('
 Route::get('/donations/create', [sparqlUpdateController::class, 'create'])->name('don.create');
 Route::post('/donations/store', [sparqlUpdateController::class, 'store'])->name('don.store');
 Route::post('/donations/delete', [sparqlUpdateController::class, 'delete'])->name('don.delete');
+Route::get('/evenemets/create', [sparqlUpdateController::class, 'createEvent'])->name('evenemets.create');
+Route::post('/evenemets/store', [sparqlUpdateController::class, 'storeEvent'])->name('evenemets.store');
+
 
