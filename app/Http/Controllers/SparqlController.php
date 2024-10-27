@@ -94,6 +94,57 @@ SELECT ?instance ?certifStatus ?dateValidate ?nomCertif ?descriptionCertif ?date
 
         return view('sparql/certifications/search', ['results' => $paginatedResults]);
     }
+
+    public function donComport(Request $request)
+{
+    $searchTerm = strtolower($request->input('search_term'));
+
+    $query = "
+    PREFIX owl: <http://www.w3.org/2002/07/owl#>
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+PREFIX your_ontology: <http://www.semanticweb.org/user/ontologies/2024/8/untitled-ontology-8#>
+
+SELECT ?instance ?statut_don ?quantité ?date_permption ?date_don ?type_aliment WHERE {
+  ?instance rdf:type your_ontology:Don .
+  
+  OPTIONAL { ?instance your_ontology:statut_don ?statut_don }
+  OPTIONAL { ?instance your_ontology:quantité ?quantité }
+  OPTIONAL { ?instance your_ontology:date_permption ?date_permption }
+  OPTIONAL { ?instance your_ontology:date_don ?date_don }        
+  OPTIONAL { ?instance your_ontology:type_aliment ?type_aliment } 
+
+      FILTER (
+        CONTAINS(LCASE(str(?instance)), '$searchTerm') ||
+        CONTAINS(LCASE(?statut_don), '$searchTerm') ||
+        CONTAINS(LCASE(?quantité), '$searchTerm') ||
+        CONTAINS(LCASE(?date_permption), '$searchTerm') ||
+        CONTAINS(LCASE(?date_don), '$searchTerm') ||
+        CONTAINS(LCASE(?type_aliment), '$searchTerm')
+      )
+    }
+    ";
+
+    Log::info('SPARQL Query for Don:', ['query' => $query]);
+
+    $results = $this->sparqlService->query($query);
+    $donations = $results['results']['bindings'] ?? [];
+
+    Log::info('SPARQL Query Results for Don:', ['results' => $donations]);
+
+    $currentPage = LengthAwarePaginator::resolveCurrentPage();
+    $perPage = 5;
+    $paginatedResults = new LengthAwarePaginator(
+        array_slice($donations, ($currentPage - 1) * $perPage, $perPage),
+        count($donations),
+        $perPage,
+        $currentPage,
+        ['path' => $request->url(), 'query' => $request->query()]
+    );
+
+    return view('sparql/don/search', ['results' => $paginatedResults]);
+}
+
 }
 
 
