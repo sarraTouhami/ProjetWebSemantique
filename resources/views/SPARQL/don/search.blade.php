@@ -4,7 +4,7 @@
 <div class="container py-5">
     <div class="row justify-content-center">
         <div class="col-md-10">
-            <h1 class="text-center mb-5">Recherche de Dons</h1>
+            <h4 class="mb-4 mt-5">Recherche de Dons</h4>
 
             <!-- Formulaire de recherche -->
             <form action="{{ route('don.search') }}" method="GET" class="mb-4">
@@ -16,40 +16,41 @@
                 </div>
             </form>
 
-            @if($results->count() > 0)
-                <h2 class="text-center mb-4">Résultats de la recherche</h2>
+            <!-- Bouton pour ajouter un don -->
+            <div class="text-end mb-4">
+                <a href="{{ route('don.create') }}" class="btn btn-success">Ajouter un Don</a>
+            </div>
 
-                <!-- Table des résultats -->
-                <div class="table-responsive">
-                    <table class="table table-bordered table-hover align-middle">
-                        <thead class="table-dark text-center">
-                            <tr>
-                                <th>Donation URI</th>
-                                <th>Statut du Don</th>
-                                <th>Quantité</th>
-                                <th>Date de Péremption</th>
-                                <th>Date du Don</th>
-                                <th>Type d'Aliment</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            @foreach($results as $donation)
-                                <tr>
-                                    <td class="text-center">
-                                        <a href="{{ $donation['instance']['value'] ?? '#' }}" 
-                                           target="_blank" class="text-decoration-none">
-                                            {{ $donation['instance']['value'] ?? 'Lien non disponible' }}
-                                        </a>
-                                    </td>
-                                    <td class="text-center">{{ $donation['statut_don']['value'] ?? 'N/A' }}</td>
-                                    <td class="text-center">{{ $donation['quantité']['value'] ?? 'N/A' }}</td>
-                                    <td class="text-center">{{ $donation['date_permption']['value'] ?? 'N/A' }}</td>
-                                    <td class="text-center">{{ $donation['date_don']['value'] ?? 'N/A' }}</td>
-                                    <td class="text-center">{{ $donation['type_aliment']['value'] ?? 'N/A' }}</td>
-                                </tr>
-                            @endforeach
-                        </tbody>
-                    </table>
+            @if($results->count() > 0)
+                <!-- Affichage sous forme de cartes -->
+                <div class="row">
+                    @foreach($results as $donation)
+                        <div class="col-md-4 mb-4">
+                            <div class="card">
+                                <div class="card-body">
+                                    <h5 class="card-title">
+                                        <strong>Type d'Aliment:</strong> {{ $donation['type_aliment']['value'] ?? 'N/A' }}
+                                    </h5>
+                                    <p class="card-text">
+                                        <strong>Statut du Don:</strong> {{ $donation['statut_don']['value'] ?? 'N/A' }}<br>
+                                        <strong>Quantité:</strong> {{ $donation['quantité']['value'] ?? 'N/A' }}<br>
+                                        <strong>Date de Péremption:</strong> {{ $donation['date_permption']['value'] ?? 'N/A' }}<br>
+                                        <strong>Date du Don:</strong> {{ $donation['date_don']['value'] ?? 'N/A' }}<br>
+                                    </p>
+                                    
+                                    <!-- Buttons for Edit and Delete -->
+                                    <div class="d-flex justify-content-between">
+                                        <a  class="btn btn-warning btn-sm">Modifier</a>
+                                        <form method="POST" onsubmit="return confirm('Êtes-vous sûr de vouloir supprimer ce don ?');">
+                                            @csrf
+                                            @method('DELETE')
+                                            <button type="submit" class="btn btn-danger btn-sm">Supprimer</button>
+                                        </form>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    @endforeach
                 </div>
 
                 <!-- Liens de pagination -->

@@ -144,7 +144,5 @@ SELECT ?instance ?statut_don ?quantité ?date_permption ?date_don ?type_aliment 
 
     return view('sparql/don/search', ['results' => $paginatedResults]);
 }
-
+    
 }
-
-
