@@ -66,12 +66,12 @@
     <form action="{{ route('post.store') }}" method="POST">
         @csrf
         <div class="form-group">
-            <label for="title">Title:</label>
+            <label for="title">Titre:</label>
             <input type="text" name="title" class="form-control" required>
         </div>
 
         <div class="form-group">
-            <label for="contenu">Content:</label>
+            <label for="contenu">Contenu:</label>
             <textarea name="contenu" class="form-control" rows="5" required></textarea>
         </div>
 
@@ -82,12 +82,11 @@
                 <option value="Article">Article</option>
                 <option value="Update">Update</option>
                 <option value="Logistics">Logistics</option>
-                <!-- Add more types as needed -->
             </select>
         </div>
 
         <div class="form-group">
-            <label for="creator">User:</label>
+            <label for="creator">Createur:</label>
             <select name="creator" class="form-select" required>
                 @foreach ($users['results']['bindings'] as $user)
                 <option value="{{ $user['user']['value'] }}">

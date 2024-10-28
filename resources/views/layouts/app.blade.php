@@ -38,7 +38,7 @@
             <div class="top-bar row gx-0 align-items-center d-none d-lg-flex">
             </div>
 
-            <nav class="navbar navbar-expand-lg navbar-light py-lg-0 px-lg-5 wow fadeIn" data-wow-delay="0.1s">
+            <nav class="navbar navbar-expand-lg navbar-light py-lg-0 px-lg-5">
                 <a href="{{ url('/home') }}" class="navbar-brand ms-4 ms-lg-0">
                     <h1 class="fw-bold text-primary m-0">Res<span class="text-secondary">cueF</span>ood</h1>
                 </a>
@@ -47,63 +47,64 @@
                 </button>
 
                 <div class="collapse navbar-collapse" id="navbarCollapse">
-                    <div class="navbar-nav ms-auto p-4 p-lg-0">
+                    <div class="navbar-nav ms-auto">
                         @auth
-                            <a href="{{ url('/reservation/search') }}" class="nav-item nav-link active">Reservations</a>
-                            <a href="{{ url('/demande/search') }}" class="nav-item nav-link">Demandes</a>
-                            <a href="{{ url('/donations/search') }}" class="nav-item nav-link">Dons</a>
-                            <a href="{{ url('/utilisateurs/search') }}" class="nav-item nav-link">Utilisateurs</a>
-                            <a href="{{ url('/inventaireDonateur/search') }}" class="nav-item nav-link">Inventaire Donateur</a>
-                            <a href="{{ url('/inventairebe/list') }}" class="nav-item nav-link">Inventaire Bénéficiaire</a>
-                        <a href="{{ url('/posts') }}" class="nav-item nav-link">Publications</a>
+                        <!-- Reservations Menu -->
+                        <div class="nav-item dropdown">
+                            <a class="nav-link dropdown-toggle" href="#" id="reservationsDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                Réservations
+                            </a>
+                            <ul class="dropdown-menu" aria-labelledby="reservationsDropdown">
+                                <li><a class="dropdown-item" href="{{ url('/reservation/search') }}">Toutes les Réservations</a></li>
+                                <li><a class="dropdown-item" href="{{ url('/demande/search') }}">Demandes</a></li>
+                                <li><a href="{{ url('/donations/search') }}" class="dropdown-item">Dons</a></li>
+                            </ul>
+                        </div>
 
-                        <a href="{{ url('/Recommendation/search') }}" class="nav-item nav-link">Recommendations</a>
-                <a href="{{ url('/evenemets/search') }}" class="nav-item nav-link">Events</a>
-                <a href="{{ url('/produit/calender') }}" class="nav-item nav-link">Produits</a>
-                <a href="{{ url('/certification/search') }}" class="nav-item nav-link">Certifications</a>
-                <a href="{{ url('/feedback/search') }}" class="nav-item nav-link active">Feedback</a>
+                        <!-- Donations Menu -->
+                        <div class="nav-item dropdown">
+                            <a class="nav-link dropdown-toggle" href="#" id="donationsDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                Inventaires
+                            </a>
+                            <ul class="dropdown-menu" aria-labelledby="donationsDropdown">
+                                <li><a class="dropdown-item" href="{{ url('/inventairebe/list') }}">Inventaire Bénéficiaire</a></li>
+                                <li><a class="dropdown-item" href="{{ url('/inventaireDonateur/search') }}">Inventaire Donateur</a></li>
+                            </ul>
+                        </div>
 
+                        <!-- Users Menu -->
+                        <div class="nav-item dropdown">
+                            <a class="nav-link dropdown-toggle" href="#" id="usersDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                Utilisateurs
+                            </a>
+                            <ul class="dropdown-menu" aria-labelledby="usersDropdown">
+                                <li><a class="dropdown-item" href="{{ url('/utilisateurs/search') }}">Gestion des Utilisateurs</a></li>
+                                <li><a class="dropdown-item" href="{{ url('/posts') }}">Publications</a></li>
+                                <li><a class="dropdown-item" href="{{ url('/Recommendation/search') }}">Recommendations</a></li>
+                                <li><a class="dropdown-item" href="{{ url('/evenemets/search') }}">Events</a></li>
+                            </ul>
+                        </div>
 
+                        <!-- Miscellaneous Menu -->
+                        <div class="nav-item dropdown">
+                            <a class="nav-link dropdown-toggle" href="#" id="miscDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                Autres
+                            </a>
+                            <ul class="dropdown-menu" aria-labelledby="miscDropdown">
 
+                                <li><a class="dropdown-item" href="{{ url('/produit/calender') }}">Produits</a></li>
+                                <li><a class="dropdown-item" href="{{ url('/certification/search') }}">Certifications</a></li>
+                                <li><a class="dropdown-item" href="{{ url('/feedback/search') }}" >Feedback</a></li>
+                            </ul>
+                        </div>
                         @else
-                            @if (Route::has('login'))
-                                <a href="{{ route('login') }}" class="nav-item nav-link">Login</a>
-                            @endif
-                            @if (Route::has('register'))
-                                <a href="{{ route('register') }}" class="nav-item nav-link">Register</a>
-                            @endif
+                        <a href="{{ route('login') }}" class="nav-item nav-link">Login</a>
+                        <a href="{{ route('register') }}" class="nav-item nav-link">Register</a>
                         @endauth
                     </div>
-
-                    @auth
-                        <div class="d-none d-lg-flex ms-2">
-                            <a class="btn-sm-square bg-white rounded-circle ms-3" href="#">
-                                <small class="fa fa-search text-body"></small>
-                            </a>
-                            <a class="btn-sm-square bg-white rounded-circle ms-3" href="{{ route('profile.edit') }}">
-                                <small class="fa fa-user text-body"></small>
-                            </a>
-                            <a class="btn-sm-square bg-white rounded-circle ms-3" href="#">
-                                <small class="fa fa-shopping-bag text-body"></small>
-                            </a>
-                        </div>
-                        <li class="nav-item dropdown">
-                            <a id="navbarDropdown" class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false" v-pre>
-                                {{ Auth::user()->first_name }}
-                            </a>
-                            <div class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdown">
-                                <a class="dropdown-item" href="{{ route('logout') }}"
-                                   onclick="event.preventDefault(); document.getElementById('logout-form').submit();">
-                                    Logout
-                                </a>
-                                <form id="logout-form" action="{{ route('logout') }}" method="POST" class="d-none">
-                                    @csrf
-                                </form>
-                            </div>
-                        </li>
-                    @endauth
                 </div>
             </nav>
+
         </div>
         <!-- Navbar End -->
 

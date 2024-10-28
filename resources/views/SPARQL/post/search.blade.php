@@ -86,14 +86,14 @@
 
 <div class="container page-padding">
     <div class="header-container">
-        <h1 class="text-center my-4">All Posts</h1>
+        <h1 class="text-center my-4">Liste des Publications</h1>
         <button class="add-button" onclick="window.location.href='{{ route('post.create') }}'">
             <i class="fas fa-plus"></i>
         </button>
     </div>
 
     @if (empty($results))
-    <p class="text-center">No posts found.</p>
+    <p class="text-center">Aucune publication.</p>
     @else
     <div class="row justify-content-center">
         @foreach ($results as $post)
@@ -112,7 +112,7 @@
                         {{ $post['type_de_post']['value'] ?? 'N/A' }}
                     </p>
                     <p class="card-text">
-                        <strong><i class="fas fa-user"></i> Creator:</strong>
+                        <strong><i class="fas fa-user"></i> Createur:</strong>
                         {{ $post['creatorName']['value'] ?? 'N/A' }}
                     </p>
                 </div>
