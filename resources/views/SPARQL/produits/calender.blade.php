@@ -3,6 +3,9 @@
 @section('content')
 <div class="container mt-5">
     <h2 class="text-center mb-5">📅 Calendrier des Produits</h2>
+    <div class="text-end mb-4">
+                <a href="{{ route('produit.create') }}" class="btn btn-success">Ajouter un produit</a>
+            </div>
 
     @if (count($groupedProducts) > 0)
         <div class="row">

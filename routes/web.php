@@ -139,3 +139,5 @@ Route::post('/evenemets/store', [sparqlUpdateController::class, 'storeEvent'])->
 Route::get('/Recommendation/create', [sparqlUpdateController::class, 'createRecommendation'])->name('recommendation.create');
 Route::post('/Recommendation/store', [sparqlUpdateController::class, 'storeRecommendation'])->name('recommendation.store');
 
+Route::get('/produit/create', [sparqlUpdateController::class, 'createProduct'])->name('produit.create');
+Route::post('/produit/store', [sparqlUpdateController::class, 'storeProduct'])->name('produit.store');

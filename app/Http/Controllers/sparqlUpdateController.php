@@ -104,7 +104,52 @@ class sparqlUpdateController extends Controller
             return redirect()->back()->with('error', 'Erreur lors de la suppression du don : ' . $e->getMessage());
         }
     }
+/////////
+    // Method for showing the create form for products
+    public function createProduct()
+    {
+        return view('sparql.produits.create');
+    }
 
-
+    // Method for storing a new product
+    public function storeProduct(Request $request)
+    {
+        // Valider les données de la requête
+        $validatedData = $request->validate([
+            'product_name' => 'required|string|max:255',
+            'product_type' => 'required|string|in:Produit_Alimentaire,Produit_Frais',
+            'quantity' => 'required|integer|min:1',
+            'expiration_date' => 'required|date',
+            'category' => 'nullable|string|max:255',
+        ]);
+    
+        // Construire la requête SPARQL avec les données validées
+        $query = "
+        PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+        PREFIX your_ontology: <http://www.semanticweb.org/user/ontologies/2024/8/untitled-ontology-8#>
+    
+        INSERT DATA {
+            _:produit a your_ontology:{$validatedData['product_type']} ; 
+                      your_ontology:nom_aliment \"{$validatedData['product_name']}\" ; 
+                      your_ontology:quantité_aliment \"{$validatedData['quantity']}\"^^<http://www.w3.org/2001/XMLSchema#integer> ; 
+                      your_ontology:date_permption \"{$validatedData['expiration_date']}\"^^<http://www.w3.org/2001/XMLSchema#date> ;
+                      " . ($validatedData['category'] ? "your_ontology:catégorie_aliment \"{$validatedData['category']}\" ." : "") . "
+        }
+        ";
+    
+        try {
+            // Exécuter la requête SPARQL
+            $this->sparqlServiceUpdate->update($query);
+    
+            // Rediriger avec un message de succès
+            return redirect()->route('produit.calender')->with('success', 'Le produit a été créé avec succès.');
+        } catch (\Exception $e) {
+            // En cas d'erreur, enregistrer l'erreur et rediriger avec un message d'erreur
+            Log::error('Erreur SPARQL : ' . $e->getMessage());
+            return redirect()->back()->with('error', 'Une erreur est survenue : ' . $e->getMessage());
+        }
+    }
+      
+    
     
 }
