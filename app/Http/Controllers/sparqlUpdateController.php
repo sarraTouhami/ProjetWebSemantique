@@ -49,16 +49,103 @@ class sparqlUpdateController extends Controller
                   your_ontology:date_don \"{$validatedData['date_don']}\" ;
                   your_ontology:date_permption \"{$validatedData['date_permption']}\" ;
                   your_ontology:statut_don \"{$validatedData['statut_don']}\" ;.
-
         }
         ";
-
         // Exécuter la requête SPARQL
         $this->sparqlServiceUpdate->update($query); // Changement ici pour appeler update()
 
         // Rediriger avec un message de succès
         return redirect()->route('don.search')->with('success', 'Le don a été créé avec succès.');
     }
+
+    /////////////////////POST//////////////////////////////
+
+    public function deleteUser(Request $request)
+    {
+        $request->validate([
+            'individualUri' => 'required|string',
+        ]);
+
+        $individualUri = $request->input('individualUri');
+        $query = "
+        PREFIX your_ontology: <http://www.semanticweb.org/user/ontologies/2024/8/untitled-ontology-8#>
+
+        DELETE WHERE {
+            <{$individualUri}> ?p ?o.
+        }
+    ";
+
+        try {
+            $this->sparqlServiceUpdate->update($query);
+            return redirect()->route('utilisateur.search')->with('success', 'Utilisateur supprimé avec succès.');
+
+        } catch (\Exception $e) {
+            return response()->json(['success' => false, 'message' => 'Erreur lors de la suppression : ' . $e->getMessage()]);
+        }
+    }
+
+
+    public function createPost()
+    {
+        // SPARQL query to fetch user instances
+        $query = "
+        PREFIX your_ontology: <http://www.semanticweb.org/user/ontologies/2024/8/untitled-ontology-8#>
+
+        SELECT ?user ?nom WHERE {
+            { ?user a your_ontology:Donateur .
+              OPTIONAL { ?user your_ontology:nom ?nom }
+            }
+            UNION
+            { ?user a your_ontology:Beneficiaire .
+              OPTIONAL { ?user your_ontology:nom ?nom }
+            }
+            UNION
+            { ?user a your_ontology:Transporteur .
+              OPTIONAL { ?user your_ontology:nom ?nom }
+            }
+        }
+
+        ";
+
+        // Execute the query and get the results using the query endpoint
+        $users = $this->sparqlService->query($query);
+
+        // Return the view with user instances
+        return view('sparql.post.create', compact('users'));
+    }
+
+    public function storePost(Request $request)
+    {
+        // Validate the request data
+        $validatedData = $request->validate([
+            'title' => 'required|string|max:255',
+            'contenu' => 'required|string',
+            'type_de_post' => 'required|string|max:255',
+            'creator' => 'required|url',
+        ]);
+
+        // Construct the SPARQL query to create a new post
+        $query = "
+        PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+        PREFIX your_ontology: <http://www.semanticweb.org/user/ontologies/2024/8/untitled-ontology-8#>
+
+        INSERT DATA {
+            _:post a your_ontology:Post ;
+                  your_ontology:title \"{$validatedData['title']}\" ;
+                  your_ontology:contenu \"{$validatedData['contenu']}\" ;
+                  your_ontology:type_de_post \"{$validatedData['type_de_post']}\" ;
+                  your_ontology:estCrééPar <{$validatedData['creator']}> .
+        }
+    ";
+
+        // Execute the SPARQL query
+        $this->sparqlServiceUpdate->update($query);
+
+        // Redirect with success message
+        return redirect()->route('posts.all')->with('success', 'The post has been created successfully.');
+    }
+
+
     public function createinventaireb()
     {
         // Requête SPARQL pour obtenir les produits frais et alimentaires, incluant l'URI du produit
@@ -66,7 +153,7 @@ class sparqlUpdateController extends Controller
         PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
         PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
         PREFIX your_ontology: <http://www.semanticweb.org/user/ontologies/2024/8/untitled-ontology-8#>
-        
+
         SELECT ?produit ?nom_aliment ?quantite_aliment ?date_permption ?categorie_aliment WHERE {
             {
                 ?produit rdf:type your_ontology:Produit_Frais .
@@ -85,16 +172,16 @@ class sparqlUpdateController extends Controller
             }
         }
         ";
-    
+
         // Exécution de la requête SPARQL
         $results = $this->sparqlService->query($query);
         $produits = $results['results']['bindings'] ?? [];
-    
+
         // Traitement supplémentaire si nécessaire pour structurer les données
-    
+
         return view('sparql.inventairebe.create', ['produits' => $produits]);
     }
-    
+
     public function storeinventaireb(Request $request)
 {
     // Vérification des produits sélectionnés
@@ -144,7 +231,7 @@ class sparqlUpdateController extends Controller
     // Rediriger avec un message de succès
     return redirect()->route('inventairebe.index')->with('success', 'Les produits ont été affectés à l\'inventaire avec succès.');
 }
-    
+
 
     // sparqlUpdateController.php
 
@@ -258,5 +345,5 @@ public function storeRecommendation(Request $request)
 }
 
 
-    
+
 

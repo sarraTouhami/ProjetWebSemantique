@@ -112,6 +112,7 @@ Route::get('/sparql/test', [SparqlController::class, 'index']);
 Route::get('/certification/search', [SparqlController::class, 'certificationComport'])->name('certification.search');
 Route::get('/demande/search', [SparqlController::class, 'demandeComport'])->name('demande.search');
 Route::get('/utilisateurs/search', [SparqlController::class, 'allUtilisateurs'])->name('utilisateur.search');
+Route::delete('/utilisateurs/delete', [sparqlUpdateController::class, 'deleteUser'])->name('utilisateur.delete');
 Route::get('/donateurs/search', [SparqlController::class, 'allDonateurs'])->name('donateur.index');
 Route::get('/evenemets/search', [SparqlController::class, 'searchEvents'])->name('evenemets.index');
 Route::get('/Recommendation/search', [SparqlController::class, 'indexRecommendation'])->name('recommendation.index');

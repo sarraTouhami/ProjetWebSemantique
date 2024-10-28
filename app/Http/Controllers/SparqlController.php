@@ -110,12 +110,12 @@ class SparqlController extends Controller
 
     SELECT ?instance ?statut_don ?quantité ?date_permption ?date_don ?type_aliment WHERE {
     ?instance rdf:type your_ontology:Don .
-    
+
     OPTIONAL { ?instance your_ontology:statut_don ?statut_don }
     OPTIONAL { ?instance your_ontology:quantité ?quantité }
     OPTIONAL { ?instance your_ontology:date_permption ?date_permption }
-    OPTIONAL { ?instance your_ontology:date_don ?date_don }        
-    OPTIONAL { ?instance your_ontology:type_aliment ?type_aliment } 
+    OPTIONAL { ?instance your_ontology:date_don ?date_don }
+    OPTIONAL { ?instance your_ontology:type_aliment ?type_aliment }
 
       FILTER (
         CONTAINS(LCASE(str(?instance)), '$searchTerm') ||
@@ -205,7 +205,7 @@ public function inventaireDonateur(Request $request)
 {
     $searchTerm = strtolower($request->input('search_term', ''));
     $statutFilter = $request->input('statut', []);
-    
+
     $statuts = ['en attente', 'Complétée'];
 
     // Requête principale pour obtenir les demandes
@@ -236,7 +236,7 @@ public function inventaireDonateur(Request $request)
             return "\"$statut\"";
         }, $statutFilter);
         $statutValues = implode(" ", $values);
-        
+
         $query .= " VALUES ?statut { $statutValues }";
     } elseif ($searchTerm && !empty($statutFilter)) {
         $values = array_map(function($statut) {
@@ -319,7 +319,7 @@ public function inventaireBeneficiaire(Request $request)
         OPTIONAL { ?beneficiaire your_ontology:non_article ?non_article }
         OPTIONAL { ?beneficiaire your_ontology:location ?location }
 
-        OPTIONAL { 
+        OPTIONAL {
             ?beneficiaire your_ontology:contientProduit ?produit .
             ?produit your_ontology:nom_aliment ?nom_aliment .
             ?produit your_ontology:quantité_aliment ?quantite_produit .
@@ -349,25 +349,32 @@ public function inventaireBeneficiaire(Request $request)
 
         $roles = ['Donateur', 'Transporteur', 'Bénéficiaire'];
 
-     // Prepare the SPARQL query
-     $query = "
-    PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
-    PREFIX your_ontology: <http://www.semanticweb.org/user/ontologies/2024/8/untitled-ontology-8#>
+        $query = "
+        PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+        PREFIX your_ontology: <http://www.semanticweb.org/user/ontologies/2024/8/untitled-ontology-8#>
 
-    SELECT DISTINCT ?individual ?name ?email ?vehicle ?location WHERE {
-     ?individual a ?type .
-     OPTIONAL { ?individual your_ontology:nom ?name . }
-     OPTIONAL { ?individual your_ontology:email ?email . }
-     OPTIONAL { ?individual your_ontology:détails_véhicule ?vehicle . }
-     OPTIONAL { ?individual your_ontology:location ?location . }";
+        SELECT DISTINCT ?individual ?name ?email ?vehicle ?location (COUNT(?don) AS ?donCount) WHERE {
+        ?individual a ?type .
+        OPTIONAL { ?individual your_ontology:nom ?name . }
+        OPTIONAL { ?individual your_ontology:email ?email . }
+        OPTIONAL { ?individual your_ontology:détails_véhicule ?vehicle . }
+        OPTIONAL { ?individual your_ontology:location ?location . }
 
-     // Apply search filter if a search term is provided
-     if ($searchTerm) {
-         $query .= " FILTER (
-         CONTAINS(LCASE(str(?name)), '$searchTerm') ||
-         CONTAINS(LCASE(str(?email)), '$searchTerm')
-     )";
-     }
+        OPTIONAL {
+            {
+                ?don your_ontology:aDonateur ?individual .  # For Donateurs
+            } UNION {
+                ?don your_ontology:aBeneficiaire ?individual .  # For Bénéficiaires
+            }
+        }
+    ";
+
+        if ($searchTerm) {
+            $query .= " FILTER (
+        CONTAINS(LCASE(str(?name)), '$searchTerm') ||
+        CONTAINS(LCASE(str(?email)), '$searchTerm')
+        )";
+        }
 
         if (!empty($roleFilter)) {
             $roleValues = array_map(function ($role) {
@@ -410,15 +417,12 @@ public function inventaireBeneficiaire(Request $request)
         OPTIONAL { ?creator your_ontology:nom ?creatorName . }
     }";
 
-        // Log the SPARQL query for debugging
-        Log::info('Executing SPARQL Query for Posts:', ['query' => $query]);
+
 
         // Execute the SPARQL query
         $results = $this->sparqlService->query($query);
         $posts = $results['results']['bindings'] ?? []; // Extract results
 
-        // Log the results or any errors for debugging
-        Log::info('SPARQL Query Results for Posts:', ['results' => $posts]);
 
         // Return the results to a view without pagination
         return view('sparql.post.search', ['results' => $posts]);
@@ -437,7 +441,7 @@ public function searchEvents(Request $request)
         your_ontology:Event_Name ?Event_Name;
         your_ontology:Event_Location ?Event_Location;
         your_ontology:Event_Description ?Event_Description.
-      FILTER (CONTAINS(LCASE(?Event_Name), LCASE('$searchTerm')) || 
+      FILTER (CONTAINS(LCASE(?Event_Name), LCASE('$searchTerm')) ||
               CONTAINS(LCASE(?Event_Location), LCASE('$searchTerm')))
     }";
 
@@ -460,7 +464,7 @@ public function indexRecommendation(Request $request)
         ?recommendation a your_ontology:Recommandation.
         ?recommendation your_ontology:contenu ?contenu.
         ?recommendation your_ontology:type_Recommendation ?type_Recommendation.
-        FILTER (CONTAINS(LCASE(?contenu), LCASE('$searchTerm')) || 
+        FILTER (CONTAINS(LCASE(?contenu), LCASE('$searchTerm')) ||
                 CONTAINS(LCASE(?type_Recommendation), LCASE('$searchTerm')))
     }";
 

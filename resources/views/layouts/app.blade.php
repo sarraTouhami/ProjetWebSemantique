@@ -14,8 +14,8 @@
     <!-- Google Web Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;500&family=Lora:wght@600;700&display=swap" rel="stylesheet"> 
-     
+    <link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;500&family=Lora:wght@600;700&display=swap" rel="stylesheet">
+
     <!-- Icon Font Stylesheet -->
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.10.0/css/all.min.css" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.4.1/font/bootstrap-icons.css" rel="stylesheet">
@@ -51,8 +51,9 @@
                             <a href="{{ url('/reservations') }}" class="nav-item nav-link active">Reservations</a>
                             <a href="{{ url('/demandes') }}" class="nav-item nav-link">Demandes</a>
                             <a href="{{ url('/donations/search') }}" class="nav-item nav-link">Dons</a>
+                            <a href="{{ url('/utilisateurs/search') }}" class="nav-item nav-link">Utilisateurs</a>
                             <a href="{{ url('/inventaireDonateur/search') }}" class="nav-item nav-link">Inventaire Donateur</a>
-                            <a href="{{ url('/notifications') }}" class="nav-item nav-link">Notifications</a>
+                            <a href="{{ url('/posts') }}" class="nav-item nav-link">Publications</a>
                 <a href="{{ url('/Recommendation/search') }}" class="nav-item nav-link">Recommendations</a>
                 <a href="{{ url('/evenemets/search') }}" class="nav-item nav-link">Events</a>
                             <li class="nav-item dropdown">
@@ -78,7 +79,7 @@
                             @endif
                         @endauth
                     </div>
-                    
+
                     @auth
                         <div class="d-none d-lg-flex ms-2">
                             <a class="btn-sm-square bg-white rounded-circle ms-3" href="#">
