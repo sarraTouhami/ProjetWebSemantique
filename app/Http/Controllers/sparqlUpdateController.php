@@ -12,10 +12,12 @@ class sparqlUpdateController extends Controller
     protected $sparqlService;
     protected $sparqlServiceUpdate;
 
+
     public function __construct(SparqlService $sparqlService, SparqlServiceUpdate $sparqlServiceUpdate)
     {
         $this->sparqlService = $sparqlService;
         $this->sparqlServiceUpdate = $sparqlServiceUpdate;
+        $this->sparqlService = $sparqlService;
     }
 
     public function create()
@@ -57,6 +59,92 @@ class sparqlUpdateController extends Controller
         // Rediriger avec un message de succès
         return redirect()->route('don.search')->with('success', 'Le don a été créé avec succès.');
     }
+    public function createinventaireb()
+    {
+        // Requête SPARQL pour obtenir les produits frais et alimentaires, incluant l'URI du produit
+        $query = "
+        PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+        PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+        PREFIX your_ontology: <http://www.semanticweb.org/user/ontologies/2024/8/untitled-ontology-8#>
+        
+        SELECT ?produit ?nom_aliment ?quantite_aliment ?date_permption ?categorie_aliment WHERE {
+            {
+                ?produit rdf:type your_ontology:Produit_Frais .
+                ?produit your_ontology:nom_aliment ?nom_aliment .
+                ?produit your_ontology:quantité_aliment ?quantite_aliment .
+                ?produit your_ontology:date_permption ?date_permption .
+                ?produit your_ontology:catégorie_aliment ?categorie_aliment .
+            }
+            UNION
+            {
+                ?produit rdf:type your_ontology:Produit_Alimentaire .
+                ?produit your_ontology:nom_aliment ?nom_aliment .
+                ?produit your_ontology:quantité_aliment ?quantite_aliment .
+                ?produit your_ontology:date_permption ?date_permption .
+                ?produit your_ontology:catégorie_aliment ?categorie_aliment .
+            }
+        }
+        ";
+    
+        // Exécution de la requête SPARQL
+        $results = $this->sparqlService->query($query);
+        $produits = $results['results']['bindings'] ?? [];
+    
+        // Traitement supplémentaire si nécessaire pour structurer les données
+    
+        return view('sparql.inventairebe.create', ['produits' => $produits]);
+    }
+    
+    public function storeinventaireb(Request $request)
+{
+    // Vérification des produits sélectionnés
+    $selectedProducts = $request->input('produits');
+
+    // Debugging: Afficher les produits sélectionnés
+    \Log::info('Produits sélectionnés: ', [$selectedProducts]);
+
+    // Vérifier si les produits sont sélectionnés et s'il s'agit d'un tableau
+    if (is_null($selectedProducts) || !is_array($selectedProducts) || empty($selectedProducts)) {
+        return redirect()->back()->with('error', 'Veuillez sélectionner au moins un produit.');
+    }
+
+    // URI de l'inventaire spécifique
+    $inventaireUri = "http://www.semanticweb.org/user/ontologies/2024/8/untitled-ontology-8#inventaireBeneficiaire_001";
+
+    // Construction de la requête SPARQL pour l'affectation
+    $query = "
+        PREFIX your_ontology: <http://www.semanticweb.org/user/ontologies/2024/8/untitled-ontology-8#>
+        INSERT DATA {
+    ";
+
+    // Boucle pour ajouter chaque produit sélectionné
+    foreach ($selectedProducts as $productId) {
+        // Vérifier l'ID de produit pour le débogage
+        \Log::info('Ajout du produit: ', [$productId]);
+
+        // Remplacer $productId par l'URI de produit correspondant
+        // Assurez-vous que le $productId correspond à la bonne structure d'URI
+        $query .= "{$inventaireUri} your_ontology:contientProduit <http://www.semanticweb.org/user/ontologies/2024/8/untitled-ontology-8#{$productId}> . ";
+    }
+
+    // Clôture de la requête
+    $query .= "}";
+
+    // Affichage de la requête pour le débogage
+    \Log::info('Requête SPARQL: ', [$query]);
+
+    // Exécution de la requête SPARQL pour l'insertion
+    try {
+        $this->sparqlServiceUpdate->update($query);
+    } catch (\Exception $e) {
+        \Log::error('Erreur lors de l\'exécution de la requête SPARQL: ', ['message' => $e->getMessage()]);
+        return redirect()->back()->with('error', 'Erreur lors de l\'affectation des produits à l\'inventaire.');
+    }
+
+    // Rediriger avec un message de succès
+    return redirect()->route('inventairebe.index')->with('success', 'Les produits ont été affectés à l\'inventaire avec succès.');
+}
+    
 
     // sparqlUpdateController.php
 
@@ -104,7 +192,71 @@ class sparqlUpdateController extends Controller
             return redirect()->back()->with('error', 'Erreur lors de la suppression du don : ' . $e->getMessage());
         }
     }
+    public function createEvent()
+    {
+        return view('sparql.evenemets.create'); // Make sure to create this view
+    }
+     // Store a new event
+    public function storeEvent(Request $request)
+{
+    // Validate incoming request data
+    $validatedData = $request->validate([
+        'name' => 'required|string|max:255',
+        'location' => 'required|string|max:255',
+        'date' => 'required|date',
+        'partner_id' => 'required|string|max:255', // Adjust the validation as per your requirements
+        'description' => 'nullable|string',
+    ]);
+
+    // Prepare the SPARQL query
+    $query = "
+    PREFIX your_ontology: <http://www.semanticweb.org/user/ontologies/2024/8/untitled-ontology-8#>
+
+    INSERT DATA {
+        _:event a your_ontology:Event;
+            your_ontology:Event_Name \"{$validatedData['name']}\";
+            your_ontology:Event_Location \"{$validatedData['location']}\";
+            your_ontology:Event_Date \"{$validatedData['date']}\";
+            your_ontology:Partner_ID \"{$validatedData['partner_id']}\";
+            your_ontology:Event_Description \"{$validatedData['description']}\".
+    }";
+
+    // Execute the SPARQL query using the correct service
+    $this->sparqlServiceUpdate->update($query);
+
+    // Redirect with a success message
+    return redirect()->route('evenemets.index')->with('success', 'Événement créé avec succès.');
+}
+public function createRecommendation()
+{
+    return view('sparql.recommendation.create');
+}
+public function storeRecommendation(Request $request)
+{
+    // Validate the request data
+    $request->validate([
+        'contenu' => 'required|string|max:255',
+        'type_Recommendation' => 'required|string|max:255',
+    ]);
+
+    // Create SPARQL query to add the recommendation
+    $query = "
+    PREFIX your_ontology: <http://www.semanticweb.org/user/ontologies/2024/8/untitled-ontology-8#>
+    INSERT DATA {
+        your_ontology:recommandation_" . uniqid() . " a your_ontology:Recommandation;
+            your_ontology:contenu '" . htmlspecialchars($request->contenu, ENT_QUOTES) . "';
+            your_ontology:type_Recommendation '" . htmlspecialchars($request->type_Recommendation, ENT_QUOTES) . "'.
+    }";
+
+    // Execute the SPARQL update query
+    $this->sparqlServiceUpdate->update($query);
+
+    // Redirect back to the index with a success message
+    return redirect()->route('recommendation.index')->with('success', 'Recommandation ajoutée avec succès.');
+}
+
+}
 
 
     
-}
+

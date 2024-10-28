@@ -181,6 +181,7 @@
 <script src="{{ asset('lib/waypoints/waypoints.min.js') }}"></script>
 <script src="{{ asset('lib/owlcarousel/owl.carousel.min.js') }}"></script>
 
+
 <!-- Template Javascript -->
 <script src="{{ asset('js/main.js') }}"></script>
 </body>

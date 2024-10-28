@@ -138,4 +138,9 @@ Route::get('/evenemets/create', [sparqlUpdateController::class, 'createEvent'])-
 Route::post('/evenemets/store', [sparqlUpdateController::class, 'storeEvent'])->name('evenemets.store');
 Route::get('/Recommendation/create', [sparqlUpdateController::class, 'createRecommendation'])->name('recommendation.create');
 Route::post('/Recommendation/store', [sparqlUpdateController::class, 'storeRecommendation'])->name('recommendation.store');
+Route::get('/demande/search', [SparqlController::class, 'demandeComport'])->name('demande.search');
+Route::get('/inventairebe/list', [SparqlController::class, 'inventaireBeneficiaire'])->name('inventairebe.index');
+Route::get('/inventairebe/create', [SparqlUpdateController::class, 'createinventaireb'])->name('inventairebe.create'); // Ajoutez cette route
+Route::post('/inventairebe/store', [SparqlUpdateController::class, 'storeinventaireb'])->name('inventairebe.store');
+
 

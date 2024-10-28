@@ -4,13 +4,13 @@
 <div class="container py-5">
     <div class="row justify-content-center">
         <div class="col-md-10">
-            <h4 class="mb-4 mt-5">Recherche de Dons</h4>
+            <h4 class="mb-4 mt-5 text-center text-primary">Recherche de Dons</h4>
 
             <!-- Formulaire de recherche -->
             <form action="{{ route('don.search') }}" method="GET" class="mb-4">
                 <div class="input-group">
                     <input type="text" name="search_term" class="form-control" 
-                           placeholder="Entrez un mot-clé (Statut, Type, etc.)" 
+                           placeholder="🔍 Entrez un mot-clé (Statut, Type, etc.)" 
                            value="{{ request('search_term') }}" required>
                     <button type="submit" class="btn btn-primary px-4">Rechercher</button>
                 </div>
@@ -26,9 +26,9 @@
                 <div class="row">
                     @foreach($results as $donation)
                         <div class="col-md-4 mb-4">
-                            <div class="card">
+                            <div class="card shadow-sm border-primary" style="transition: transform 0.2s;">
                                 <div class="card-body">
-                                    <h5 class="card-title">
+                                    <h5 class="card-title text-primary">
                                         <strong>Type d'Aliment:</strong> {{ $donation['type_aliment']['value'] ?? 'N/A' }}
                                     </h5>
                                     <p class="card-text">
@@ -44,29 +44,36 @@
                 </div>
 
                 <!-- Formulaire de suppression -->
-                <form action="{{ route('don.delete') }}" method="POST" class="mt-4">
-                    @csrf
-
-                    <div class="mb-3">
-                        <label class="form-label">Choisissez l'attribut à supprimer:</label><br>
-                        <input type="radio" id="type_aliment" name="attribute" value="type_aliment" required onchange="updatePlaceholder('type_aliment')">
-                        <label for="type_aliment">Type d'Aliment</label><br>
-                        <input type="radio" id="quantité" name="attribute" value="quantité" onchange="updatePlaceholder('quantité')">
-                        <label for="quantité">Quantité</label><br>
-                        <input type="radio" id="date_don" name="attribute" value="date_don" onchange="updatePlaceholder('date_don')">
-                        <label for="date_don">Date de Don</label><br>
-                        <input type="radio" id="date_permption" name="attribute" value="date_permption" onchange="updatePlaceholder('date_permption')">
-                        <label for="date_permption">Date de Péremption</label><br>
-                        <input type="radio" id="statut_don" name="attribute" value="statut_don" onchange="updatePlaceholder('statut_don')">
-                        <label for="statut_don">Statut du Don</label>
+                <div class="card mt-4">
+                    <div class="card-header bg-danger text-white">
+                        <h5>Supprimer un Don</h5>
                     </div>
+                    <form action="{{ route('don.delete') }}" method="POST" class="p-4">
+                        @csrf
 
-                    <div class="input-group">
-                        <input type="text" name="value" id="valueInput" class="form-control" 
-                               placeholder="Entrez la valeur à supprimer" required>
-                        <button type="submit" class="btn btn-danger px-4">Supprimer</button>
-                    </div>
-                </form>
+                        <div class="mb-3">
+                            <label class="form-label">Choisissez l'attribut à supprimer:</label><br>
+                            <div>
+                                <input type="radio" id="type_aliment" name="attribute" value="type_aliment" required onchange="updatePlaceholder('type_aliment')">
+                                <label for="type_aliment">Type d'Aliment</label><br>
+                                <input type="radio" id="quantité" name="attribute" value="quantité" onchange="updatePlaceholder('quantité')">
+                                <label for="quantité">Quantité</label><br>
+                                <input type="radio" id="date_don" name="attribute" value="date_don" onchange="updatePlaceholder('date_don')">
+                                <label for="date_don">Date de Don</label><br>
+                                <input type="radio" id="date_permption" name="attribute" value="date_permption" onchange="updatePlaceholder('date_permption')">
+                                <label for="date_permption">Date de Péremption</label><br>
+                                <input type="radio" id="statut_don" name="attribute" value="statut_don" onchange="updatePlaceholder('statut_don')">
+                                <label for="statut_don">Statut du Don</label>
+                            </div>
+                        </div>
+
+                        <div class="input-group">
+                            <input type="text" name="value" id="valueInput" class="form-control" 
+                                   placeholder="Entrez la valeur à supprimer" required>
+                            <button type="submit" class="btn btn-danger px-4">Supprimer</button>
+                        </div>
+                    </form>
+                </div>
 
                 <!-- Liens de pagination -->
                 <div class="d-flex justify-content-center mt-4">

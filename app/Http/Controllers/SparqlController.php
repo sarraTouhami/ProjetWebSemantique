@@ -200,86 +200,148 @@ public function inventaireDonateur(Request $request)
 }
 
 
+
  ///////////////////////////////////////////////////////////
  public function demandeComport(Request $request)
- {
-     $searchTerm = strtolower($request->input('search_term', ''));
-     $statutFilter = $request->input('statut', []);
+{
+    $searchTerm = strtolower($request->input('search_term', ''));
+    $statutFilter = $request->input('statut', []);
+    
+    $statuts = ['en attente', 'Complétée'];
 
-     $statuts = ['en attente', 'Complétée'];
+    // Requête principale pour obtenir les demandes
+    $query = "
+    PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+    PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+    PREFIX your_ontology: <http://www.semanticweb.org/user/ontologies/2024/8/untitled-ontology-8#>
 
-     $query = "
-     PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
-     PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
-     PREFIX your_ontology: <http://www.semanticweb.org/user/ontologies/2024/8/untitled-ontology-8#>
+    SELECT ?demande ?data_de_demande ?statut ?type_aliment WHERE {
+        ?demande a your_ontology:Demande .
+        OPTIONAL { ?demande your_ontology:data_de_demande ?data_de_demande }
+        OPTIONAL { ?demande your_ontology:statut ?statut }
+        OPTIONAL { ?demande your_ontology:type_aliment ?type_aliment }
+    ";
 
-     SELECT ?demande ?data_de_demande ?statut ?type_aliment WHERE {
-         ?demande a your_ontology:Demande .
-         OPTIONAL { ?demande your_ontology:data_de_demande ?data_de_demande }
-         OPTIONAL { ?demande your_ontology:statut ?statut }
-         OPTIONAL { ?demande your_ontology:type_aliment ?type_aliment }
-     ";
+    // Appliquer les filtres
+    if ($searchTerm && empty($statutFilter)) {
+        $query .= "
+        FILTER (
+            CONTAINS(LCASE(str(?demande)), '$searchTerm') ||
+            CONTAINS(LCASE(?statut), '$searchTerm') ||
+            CONTAINS(LCASE(str(?data_de_demande)), '$searchTerm') ||
+            CONTAINS(LCASE(?type_aliment), '$searchTerm')
+        )
+        ";
+    } elseif (!empty($statutFilter) && !$searchTerm) {
+        $values = array_map(function($statut) {
+            return "\"$statut\"";
+        }, $statutFilter);
+        $statutValues = implode(" ", $values);
+        
+        $query .= " VALUES ?statut { $statutValues }";
+    } elseif ($searchTerm && !empty($statutFilter)) {
+        $values = array_map(function($statut) {
+            return "\"$statut\"";
+        }, $statutFilter);
+        $statutValues = implode(" ", $values);
 
-     // Applique le filtre de recherche par mot-clé si un terme est fourni
-     if ($searchTerm && empty($statutFilter)) {
-         $query .= "
-         FILTER (
-             CONTAINS(LCASE(str(?demande)), '$searchTerm') ||
-             CONTAINS(LCASE(?statut), '$searchTerm') ||
-             CONTAINS(LCASE(str(?data_de_demande)), '$searchTerm') ||
-             CONTAINS(LCASE(?type_aliment), '$searchTerm')
-         )
-         ";
-     }
-     // Applique le filtre de statut uniquement si des statuts sont sélectionnés
-     elseif (!empty($statutFilter) && !$searchTerm) {
-         $values = array_map(function($statut) {
-             return "\"$statut\"";
-         }, $statutFilter);
-         $statutValues = implode(" ", $values);
+        $query .= "
+        FILTER (
+            (CONTAINS(LCASE(str(?demande)), '$searchTerm') ||
+            CONTAINS(LCASE(?statut), '$searchTerm') ||
+            CONTAINS(LCASE(str(?data_de_demande)), '$searchTerm') ||
+            CONTAINS(LCASE(?type_aliment), '$searchTerm'))
+        ) VALUES ?statut { $statutValues }
+        ";
+    }
 
-         $query .= " VALUES ?statut { $statutValues }";
-     }
-     // Applique les deux filtres uniquement si les deux critères sont fournis
-     elseif ($searchTerm && !empty($statutFilter)) {
-         $values = array_map(function($statut) {
-             return "\"$statut\"";
-         }, $statutFilter);
-         $statutValues = implode(" ", $values);
+    $query .= "}";
 
-         $query .= "
-         FILTER (
-             (CONTAINS(LCASE(str(?demande)), '$searchTerm') ||
-             CONTAINS(LCASE(?statut), '$searchTerm') ||
-             CONTAINS(LCASE(str(?data_de_demande)), '$searchTerm') ||
-             CONTAINS(LCASE(?type_aliment), '$searchTerm'))
-         ) VALUES ?statut { $statutValues }
-         ";
-     }
+    Log::info('SPARQL Query for Demande with Filter:', ['query' => $query]);
 
-     $query .= "}";
+    $results = $this->sparqlService->query($query);
+    $demandes = $results['results']['bindings'] ?? [];
+    Log::info('SPARQL Query Results for Demande with Filter:', ['results' => $demandes]);
 
-     Log::info('SPARQL Query for Demande with Filter:', ['query' => $query]);
+    // Calculer les statistiques des demandes
+    $statistics = $this->calculateStatistics($demandes);
 
-     $results = $this->sparqlService->query($query);
-     $demandes = $results['results']['bindings'] ?? [];
-     Log::info('SPARQL Query Results for Demande with Filter:', ['results' => $demandes]);
+    $currentPage = LengthAwarePaginator::resolveCurrentPage();
+    $perPage = 5;
+    $paginatedResults = new LengthAwarePaginator(
+        array_slice($demandes, ($currentPage - 1) * $perPage, $perPage),
+        count($demandes),
+        $perPage,
+        $currentPage,
+        ['path' => $request->url(), 'query' => $request->query()]
+    );
 
-     $currentPage = LengthAwarePaginator::resolveCurrentPage();
-     $perPage = 5;
-     $paginatedResults = new LengthAwarePaginator(
-         array_slice($demandes, ($currentPage - 1) * $perPage, $perPage),
-         count($demandes),
-         $perPage,
-         $currentPage,
-         ['path' => $request->url(), 'query' => $request->query()]
-     );
+    return view('sparql.demandes.search', [
+        'results' => $paginatedResults,
+        'statuts' => $statuts,
+        'statistics' => $statistics, // Passer les statistiques à la vue
+    ]);
+}
 
-     return view('sparql.demandes.search', [
-         'results' => $paginatedResults,
-         'statuts' => $statuts
-     ]);
- }
+// Fonction pour calculer les statistiques des demandes
+private function calculateStatistics($demandes)
+{
+    $statisticCount = [
+        'total' => count($demandes),
+        'en_attente' => 0,
+        'complete' => 0,
+    ];
+
+    foreach ($demandes as $demande) {
+        $statut = $demande['statut']['value'] ?? '';
+        if ($statut === 'en attente') {
+            $statisticCount['en_attente']++;
+        } elseif ($statut === 'Complétée') {
+            $statisticCount['complete']++;
+        }
+    }
+
+    return $statisticCount;
+}
+
+public function inventaireBeneficiaire(Request $request)
+{
+    // Requête SPARQL pour obtenir l'inventaire des bénéficiaires, incluant les produits associés
+    $query = "
+    PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+    PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+    PREFIX your_ontology: <http://www.semanticweb.org/user/ontologies/2024/8/untitled-ontology-8#>
+
+    SELECT ?beneficiaire ?quantite_inventaire ?date_permption ?non_article ?location ?produit ?nom_aliment ?quantite_produit WHERE {
+        ?beneficiaire rdf:type your_ontology:Inventaire_Bénéficiaire .
+
+        OPTIONAL { ?beneficiaire your_ontology:quantite_inventaire ?quantite_inventaire }
+        OPTIONAL { ?beneficiaire your_ontology:date_permption ?date_permption }
+        OPTIONAL { ?beneficiaire your_ontology:non_article ?non_article }
+        OPTIONAL { ?beneficiaire your_ontology:location ?location }
+
+        OPTIONAL { 
+            ?beneficiaire your_ontology:contientProduit ?produit .
+            ?produit your_ontology:nom_aliment ?nom_aliment .
+            ?produit your_ontology:quantité_aliment ?quantite_produit .
+        }
+    }
+    ";
+
+    // Log de la requête SPARQL
+    Log::info('SPARQL Query for Inventaire_Bénéficiaire Inventory:', ['query' => $query]);
+
+    // Exécution de la requête SPARQL
+    $results = $this->sparqlService->query($query);
+    $inventaires = $results['results']['bindings'] ?? [];
+
+    // Log des résultats
+    Log::info('SPARQL Query Results for Inventaire_Bénéficiaire Inventory:', ['results' => $inventaires]);
+
+    return view('sparql.inventairebe.index', ['inventaires' => $inventaires]);
+}
+
+
 
     public function allUtilisateurs(Request $request)
     {
@@ -399,15 +461,10 @@ public function indexRecommendation(Request $request)
         ?recommendation a your_ontology:Recommandation.
         ?recommendation your_ontology:contenu ?contenu.
         ?recommendation your_ontology:type_Recommendation ?type_Recommendation.
+        FILTER (CONTAINS(LCASE(?contenu), LCASE('$searchTerm')) || 
+                CONTAINS(LCASE(?type_Recommendation), LCASE('$searchTerm')))
     }";
 
-    // If there's a search term, modify the query to filter results
-    if ($searchTerm) {
-        $query .= "
-        FILTER(CONTAINS(LCASE(?contenu), LCASE('$searchTerm')) || 
-               CONTAINS(LCASE(?type_Recommendation), LCASE('$searchTerm')))
-        ";
-    }
 
     // Execute the query to get results
     $results = $this->sparqlService->query($query);
