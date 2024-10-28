@@ -26,6 +26,7 @@ use App\Http\Controllers\Admin\FeedbackAdminController;
 /**** */
 
 use App\Http\Controllers\SparqlController;
+use App\Http\Controllers\sparqlUpdateController;
 
 /*
 |--------------------------------------------------------------------------
@@ -109,4 +110,14 @@ Route::put('/profile/update', [ProfileController::class, 'update'])->name('profi
 Route::get('/sparql/test', [SparqlController::class, 'index']);
 Route::get('/certification/search', [SparqlController::class, 'certificationComport'])->name('certification.search');
 Route::get('/donations/search', [SparqlController::class, 'donComport'])->name('don.search');
+Route::get('/donations/create', [sparqlUpdateController::class, 'create'])->name('don.create');
+Route::post('/donations/store', [sparqlUpdateController::class, 'store'])->name('don.store');
 Route::get('/reservation/search', [SparqlController::class, 'searchReservation'])->name('reservation.search');
+Route::get('/reservation/add', [sparqlUpdateController::class, 'add'])->name('reservation.add');
+Route::post('/reservation/addReserv', [sparqlUpdateController::class, 'addReserv'])->name('reservation.addReserv');
+Route::get('/feedback/search', [SparqlController::class, 'searchFeedback'])->name('feedback.search');
+
+;
+
+
+

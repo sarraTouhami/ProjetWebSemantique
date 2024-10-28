@@ -146,6 +146,8 @@ SELECT ?instance ?statut_don ?quantité ?date_permption ?date_don ?type_aliment 
 }
 
 //Reservation 
+
+//recherche par date decroissant
 public function searchReservation(Request $request)
 {
     $searchTerm = strtolower($request->input('search_term')); 
@@ -199,6 +201,62 @@ public function searchReservation(Request $request)
     );
 
     return view('sparql/reservation/search', ['results' => $paginatedResults]);
+}
+
+public function searchFeedback(Request $request)
+{
+    // Récupérer les critères de recherche
+    $searchTerm = strtolower($request->input('search_term')); 
+
+    // Construction des filtres
+    $filters = [];
+    if ($searchTerm) {
+        $filters[] = 'FILTER(CONTAINS(lcase(?contenu), "' . $searchTerm . '") || CONTAINS(lcase(?type), "' . $searchTerm . '"))';
+    }
+
+    // Construire la requête SPARQL
+    $query = '
+    PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+    PREFIX owl: <http://www.w3.org/2002/07/owl#>
+    PREFIX ont: <http://www.semanticweb.org/user/ontologies/2024/8/untitled-ontology-8#>
+    PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>
+
+    SELECT ?feedback ?contenu ?type ?dateFeedback
+    WHERE {
+        ?feedback rdf:type ont:Feedback .
+        ?feedback ont:contenu_feedback ?contenu .
+        ?feedback ont:type_feedback ?type .
+        OPTIONAL { ?feedback ont:date_feedback ?dateFeedback }
+        ' . implode(' ', $filters) . '
+    }
+    ORDER BY DESC(?dateFeedback)'; // Order by date descending
+
+    Log::info('SPARQL Query:', ['query' => $query]);
+
+    // Exécution de la requête SPARQL
+    try {
+        $results = $this->sparqlService->query($query);
+        $feedbacks = $results['results']['bindings'] ?? [];
+
+        Log::info('SPARQL Query Results:', ['results' => $feedbacks]);
+
+        // Pagination des résultats
+        $currentPage = LengthAwarePaginator::resolveCurrentPage();
+        $perPage = 5; // Nombre d'éléments par page
+        $paginatedResults = new LengthAwarePaginator(
+            array_slice($feedbacks, ($currentPage - 1) * $perPage, $perPage),
+            count($feedbacks),
+            $perPage,
+            $currentPage,
+            ['path' => $request->url(), 'query' => $request->query()]
+        );
+
+        // Return view with paginated results
+        return view('sparql.feedback.search', ['results' => $paginatedResults]);
+    } catch (\Exception $e) {
+        Log::error('Erreur lors de la recherche de feedbacks:', ['error' => $e->getMessage(), 'query' => $query]);
+        return back()->withErrors(['message' => 'Erreur lors de la recherche de feedbacks.']);
+    }
 }
 
 
