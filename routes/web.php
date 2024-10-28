@@ -110,6 +110,12 @@ Route::put('/profile/update', [ProfileController::class, 'update'])->name('profi
 
 Route::get('/sparql/test', [SparqlController::class, 'index']);
 Route::get('/certification/search', [SparqlController::class, 'certificationComport'])->name('certification.search');
+Route::get('/produit/calender', [SparqlController::class, 'displayProductsInCalendar'])->name('produit.calender');
+Route::get('/certification/stats', [SparqlController::class, 'stats'])->name('certification.stats');
+
+
+
+
 Route::get('/demande/search', [SparqlController::class, 'demandeComport'])->name('demande.search');
 Route::get('/utilisateurs/search', [SparqlController::class, 'allUtilisateurs'])->name('utilisateur.search');
 Route::delete('/utilisateurs/delete', [sparqlUpdateController::class, 'deleteUser'])->name('utilisateur.delete');
@@ -137,5 +143,18 @@ Route::get('/demande/search', [SparqlController::class, 'demandeComport'])->name
 Route::get('/inventairebe/list', [SparqlController::class, 'inventaireBeneficiaire'])->name('inventairebe.index');
 Route::get('/inventairebe/create', [SparqlUpdateController::class, 'createinventaireb'])->name('inventairebe.create'); // Ajoutez cette route
 Route::post('/inventairebe/store', [SparqlUpdateController::class, 'storeinventaireb'])->name('inventairebe.store');
+
+
+Route::get('/produit/create', [sparqlUpdateController::class, 'createProduct'])->name('produit.create');
+Route::post('/produit/store', [sparqlUpdateController::class, 'storeProduct'])->name('produit.store');
+Route::get('/donations/create', [sparqlUpdateController::class, 'create'])->name('don.create');
+Route::post('/donations/store', [sparqlUpdateController::class, 'store'])->name('don.store');
+Route::get('/reservation/search', [SparqlController::class, 'searchReservation'])->name('reservation.search');
+Route::get('/reservation/add', [sparqlUpdateController::class, 'add'])->name('reservation.add');
+Route::post('/reservation/addReserv', [sparqlUpdateController::class, 'addReserv'])->name('reservation.addReserv');
+Route::get('/feedback/search', [SparqlController::class, 'searchFeedback'])->name('feedback.search');
+
+;
+
 
 

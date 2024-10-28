@@ -1,8 +1,8 @@
 @extends('layouts.app')
 
 @section('content')
-<div class="container mt-4">
-    <h1>Liste des Recommandations</h1>
+<div class="container mt-5">
+    <h4>Liste des Recommandations</h4>
 
     <div class="mb-3">
         <a href="{{ route('recommendation.create') }}" class="btn btn-success">Ajouter un Événement</a>

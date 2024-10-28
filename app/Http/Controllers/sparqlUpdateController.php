@@ -49,8 +49,10 @@ class sparqlUpdateController extends Controller
                   your_ontology:date_don \"{$validatedData['date_don']}\" ;
                   your_ontology:date_permption \"{$validatedData['date_permption']}\" ;
                   your_ontology:statut_don \"{$validatedData['statut_don']}\" ;.
+
         }
         ";
+
         // Exécuter la requête SPARQL
         $this->sparqlServiceUpdate->update($query); // Changement ici pour appeler update()
 
@@ -342,8 +344,97 @@ public function storeRecommendation(Request $request)
     return redirect()->route('recommendation.index')->with('success', 'Recommandation ajoutée avec succès.');
 }
 
+/////////
+    // Method for showing the create form for products
+    public function createProduct()
+    {
+        return view('sparql.produits.create');
+    }
+
+    // Method for storing a new product
+    public function storeProduct(Request $request)
+    {
+        // Valider les données de la requête
+        $validatedData = $request->validate([
+            'product_name' => 'required|string|max:255',
+            'product_type' => 'required|string|in:Produit_Alimentaire,Produit_Frais',
+            'quantity' => 'required|integer|min:1',
+            'expiration_date' => 'required|date',
+            'category' => 'nullable|string|max:255',
+        ]);
+
+        // Construire la requête SPARQL avec les données validées
+        $query = "
+        PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+        PREFIX your_ontology: <http://www.semanticweb.org/user/ontologies/2024/8/untitled-ontology-8#>
+
+        INSERT DATA {
+            _:produit a your_ontology:{$validatedData['product_type']} ;
+                      your_ontology:nom_aliment \"{$validatedData['product_name']}\" ;
+                      your_ontology:quantité_aliment \"{$validatedData['quantity']}\"^^<http://www.w3.org/2001/XMLSchema#integer> ;
+                      your_ontology:date_permption \"{$validatedData['expiration_date']}\"^^<http://www.w3.org/2001/XMLSchema#date> ;
+                      " . ($validatedData['category'] ? "your_ontology:catégorie_aliment \"{$validatedData['category']}\" ." : "") . "
+        }
+        ";
+
+        try {
+            // Exécuter la requête SPARQL
+            $this->sparqlServiceUpdate->update($query);
+
+            // Rediriger avec un message de succès
+            return redirect()->route('produit.calender')->with('success', 'Le produit a été créé avec succès.');
+        } catch (\Exception $e) {
+            // En cas d'erreur, enregistrer l'erreur et rediriger avec un message d'erreur
+            Log::error('Erreur SPARQL : ' . $e->getMessage());
+            return redirect()->back()->with('error', 'Une erreur est survenue : ' . $e->getMessage());
+        }
+    }
+
+
+
+     //reservation_add
+ public function add()
+ {
+     return view('sparql.reservation.add');
+ }
+ public function addReserv(Request $request)
+ {
+     // Valider les données de la requête
+     $validatedData = $request->validate([
+         'status_reserv' => 'required|string|in:Confirmée,Réservée',
+         'date_reservation' => 'required|date',
+         'Date_de_livraison' => 'required|date',
+     ]);
+
+     // Construire la requête SPARQL pour insérer une nouvelle réservation
+     $query = "
+     PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+     PREFIX your_ontology: <http://www.semanticweb.org/user/ontologies/2024/8/untitled-ontology-8#>
+     PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>
+
+     INSERT DATA {
+         _:reservation rdf:type your_ontology:Reservation ;
+                       your_ontology:status_reserv \"{$validatedData['status_reserv']}\" ;
+                       your_ontology:date_reservation \"{$validatedData['date_reservation']}\"^^xsd:dateTime ;
+                       your_ontology:Date_de_livraison \"{$validatedData['Date_de_livraison']}\"^^xsd:dateTime .
+     }
+     ";
+
+     Log::info('Requête SPARQL pour ajout de réservation:', ['query' => $query]);
+
+     // Exécution de la requête SPARQL
+     try {
+         $this->sparqlService->update($query);
+         return response()->json(['message' => 'Réservation ajoutée avec succès'], 201);
+     } catch (\Exception $e) {
+         Log::error('Erreur lors de l\'ajout de la réservation:', [
+             'error' => $e->getMessage(),
+             'query' => $query,
+         ]);
+         return response()->json(['message' => 'Erreur lors de l\'ajout de la réservation'], 500);
+     }
+ }
+
 }
-
-
 
 

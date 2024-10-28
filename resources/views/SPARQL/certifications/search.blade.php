@@ -2,7 +2,7 @@
 
 @section('content')
 <div class="container py-5">
-    <div class="row justify-content-center">
+    <div class="row justify-content-center mt-5">
         <div class="col-md-10">
             <h1 class="text-center mb-5">Recherche de Certifications</h1>
 
@@ -19,37 +19,32 @@
             @if($results->count() > 0)
                 <h2 class="text-center mb-4">Résultats de la recherche</h2>
 
-                <!-- Table des résultats -->
-                <div class="table-responsive">
-                    <table class="table table-bordered table-hover align-middle">
-                        <thead class="table-dark text-center">
-                            <tr>
-                                <th>Certification URI</th>
-                                <th>Statut de la Certification</th>
-                                <th>Date de Validation</th>
-                                <th>Nom de la Certification</th>
-                                <th>Description</th>
-                                <th>Date de Création</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            @foreach($results as $certification)
-                                <tr>
-                                    <td class="text-center">
-                                        <a href="{{ $certification['instance']['value'] ?? '#' }}" 
-                                           target="_blank" class="text-decoration-none">
-                                            {{ $certification['instance']['value'] ?? 'Lien non disponible' }}
-                                        </a>
-                                    </td>
-                                    <td class="text-center">{{ $certification['certifStatus']['value'] ?? 'N/A' }}</td>
-                                    <td class="text-center">{{ $certification['dateValidate']['value'] ?? 'N/A' }}</td>
-                                    <td class="text-center">{{ $certification['nomCertif']['value'] ?? 'N/A' }}</td>
-                                    <td>{{ $certification['descriptionCertif']['value'] ?? 'N/A' }}</td>
-                                    <td class="text-center">{{ $certification['dateCreation']['value'] ?? 'N/A' }}</td>
-                                </tr>
-                            @endforeach
-                        </tbody>
-                    </table>
+                <!-- Cards pour les résultats -->
+                <div class="row">
+                    @foreach($results as $certification)
+                        <div class="col-md-4 mb-4">
+                            <div class="card h-100 shadow-sm border border-dark rounded card-hover"> <!-- Ajout de la classe card-hover -->
+                                <div class="card-body">
+                                    <h5 class="card-title text-primary">
+                                        <i class="fa-solid fa-star" style="color: #FFD43B;"></i> <!-- Icône Font Awesome -->
+                                        {{ $certification['nomCertif']['value'] ?? 'N/A' }}
+                                    </h5>
+                                    <p class="card-text">
+                                        <strong>Description:</strong> {{ $certification['descriptionCertif']['value'] ?? 'N/A' }}<br>
+                                        <strong>Statut:</strong> 
+                                        @php
+                                            $statusClass = ($certification['certifStatus']['value'] ?? 'N/A') == 'Expiré' ? 'text-danger' : 'text-success';
+                                        @endphp
+                                        <span class="{{ $statusClass }}">
+                                            {{ $certification['certifStatus']['value'] ?? 'N/A' }}
+                                        </span><br>
+                                        <strong>Date de Validation:</strong> {{ $certification['dateValidate']['value'] ?? 'N/A' }}<br>
+                                        <strong>Date de Création:</strong> {{ $certification['dateCreation']['value'] ?? 'N/A' }}
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+                    @endforeach
                 </div>
 
                 <!-- Liens de pagination -->
@@ -65,4 +60,15 @@
         </div>
     </div>
 </div>
+
+<style>
+    .card-hover {
+        transition: transform 0.2s; /* Animation douce pour l'effet de survol */
+    }
+
+    .card-hover:hover {
+        transform: scale(1.05); /* Agrandissement au survol */
+    }
+</style>
+
 @endsection

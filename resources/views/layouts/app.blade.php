@@ -8,8 +8,9 @@
     <meta name="csrf-token" content="{{ csrf_token() }}">
 
     <title>{{ config('app.name', 'RescueFood') }}</title>
-
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/css/bootstrap.min.css">
     <link href="{{ asset('img/favicon.ico') }}" rel="icon">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
 
     <!-- Google Web Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -48,27 +49,21 @@
                 <div class="collapse navbar-collapse" id="navbarCollapse">
                     <div class="navbar-nav ms-auto p-4 p-lg-0">
                         @auth
-                            <a href="{{ url('/reservations') }}" class="nav-item nav-link active">Reservations</a>
-                            <a href="{{ url('/demandes') }}" class="nav-item nav-link">Demandes</a>
+                            <a href="{{ url('/reservation/search') }}" class="nav-item nav-link active">Reservations</a>
+                            <a href="{{ url('/demande/search') }}" class="nav-item nav-link">Demandes</a>
                             <a href="{{ url('/donations/search') }}" class="nav-item nav-link">Dons</a>
                             <a href="{{ url('/utilisateurs/search') }}" class="nav-item nav-link">Utilisateurs</a>
                             <a href="{{ url('/inventaireDonateur/search') }}" class="nav-item nav-link">Inventaire Donateur</a>
-                            <a href="{{ url('/posts') }}" class="nav-item nav-link">Publications</a>
-                <a href="{{ url('/Recommendation/search') }}" class="nav-item nav-link">Recommendations</a>
+                            <a href="{{ url('/inventairebe/list') }}" class="nav-item nav-link">Inventaire Bénéficiaire</a>
+                        <a href="{{ url('/posts') }}" class="nav-item nav-link">Publications</a>
+
+                        <a href="{{ url('/Recommendation/search') }}" class="nav-item nav-link">Recommendations</a>
                 <a href="{{ url('/evenemets/search') }}" class="nav-item nav-link">Events</a>
-                            <li class="nav-item dropdown">
-    <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-        Produits
-    </a>
-    <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
-        <li>
-            <a class="dropdown-item" href="{{ url('/produitAlimentaire') }}">Tous les Produits</a>
-        </li>
-        <li>
-            <a class="dropdown-item" href="{{ route('produitAlimentaire.mesProduits') }}">Mes Produits</a>
-        </li>
-    </ul>
-</li>
+                <a href="{{ url('/produit/calender') }}" class="nav-item nav-link">Produits</a>
+                <a href="{{ url('/certification/search') }}" class="nav-item nav-link">Certifications</a>
+                <a href="{{ url('/feedback/search') }}" class="nav-item nav-link active">Feedback</a>
+
+
 
                         @else
                             @if (Route::has('login'))
