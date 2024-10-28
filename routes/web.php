@@ -144,3 +144,5 @@ Route::get('/inventairebe/create', [SparqlUpdateController::class, 'createinvent
 Route::post('/inventairebe/store', [SparqlUpdateController::class, 'storeinventaireb'])->name('inventairebe.store');
 
 
+Route::get('/produit/create', [sparqlUpdateController::class, 'createProduct'])->name('produit.create');
+Route::post('/produit/store', [sparqlUpdateController::class, 'storeProduct'])->name('produit.store');

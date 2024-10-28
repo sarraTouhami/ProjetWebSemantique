@@ -56,19 +56,8 @@
                             <a href="{{ url('/notifications') }}" class="nav-item nav-link">Notifications</a>
                 <a href="{{ url('/Recommendation/search') }}" class="nav-item nav-link">Recommendations</a>
                 <a href="{{ url('/evenemets/search') }}" class="nav-item nav-link">Events</a>
-                            <li class="nav-item dropdown">
-    <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-        Produits
-    </a>
-    <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
-        <li>
-            <a class="dropdown-item" href="{{ url('/produitAlimentaire') }}">Tous les Produits</a>
-        </li>
-        <li>
-            <a class="dropdown-item" href="{{ route('produitAlimentaire.mesProduits') }}">Mes Produits</a>
-        </li>
-    </ul>
-</li>
+                <a href="{{ url('/produit/create') }}" class="nav-item nav-link">Produits</a>
+                          
 
                         @else
                             @if (Route::has('login'))
