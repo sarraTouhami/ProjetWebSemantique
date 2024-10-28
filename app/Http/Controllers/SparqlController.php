@@ -354,7 +354,7 @@ public function inventaireBeneficiaire(Request $request)
         PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
         PREFIX your_ontology: <http://www.semanticweb.org/user/ontologies/2024/8/untitled-ontology-8#>
 
-        SELECT DISTINCT ?individual ?name ?email ?vehicle ?location (COUNT(?don) AS ?donCount) WHERE {
+        SELECT DISTINCT ?individual ?name ?email ?vehicle ?location (COUNT(DISTINCT ?don) AS ?donCount) WHERE {
         ?individual a ?type .
         OPTIONAL { ?individual your_ontology:nom ?name . }
         OPTIONAL { ?individual your_ontology:email ?email . }
@@ -501,17 +501,17 @@ public function indexRecommendation(Request $request)
         PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
         PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
         PREFIX your_ontology: <http://www.semanticweb.org/user/ontologies/2024/8/untitled-ontology-8#>
-        
+
         SELECT ?certifStatus (COUNT(?instance) AS ?count) WHERE {
           ?instance rdf:type your_ontology:Certification .
           OPTIONAL { ?instance your_ontology:Certif_status ?certifStatus }
         }
         GROUP BY ?certifStatus
         ";
-    
+
         // Exécuter la requête SPARQL
         $results = $this->sparqlService->query($query);
-        
+
         // Vérifiez si des résultats ont été renvoyés
         if (isset($results['results']['bindings'])) {
             $certifications = $results['results']['bindings'];
@@ -519,10 +519,10 @@ public function indexRecommendation(Request $request)
             // Si aucun résultat n'est trouvé, retournez un tableau vide
             $certifications = [];
         }
-    
+
         // Log les résultats pour le débogage
         Log::info('SPARQL Query Results:', ['results' => $certifications]);
-    
+
         // Transformer les résultats pour le rendre plus facile à manipuler
         $formattedResults = [];
         foreach ($certifications as $certification) {
@@ -531,12 +531,12 @@ public function indexRecommendation(Request $request)
                 'count' => (int) $certification['count']['value'], // Convertir en entier
             ];
         }
-    
+
         // Passer les résultats formatés à la vue
         return view('sparql.certifications.stats', ['results' => $formattedResults]);
     }
-    
-//calander 
+
+//calander
 // new method to display products in a calendar
 public function displayProductsInCalendar(Request $request)
     {
@@ -544,7 +544,7 @@ public function displayProductsInCalendar(Request $request)
         PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
         PREFIX your_ontology: <http://www.semanticweb.org/user/ontologies/2024/8/untitled-ontology-8#>
 
-        SELECT ?produit ?nomAliment ?quantiteAliment ?categorieAliment ?datePeremption 
+        SELECT ?produit ?nomAliment ?quantiteAliment ?categorieAliment ?datePeremption
         WHERE {
             ?produit rdf:type ?type .
             FILTER(?type IN (your_ontology:Produit_Alimentaire, your_ontology:Produit_Frais)) .
@@ -568,8 +568,8 @@ public function displayProductsInCalendar(Request $request)
         // Réorganiser les produits par date d'expiration
         $groupedProducts = [];
         foreach ($products as $product) {
-            $expiryDate = isset($product['datePeremption']) 
-                ? $product['datePeremption']['value'] 
+            $expiryDate = isset($product['datePeremption'])
+                ? $product['datePeremption']['value']
                 : 'Date inconnue';
 
             $groupedProducts[$expiryDate][] = [
@@ -584,12 +584,12 @@ public function displayProductsInCalendar(Request $request)
         ]);
     }
 
-    //Reservation 
+    //Reservation
 
 //recherche par date decroissant
 public function searchReservation(Request $request)
 {
-    $searchTerm = strtolower($request->input('search_term')); 
+    $searchTerm = strtolower($request->input('search_term'));
 
     // Nouvelle requête SPARQL
     $query = "
@@ -645,7 +645,7 @@ public function searchReservation(Request $request)
 public function searchFeedback(Request $request)
 {
     // Récupérer les critères de recherche
-    $searchTerm = strtolower($request->input('search_term')); 
+    $searchTerm = strtolower($request->input('search_term'));
 
     // Construction des filtres
     $filters = [];
