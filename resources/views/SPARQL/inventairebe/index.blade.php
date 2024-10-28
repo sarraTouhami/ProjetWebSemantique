@@ -2,7 +2,7 @@
 
 @section('content')
 <div class="container py-5">
-    <div class="row justify-content-center">
+    <div class="row justify-content-center mt-5">
         <div class="col-md-10">
             <h1 class="text-center mb-5">Inventaire des Bénéficiaires</h1>
 

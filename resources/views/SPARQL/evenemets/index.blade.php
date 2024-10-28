@@ -3,8 +3,8 @@
 @extends('layouts.app')
 
 @section('content')
-<div class="container mt-4"> <!-- Added margin top here -->
-    <h1>Liste des Événements</h1>
+<div class="container mt-5"> <!-- Added margin top here -->
+    <h4>Liste des Événements</h4>
 
     <!-- Add Event Button -->
     <div class="mb-3">

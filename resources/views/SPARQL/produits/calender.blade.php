@@ -1,8 +1,8 @@
 @extends('layouts.app')
 
 @section('content')
-<div class="container mt-5">
-    <h2 class="text-center mb-5">📅 Calendrier des Produits</h2>
+<div class="container ">
+    <h2 class="text-center mb-5 mt-2">📅 Calendrier des Produits</h2>
     <div class="text-end mb-4">
                 <a href="{{ route('produit.create') }}" class="btn btn-success">Ajouter un produit</a>
             </div>

@@ -1,7 +1,7 @@
 @extends('layouts.app')
 
 @section('content')
-<div class="container mt-4">
+<div class="container mt-5">
     <h1>Ajouter une Recommandation</h1>
 
     <form action="{{ route('recommendation.store') }}" method="POST">

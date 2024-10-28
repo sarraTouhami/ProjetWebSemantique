@@ -3,7 +3,7 @@
 @extends('layouts.app')
 
 @section('content')
-<div class="container mt-4">
+<div class="container mt-5">
     <h1>Ajouter un Événement</h1>
 
     <!-- Display validation errors -->

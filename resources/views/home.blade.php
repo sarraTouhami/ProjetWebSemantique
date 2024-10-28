@@ -106,7 +106,7 @@
                 </div>
                 <div class="card shadow-sm">
                     <div class="card-body">
-                        <a href="{{ route('posts.create') }}" class="btn btn-success btn-block">
+                        <a href="{{ route('post.create') }}" class="btn btn-success btn-block">
                             <i class="fas fa-plus"></i> Créer une nouvelle publication
                         </a>
                     </div>
